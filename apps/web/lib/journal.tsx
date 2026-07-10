@@ -10,6 +10,7 @@ import {
 } from 'react';
 import type { Trade } from '@kupec/core';
 import { useAuth } from './auth';
+import { track } from './analytics';
 
 const LS_KEY = 'kupec.journal.v1';
 
@@ -100,6 +101,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
 
   const addTrade = useCallback<JournalContextValue['addTrade']>(
     (t) => {
+      track('trade_add', { synced });
       if (synced) {
         api
           .addTrade(t)
@@ -127,6 +129,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
 
   const closeTrade = useCallback(
     (id: string, sell: number) => {
+      track('trade_close', { synced });
       if (synced) {
         api.closeTrade(id, sell).catch(() => {});
       }

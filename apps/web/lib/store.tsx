@@ -17,6 +17,7 @@ import {
   type MarketRow,
   type Snapshot,
 } from '@kupec/core';
+import { track } from './analytics';
 
 type ServerData = Partial<Record<MarketPath, MarketRow[]>>;
 
@@ -113,6 +114,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           history: { ...p.history, [sid]: nextHist },
         };
       });
+      track('data_import', { sections: res.sections, server: sid });
       return { ok: true, message: `Загружено разделов: ${res.sections}` };
     },
     [state.server],

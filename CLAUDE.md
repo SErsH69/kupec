@@ -71,7 +71,9 @@
 
 **ВАЖНО про монорепо-раскладку:** из-за Expo/Metro включён `node-linker=hoisted` (плоский node_modules) в `.npmrc` — иначе Metro не резолвит транзитивные зависимости pnpm. Версии `@types/react`/`@types/react-dom` зафиксированы в `pnpm-workspace.yaml` (`overrides`), т.к. web и mobile теперь оба на React 19 и рассинхрон типов ломает JSX.
 
-**Осталось:** запустить поллер на живых данных Majestic (нужен VPS — вот теперь покупать); Sentry+PostHog (наблюдаемость); деплой по `docs/DEPLOY.md`; довести мобилку (авторизация, журнал, ещё экраны — по образцу веба поверх тех же core/client). Хостинг: VPS Бегета (РФ, 152-ФЗ), свой Postgres+Auth. Публикация мобилки требует внешних аккаунтов: Google Play $25 разово, Apple $99/год (у россиян сложности с оплатой — начинать проще с Android).
+**Логирование/аналитика (веб):** `apps/web/lib/analytics.ts` — `track/identify/logError`, провайдер PostHog, включается только при `NEXT_PUBLIC_POSTHOG_KEY` (без ключа — no-op + dev-лог, posthog-js грузится динамически). События: tab_view, data_import, sign_up/in/out, trade_add/close. Глобальный логгер ошибок + ErrorBoundary (`components/ErrorBoundary.tsx`). Бэкенд логирует через pino. Sentry (трейсинг ошибок с DSN) — follow-up.
+
+**Осталось:** запустить поллер на живых данных Majestic (нужен VPS — вот теперь покупать); Sentry (нужен DSN); деплой по `docs/DEPLOY.md`; довести мобилку (авторизация, журнал, ещё экраны — по образцу веба поверх тех же core/client). Хостинг: VPS Бегета (РФ, 152-ФЗ), свой Postgres+Auth. Публикация мобилки требует внешних аккаунтов: Google Play $25 разово, Apple $99/год (у россиян сложности с оплатой — начинать проще с Android).
 
 **Карта расчётной логики → `docs/PORTING_SPEC.md`** — точные формулы/константы, сверять оттуда. Хрупкие места: средний (не max) шанс крафта, рекурсия себестоимости с защитой циклов, `deal=max(min, avg*0.6)` во flip, отсечка `cur>0 && prev>0` в movers, кухня — блюдо по id, ингредиенты по name.
 

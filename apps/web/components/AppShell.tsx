@@ -6,6 +6,7 @@ import { useStore } from '../lib/store';
 import { useAuth } from '../lib/auth';
 import { TABS } from '../lib/tabs';
 import { PATH_LABEL } from '../lib/labels';
+import { track } from '../lib/analytics';
 import { ImportDialog } from './ImportDialog';
 import { AuthDialog } from './AuthDialog';
 import { Logo } from './Logo';
@@ -30,6 +31,11 @@ export function AppShell() {
     }
   };
 
+  const selectTab = (key: string) => {
+    setActive(key);
+    track('tab_view', { tab: key });
+  };
+
   const tab = TABS.find((t) => t.key === active) ?? TABS[0]!;
   const hasData = importedPaths.length > 0;
   const showEmpty = ready && tab.needsData && !hasData;
@@ -49,7 +55,7 @@ export function AppShell() {
           {TABS.map((t) => (
             <button
               key={t.key}
-              onClick={() => setActive(t.key)}
+              onClick={() => selectTab(t.key)}
               className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition ${
                 t.key === active ? 'bg-accent/15 font-medium text-txt' : 'text-muted hover:bg-surface-2 hover:text-txt'
               }`}
