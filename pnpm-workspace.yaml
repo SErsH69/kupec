@@ -1,0 +1,13 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+  - "services/*"
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+# Единые версии типов React во всём воркспейсе (web React 19 + mobile React 19),
+# иначе рассинхрон @types/react ↔ @types/react-dom ломает JSX-типы.
+overrides:
+  "@types/react": 19.0.14
+  "@types/react-dom": 19.0.4

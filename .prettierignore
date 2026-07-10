@@ -1,0 +1,10 @@
+node_modules
+dist
+.next
+.turbo
+pnpm-lock.yaml
+# Прототип — не форматируем, это референс
+majestic_market_dashboard.html
+majestic_market_dashboard.backup-*.html
+majestic_dashboard_demo.html
+*.json

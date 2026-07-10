@@ -9,6 +9,8 @@ out/
 dist/
 build/
 .turbo/
+.expo/
+expo-env.d.ts
 
 # Логи
 *.log
