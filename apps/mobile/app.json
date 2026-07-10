@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "kupec",
+    "slug": "kupec",
+    "scheme": "kupec",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": ["expo-router"],
+    "android": {
+      "package": "com.kupec.app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.kupec.app"
+    }
+  }
+}
