@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../lib/auth';
+import { MarketProvider } from '../lib/market';
 import { JournalProvider } from '../lib/journal';
 import { theme } from '../lib/theme';
 
@@ -16,32 +17,42 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <JournalProvider>
-          <StatusBar style="light" />
-          <Tabs
-            screenOptions={{
-              headerStyle: { backgroundColor: theme.surface },
-              headerTintColor: theme.txt,
-              tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.line },
-              tabBarActiveTintColor: theme.accent,
-              tabBarInactiveTintColor: theme.muted,
-              sceneStyle: { backgroundColor: theme.bg },
-            }}
-          >
-            <Tabs.Screen
-              name="index"
-              options={{ title: 'Топ выгодных', tabBarLabel: 'Топ', tabBarIcon: tabIcon('⭐') }}
-            />
-            <Tabs.Screen
-              name="journal"
-              options={{ title: 'Журнал сделок', tabBarLabel: 'Журнал', tabBarIcon: tabIcon('📒') }}
-            />
-            <Tabs.Screen
-              name="account"
-              options={{ title: 'Аккаунт', tabBarLabel: 'Аккаунт', tabBarIcon: tabIcon('👤') }}
-            />
-          </Tabs>
-        </JournalProvider>
+        <MarketProvider>
+          <JournalProvider>
+            <StatusBar style="light" />
+            <Tabs
+              screenOptions={{
+                headerStyle: { backgroundColor: theme.surface },
+                headerTintColor: theme.txt,
+                tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.line },
+                tabBarActiveTintColor: theme.accent,
+                tabBarInactiveTintColor: theme.muted,
+                sceneStyle: { backgroundColor: theme.bg },
+              }}
+            >
+              <Tabs.Screen
+                name="index"
+                options={{ title: 'Топ выгодных', tabBarLabel: 'Топ', tabBarIcon: tabIcon('⭐') }}
+              />
+              <Tabs.Screen
+                name="flip"
+                options={{ title: 'Перекупка', tabBarLabel: 'Перекуп', tabBarIcon: tabIcon('💱') }}
+              />
+              <Tabs.Screen
+                name="workshop"
+                options={{ title: 'Мастерская', tabBarLabel: 'Крафт', tabBarIcon: tabIcon('🔧') }}
+              />
+              <Tabs.Screen
+                name="journal"
+                options={{ title: 'Журнал сделок', tabBarLabel: 'Журнал', tabBarIcon: tabIcon('📒') }}
+              />
+              <Tabs.Screen
+                name="account"
+                options={{ title: 'Аккаунт', tabBarLabel: 'Аккаунт', tabBarIcon: tabIcon('👤') }}
+              />
+            </Tabs>
+          </JournalProvider>
+        </MarketProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
