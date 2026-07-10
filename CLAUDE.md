@@ -42,7 +42,42 @@
 
 ## Продуктовая переделка (в этом же репо)
 
-Прототип остаётся референсом. Прод-версия — монорепо на TypeScript в этой же папке: Next.js веб + Expo мобилки (Android/iOS) + общий пакет `@kupec/core`, бэкенд Supabase (аккаунты/регистрация) + поллер, логирование (Sentry + PostHog/pino). Логику из `majestic_market_dashboard.html` порти в `@kupec/core`. Монорепо ещё не создано — собираем с нуля (Этап 0 плана).
+Прототип остаётся референсом. Прод-версия — монорепо на TypeScript в этой же папке: Next.js веб + Expo мобилки (Android/iOS) + общий пакет `@kupec/core`, бэкенд Supabase (аккаунты/регистрация) + поллер, логирование (Sentry + PostHog/pino). Логику из `majestic_market_dashboard.html` порти в `@kupec/core`.
+
+**Статус монорепо (Этап 0 + вся расчётная логика — сделано):** pnpm + Turborepo подняты (`pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`). Пакет `packages/core` (`@kupec/core`) — чистая логика без DOM/localStorage, состояние передаётся параметрами. Портировано с тестами (vitest, 65 шт., `pnpm --filter @kupec/core test`):
+- `servers`, `format` (nf/money/pct/groupInt)
+- `market` (parse/enrich/num, PERIOD_DAYS=30), `advice` (sellAdvice)
+- `flip` (computeFlip/flipScore/planBudget), `trends` (snapshotPrices/recordSnapshot/trendMap/computeMovers)
+- `craft` (itemIndex/bestUnitCost/computeRecipes — средний шанс, рекурсия себестоимости с защитой циклов)
+- `kitchen` (computeKitchen — блюдо по id, ингредиенты по name), `farm` (farmType/computeFarm), `vehicles` (buildRL)
+- `journal` (tradePnl/journalSummary — «своя» функция, P&L журнала сделок)
+- `ingest` (detectPath/ingestMarketJson — импорт JSON из API/закладки в строки по разделам)
+- Вшитые справочники извлечены из прототипа в `packages/core/src/data/*.json` (RECIPES 40, KITCHEN_RECIPES 69, GOV 209, JOBS 23, транспорт, классификаторы), типизированы в `data/index.ts`.
+
+**Веб `apps/web` (`@kupec/web`) — рабочий каркас (Этап 2, часть без аккаунтов):** Next.js 15 (App Router) + React 19 + Tailwind v4, `transpilePackages:['@kupec/core']`. Современный тёмный UI с нуля. Стор на React Context + localStorage (`lib/store.tsx`), импорт JSON (диалог), выбор сервера. Вкладки поверх core: Топ выгодных, Перекупка (+бюджет-планировщик), Мастерская, Кухня, Что фармить, Движения, Журнал сделок (add/close/P&L, `lib/journal.tsx`), RL-авто, Гос-цены. Проверено вживую (preview): импорт → расчёты сходятся с ручной проверкой, журнал (P&L +$75k/ROI 33% сошёлся), консоль чистая. Запуск: `pnpm --filter @kupec/web dev` (или preview-конфиг `web` в `.claude/launch.json`).
+
+**Бэкенд (Этап 1) — код готов и проверен end-to-end (Docker Postgres):**
+- `packages/db` (`@kupec/db`) — Postgres-схема (`migrations/0001_init.sql`: снимки рынка, poll_runs, users, trades, favorites, settings), клиент (postgres.js), миграции (`pnpm --filter @kupec/db migrate`), типизированные запросы.
+- `services/poller` (`@kupec/poller`) — рейт-лимитер 5/60с (тесты), клиент Majestic (fetch инъектируем), `pollPath/pollAll` (fetch → parse core → upsert), цикл каждые 30 мин, pino-логи.
+- `services/api` (`@kupec/api`) — Hono API: рынок (enriched из core), регистрация/логин (bcrypt + JWT/jose), журнал сделок (защищён Bearer). Эндпоинты и деплой — `docs/DEPLOY.md`.
+- Проверено: поллер (mock API → БД → latestRows), API (market/register/login/401/trades) — всё сходится. Тесты: core 75, poller 3, api 3.
+- Локально: `docker compose up -d db` (Postgres на **localhost:5433** — 5432 занят локальным PG), `.env` из `.env.example`.
+
+**Веб ↔ бэкенд связаны (Этап 2 завершён), проверено вживую:** `apps/web/lib/api.ts` (клиент API, `NEXT_PUBLIC_API_URL`, по умолч. localhost:8787), `lib/auth.tsx` (AuthProvider: регистрация/логин/выход, токен в localStorage), `components/AuthDialog.tsx`. Журнал (`lib/journal.tsx`) при входе синхронизируется с аккаунтом и **мигрирует локальные сделки в БД**, без входа — localStorage. Кнопка «🔄 С сервера» тянет живой рынок из API (`loadServerRows` в сторе). Проверено в preview против Docker Postgres: регистрация → миграция журнала → добавление через API → перезагрузка (данные из аккаунта) → загрузка рынка с сервера (поллер→БД→API→веб). Консоль чистая.
+
+**Общий API-клиент вынесен в `packages/client` (`@kupec/client`):** `createApi(baseUrl, getToken)` на глобальном `fetch` — используют и веб (`apps/web/lib/api.ts` оборачивает с `NEXT_PUBLIC_API_URL`), и мобилка. Тесты с мок-fetch.
+
+**Мобилка `apps/mobile` (`@kupec/mobile`) — рабочее приложение (Этап 4), проверено вживую:** Expo SDK 53 + React Native 0.79 + **React 19** (выровнен с вебом!) + Expo Router + react-native-web. Пять вкладок (`app/_layout.tsx` → Tabs): **Топ выгодных**, **Перекупка** (computeFlip), **Мастерская** (computeRecipes), **Журнал сделок** (add/close/delete + P&L, `lib/journal.tsx`, синхрон с аккаунтом или локально в AsyncStorage), **Аккаунт** (регистрация/логин/выход, `lib/auth.tsx`, токен в AsyncStorage). Общий стор рынка `lib/market.tsx` (загрузка с API + кэш в AsyncStorage, шарится между вкладками); общий каркас экрана `components/MarketScreen.tsx`. Всё поверх `@kupec/core` (money/nf/journalSummary/tradePnl) и `@kupec/client`. Проверено в мобильном вьюпорте: рендер, `GET /v1/market/RU17`, регистрация (`POST /v1/auth/register`→синхрон журнала), добавление сделки (`POST /v1/trades`, вложено $900=50×18) — идентично вебу, консоль чистая. Запуск: `pnpm --filter @kupec/mobile dev` (Expo Go/эмулятор) или превью веб-бандла (`expo export -p web` + `node apps/mobile/serve-web.mjs`, конфиг `mobile-web`).
+
+**ВАЖНО про монорепо-раскладку:** из-за Expo/Metro включён `node-linker=hoisted` (плоский node_modules) в `.npmrc` — иначе Metro не резолвит транзитивные зависимости pnpm. Версии `@types/react`/`@types/react-dom` зафиксированы в `pnpm-workspace.yaml` (`overrides`), т.к. web и mobile теперь оба на React 19 и рассинхрон типов ломает JSX.
+
+**Логирование/аналитика (веб):** `apps/web/lib/analytics.ts` — `track/identify/logError`, провайдер PostHog, включается только при `NEXT_PUBLIC_POSTHOG_KEY` (без ключа — no-op + dev-лог, posthog-js грузится динамически). События: tab_view, data_import, sign_up/in/out, trade_add/close. Глобальный логгер ошибок + ErrorBoundary (`components/ErrorBoundary.tsx`). Бэкенд логирует через pino. Sentry (трейсинг ошибок с DSN) — follow-up.
+
+**Осталось:** запустить поллер на живых данных Majestic (нужен VPS — вот теперь покупать); Sentry (нужен DSN); деплой по `docs/DEPLOY.md`; довести мобилку (авторизация, журнал, ещё экраны — по образцу веба поверх тех же core/client). Хостинг: VPS Бегета (РФ, 152-ФЗ), свой Postgres+Auth. Публикация мобилки требует внешних аккаунтов: Google Play $25 разово, Apple $99/год (у россиян сложности с оплатой — начинать проще с Android).
+
+**Карта расчётной логики → `docs/PORTING_SPEC.md`** — точные формулы/константы, сверять оттуда. Хрупкие места: средний (не max) шанс крафта, рекурсия себестоимости с защитой циклов, `deal=max(min, avg*0.6)` во flip, отсечка `cur>0 && prev>0` в movers, кухня — блюдо по id, ингредиенты по name.
+
+Команды: `pnpm install`, `pnpm test` (turbo), `pnpm typecheck`, `pnpm --filter @kupec/core test`. pnpm ставится через `corepack enable pnpm`.
 
 Статус письма Majestic: **ждём ответ** (см. `Письмо_Majestic.md`). До письменного «ок» — без рекламы/Pro.
 

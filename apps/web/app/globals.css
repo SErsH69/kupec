@@ -1,0 +1,37 @@
+@import 'tailwindcss';
+
+/* Современная тёмная тема продукта (не копия прототипа). */
+@theme {
+  --color-bg: #0a0e14;
+  --color-surface: #111823;
+  --color-surface-2: #172131;
+  --color-line: #223047;
+  --color-txt: #e6edf6;
+  --color-muted: #8595ab;
+  --color-accent: #4f8cff;
+  --color-accent-2: #22d3a6;
+  --color-green: #34d399;
+  --color-red: #f87171;
+  --color-amber: #fbbf24;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --radius-xl: 14px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-txt);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Тонкий скроллбар */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}

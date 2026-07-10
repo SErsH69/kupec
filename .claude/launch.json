@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@kupec/web", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "mobile-web",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["apps/mobile/serve-web.mjs"],
+      "port": 8083
+    }
+  ]
+}
