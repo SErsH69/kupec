@@ -24,7 +24,15 @@ const columns: Column<MarketRow>[] = [
     sortVal: (r) => r.avg ?? 0,
     render: (r) => {
       const a = sellAdvice(r.avg, r.min, r.max);
-      return a ? money(a.fair) : '—';
+      if (!a) return '—';
+      return (
+        <span
+          className="cursor-help border-b border-dotted border-muted/50"
+          title={`Быстро продать: ${money(a.fast)}\nСправедливо (средняя): ${money(a.fair)}\nПотолок рынка: ${money(a.top)}`}
+        >
+          {money(a.fair)}
+        </span>
+      );
     },
   },
   { key: 'sold', header: 'Продано', align: 'right', sortVal: (r) => r.sold ?? 0, render: (r) => nf(r.sold) },
