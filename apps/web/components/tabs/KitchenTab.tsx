@@ -63,7 +63,42 @@ export function KitchenTab() {
         defaultSort={{ key: 'perHour', dir: -1 }}
         rowKey={(r) => String(r.id)}
         empty="Импортируй раздел «Предметы» — появятся расчёты кухни."
+        renderExpanded={(r) => <DishBreakdown dish={r} />}
       />
     </Card>
+  );
+}
+
+function DishBreakdown({ dish }: { dish: KitchenResult }) {
+  return (
+    <div className="text-xs">
+      <div className="mb-2 text-muted">Ингредиенты на 1 порцию:</div>
+      <table className="w-full">
+        <tbody>
+          {dish.ingDetail.map((ing) => (
+            <tr key={ing.n} className="border-b border-line/30">
+              <td className="py-1 pr-2">
+                {ing.n} <span className="text-muted">×{ing.amt}</span>
+              </td>
+              <td className="py-1 pr-2">
+                <Badge>{ing.src}</Badge>
+              </td>
+              <td className="py-1 pr-2 text-right tabular-nums text-muted">
+                {ing.price != null ? money(ing.price) : '—'}/шт
+              </td>
+              <td className="py-1 text-right font-medium tabular-nums">
+                {ing.line != null ? money(ing.line) : '—'}
+              </td>
+            </tr>
+          ))}
+          <tr>
+            <td className="pt-2 text-muted" colSpan={3}>
+              Себестоимость ингредиентов
+            </td>
+            <td className="pt-2 text-right font-semibold tabular-nums">= {money(dish.ingCost)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
 }
