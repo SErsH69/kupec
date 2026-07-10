@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { computeFlip, money, planBudget, type FlipRow } from '@kupec/core';
+import { computeFlip, groupInt, money, planBudget, type FlipRow } from '@kupec/core';
 import { useStore } from '../../lib/store';
 import { Badge, Card, DataTable, StatCard, type Column } from '../ui';
 import { PATH_LABEL } from '../../lib/labels';
@@ -52,9 +52,9 @@ export function FlipTab() {
         <Card className="p-4">
           <div className="text-xs uppercase tracking-wide text-muted">Бюджет</div>
           <input
-            type="number"
-            value={budget}
-            onChange={(e) => setBudget(Math.max(0, Number(e.target.value) || 0))}
+            inputMode="numeric"
+            value={groupInt(budget)}
+            onChange={(e) => setBudget(Number(e.target.value.replace(/[^\d]/g, '')) || 0)}
             className="mt-1 w-full bg-transparent text-2xl font-bold tabular-nums text-txt outline-none"
           />
         </Card>
