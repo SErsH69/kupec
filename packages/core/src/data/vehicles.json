@@ -1,0 +1,4202 @@
+{
+	"names": {
+		"samara2": {
+			"g": "Rotorua Samura",
+			"i": "Pachoud Samara",
+			"gos": 30000000
+		},
+		"projectevo": {
+			"g": "Appolo Project EV.0",
+			"i": "Apollo Project Evo",
+			"gos": 33400000
+		},
+		"fenomeno": {
+			"g": "Ferruccio Fenumeno",
+			"i": "Lamborghini Fenomeno",
+			"gos": 26900000
+		},
+		"mclaren570s": {
+			"g": "Leslie 570-S",
+			"i": "McLaren 570S",
+			"gos": 17500000
+		},
+		"sprinter": {
+			"g": "Daimler Sprynter Br.907",
+			"i": "Mercedes-Benz Sprinter Br.907",
+			"gos": 4000000
+		},
+		"zeekr9x": {
+			"g": "Shufu 9-X",
+			"i": "Zeekr 9X",
+			"gos": 8500000
+		},
+		"r1t": {
+			"g": "Irvine RIT",
+			"i": "Rivian R1T",
+			"gos": 5700000
+		},
+		"alphard": {
+			"g": "Tatsuro Alphart",
+			"i": "Toyota Alphard",
+			"gos": 5100000
+		},
+		"eclass6": {
+			"g": "Daimler E-Class S211",
+			"i": "Mercedes-Benz E-Class S211",
+			"gos": 2900000
+		},
+		"lc100": {
+			"g": "Tatsuro Land Cruicer 100",
+			"i": "Toyota Land Cruiser 100",
+			"gos": 1300000
+		},
+		"240sx": {
+			"g": "Aikawa 240CX",
+			"i": "Nissan 240SX",
+			"gos": 800000
+		},
+		"chevroletc10": {
+			"g": "Cornelian S10",
+			"i": "Chevrolet C10",
+			"gos": 300000
+		},
+		"ferrarivision": {
+			"g": "Maranello Vision GR",
+			"i": "Ferrari Vision GT",
+			"gos": 29100000
+		},
+		"marussiab2": {
+			"g": "Moskowia V2",
+			"i": "Marussia B2",
+			"gos": 22100000
+		},
+		"stelvio": {
+			"g": "Merosi Stelwio",
+			"i": "Alfa Romeo Stelvio",
+			"gos": 10600000
+		},
+		"droptail": {
+			"g": "Merlin Droptayl",
+			"i": "Rolls-Royce Droptail",
+			"gos": 12300000
+		},
+		"carreragt": {
+			"g": "Wurttem Curerra GT",
+			"i": "Porsche Carrera GT",
+			"gos": 9000000
+		},
+		"murcielago": {
+			"g": "Ferruccio Mursielago",
+			"i": "Lamborghini Murcielago",
+			"gos": 10000000
+		},
+		"lc250": {
+			"g": "Tatsuro Land Cruicer 250 Prudo",
+			"i": "Toyota Land Cruiser 250 Prado",
+			"gos": 7800000
+		},
+		"charger5": {
+			"g": "Betsy Chargher LB",
+			"i": "Dodge Charger LB",
+			"gos": 6400000
+		},
+		"corvette4": {
+			"g": "Cornelian Corwette C6",
+			"i": "Chevrolet Corvette C6",
+			"gos": 3000000
+		},
+		"mx52": {
+			"g": "Matsuda MX-V ND",
+			"i": "Mazda MX-5 ND",
+			"gos": 2600000
+		},
+		"charger4": {
+			"g": "Betsy Chargher LX",
+			"i": "Dodge Charger LX",
+			"gos": 2600000
+		},
+		"hatch2": {
+			"g": "ALEC Hach J01",
+			"i": "MINI Hatch J01",
+			"gos": 2100000
+		},
+		"gtc4": {
+			"g": "Maranello GTS4 Luso",
+			"i": "Ferrari GTC4Lusso",
+			"gos": 13000000
+		},
+		"cclass3": {
+			"g": "Daimler C-Class A205",
+			"i": "Mercedes-Benz C-Class A205",
+			"gos": 5100000
+		},
+		"uaz3151": {
+			"g": "SAZ 3151",
+			"i": "UAZ 3151",
+			"gos": 1000000
+		},
+		"fpace": {
+			"g": "Lyons F-Pase",
+			"i": "Jaguar F-Pace",
+			"gos": 11000000
+		},
+		"corolla": {
+			"g": "Tatsuro Corona E170",
+			"i": "Toyota Corolla E170",
+			"gos": 150000
+		},
+		"mclarenw1": {
+			"g": "Leslie M1",
+			"i": "McLaren W1",
+			"gos": 31700000
+		},
+		"12cilindri": {
+			"g": "Maranello 12Cilindre",
+			"i": "Ferrari 12Cilindri",
+			"gos": 22200000
+		},
+		"rh1250s": {
+			"g": "Ole Andreassen RH1250C",
+			"i": "Harley-Davidson RH1250S",
+			"gos": 8100000
+		},
+		"audia3": {
+			"g": "Horen V3 8Y",
+			"i": "Audi A3 8Y",
+			"gos": 6100000
+		},
+		"tank300": {
+			"g": "Iron 300",
+			"i": "Tank 300",
+			"gos": 4900000
+		},
+		"tiguan2": {
+			"g": "Wulfsborg Teguan AD",
+			"i": "Volkswagen Tiguan AD",
+			"gos": 2100000
+		},
+		"sian": {
+			"g": "Ferruccio Siun",
+			"i": "Lamborghini Sian",
+			"gos": 23800000
+		},
+		"6series": {
+			"g": "W-Sport",
+			"i": "BMW 6-Series F13",
+			"gos": 9000000
+		},
+		"atlantic": {
+			"g": "Molsheim Atlantick",
+			"i": "Bugatti Atlantic",
+			"gos": 20000000
+		},
+		"bentley8": {
+			"g": "Millner 8 Litre",
+			"i": "Bentley 8 Litre",
+			"gos": 4000000
+		},
+		"etron": {
+			"g": "Horen I-tron GT",
+			"i": "Audi e-tron GT",
+			"gos": 7600000
+		},
+		"taycan": {
+			"g": "Wurttem Teycan",
+			"i": "Porsche Taycan",
+			"gos": 10600000
+		},
+		"x6m2": {
+			"g": "W-Sport",
+			"i": "BMW X6 G06",
+			"gos": 10200000
+		},
+		"models": {
+			"g": "Elon Line S",
+			"i": "Tesla Model S",
+			"gos": 3700000
+		},
+		"5series": {
+			"g": "W-Pro",
+			"i": "BMW 5 G60",
+			"gos": 10200000
+		},
+		"eclass3": {
+			"g": "Daimler E-Class W214",
+			"i": "Mercedes-Benz E-Class W214",
+			"gos": 10500000
+		},
+		"gt63s": {
+			"g": "Daimler ASG GT 63s",
+			"i": "Mercedes-Benz AMG GT 63s",
+			"gos": 10500000
+		},
+		"f150": {
+			"g": "Wayn F-150 Predator",
+			"i": "Ford F-150 Raptor",
+			"gos": 6800000
+		},
+		"rs72": {
+			"g": "Horen RS7 II",
+			"i": "Audi RS7 II",
+			"gos": 9300000
+		},
+		"63gls": {
+			"g": "Daimler GLS X166",
+			"i": "Mercedes-Benz GLS X166",
+			"gos": 3600000
+		},
+		"cayen19": {
+			"g": "Wurttem Rayenne",
+			"i": "Porsche Cayenne",
+			"gos": 10600000
+		},
+		"bmwx7": {
+			"g": "W50d",
+			"i": "BMW X7 G07",
+			"gos": 9000000
+		},
+		"viper": {
+			"g": "Betsy Snake VX",
+			"i": "Dodge Viper VX",
+			"gos": 6900000
+		},
+		"s63w222": {
+			"g": "Daimler S-Class W222",
+			"i": "Mercedes-Benz S-Class W222",
+			"gos": 6900000
+		},
+		"bmwm7": {
+			"g": "",
+			"i": "BMW 7 M760Li",
+			"gos": 7100000
+		},
+		"xes": {
+			"g": "Lyons XE-S",
+			"i": "Jaguar XE-S",
+			"gos": 2200000
+		},
+		"gle63": {
+			"g": "Daimler GLE Coupe C292",
+			"i": "Mercedes-Benz GLE Coupe C292",
+			"gos": 5200000
+		},
+		"ftype": {
+			"g": "Lyons F-Model R Coupe",
+			"i": "Jaguar F-Type R Coupe",
+			"gos": 5700000
+		},
+		"x6m": {
+			"g": "",
+			"i": "BMW X6 M F86",
+			"gos": 3800000
+		},
+		"r820": {
+			"g": "Horen R8 Type 4S",
+			"i": "Audi R8 Type 4S",
+			"gos": 8900000
+		},
+		"m850": {
+			"g": "MNS",
+			"i": "BMW 8",
+			"gos": 8300000
+		},
+		"nsx": {
+			"g": "Fujisawa NSX NC1",
+			"i": "Honda NCX NC1",
+			"gos": 5200000
+		},
+		"m4comp": {
+			"g": "L-Walk",
+			"i": "BMW M4 G82 Competition",
+			"gos": 5800000
+		},
+		"rs5": {
+			"g": "Horen RS5",
+			"i": "Audi RS5",
+			"gos": 5000000
+		},
+		"jgc": {
+			"g": "Euge Great Cherokee",
+			"i": "Jeep Grand Cherokee",
+			"gos": 2200000
+		},
+		"z4b": {
+			"g": "",
+			"i": "BMW Z4 M40i",
+			"gos": 4300000
+		},
+		"tt": {
+			"g": "Horen TT S8",
+			"i": "Audi TT S8",
+			"gos": 7400000
+		},
+		"gle2": {
+			"g": "Daimler GLE V167",
+			"i": "Mercedes-Benz GLE V167",
+			"gos": 9900000
+		},
+		"x5g05": {
+			"g": "W-Sport",
+			"i": "BMW X5 G05",
+			"gos": 9700000
+		},
+		"macan": {
+			"g": "Wurttem Mauer",
+			"i": "Porsche Macan",
+			"gos": 3400000
+		},
+		"rs6": {
+			"g": "Horen RS6",
+			"i": "Audi RS6",
+			"gos": 6700000
+		},
+		"lc300": {
+			"g": "Tatsuro Land Cruicer 300",
+			"i": "Toyota Land Cruiser 300",
+			"gos": 5700000
+		},
+		"g55": {
+			"g": "Daimler G-Class W463",
+			"i": "Mercedes-Benz G-Class W463",
+			"gos": 2500000
+		},
+		"i8": {
+			"g": "Sport",
+			"i": "BMW i8",
+			"gos": 4800000
+		},
+		"corvett08": {
+			"g": "Cornelian Corwette C7",
+			"i": "Chevrolet Corvette C7",
+			"gos": 5500000
+		},
+		"ast": {
+			"g": "York Bamford Wanquish",
+			"i": "Aston Martin Vanquish",
+			"gos": 7400000
+		},
+		"skyline": {
+			"g": "Aikawa GT-R R34",
+			"i": "Nissan Skyline GT-R R34",
+			"gos": 2400000
+		},
+		"modelx": {
+			"g": "Elon Line X",
+			"i": "Tesla Model X",
+			"gos": 3000000
+		},
+		"cesc21": {
+			"g": "Castelsarrasin Excalibur",
+			"i": "Cadillac Escalade",
+			"gos": 2600000
+		},
+		"gsx1000": {
+			"g": "Michio GSX-R 1000",
+			"i": "Suzuki GSX-R 1000",
+			"gos": 2800000
+		},
+		"charger20": {
+			"g": "Betsy Chargher LD",
+			"i": "Dodge Charger LD",
+			"gos": 2900000
+		},
+		"fx50s": {
+			"g": "Immensity FX50 S",
+			"i": "Infiniti FX50 S",
+			"gos": 3100000
+		},
+		"lex570": {
+			"g": "Alexis LX 570",
+			"i": "Lexus LX 570",
+			"gos": 6300000
+		},
+		"rrab": {
+			"g": "Britland Gover L405",
+			"i": "Land Rover Range Rover L405",
+			"gos": 3000000
+		},
+		"evo10": {
+			"g": "Yataro Lance Revolution X",
+			"i": "Mitsubishi Lancer Evolution X",
+			"gos": 1600000
+		},
+		"rs7": {
+			"g": "Horen RS7",
+			"i": "Audi RS7",
+			"gos": 4700000
+		},
+		"x5me70": {
+			"g": "",
+			"i": "BMW X5 M E70",
+			"gos": 3600000
+		},
+		"lc200": {
+			"g": "Tatsuro Land Cruicer 200",
+			"i": "Toyota Land Cruiser 200",
+			"gos": 2000000
+		},
+		"camaro21": {
+			"g": "Cornelian Camairo 1TL",
+			"i": "Chevrolet Camaro 1LT",
+			"gos": 3000000
+		},
+		"2020mustang": {
+			"g": "Wayn Musthang S550",
+			"i": "Ford Mustang S550",
+			"gos": 3300000
+		},
+		"bmwg20": {
+			"g": "W-Sport",
+			"i": "BMW 3 G20",
+			"gos": 2600000
+		},
+		"kiastinger": {
+			"g": "AKI Sprinter",
+			"i": "KIA Stinger",
+			"gos": 1900000
+		},
+		"m5e60": {
+			"g": "",
+			"i": "BMW M5 E60",
+			"gos": 3300000
+		},
+		"evo9": {
+			"g": "Yataro Lance Revolution IX",
+			"i": "Mitsubishi Lancer Evolution IX",
+			"gos": 1500000
+		},
+		"touareg": {
+			"g": "Wulfsborg Twareg",
+			"i": "Volkswagen Touareg",
+			"gos": 2300000
+		},
+		"explorer": {
+			"g": "Wayn Bucher",
+			"i": "Ford Explorer",
+			"gos": 2200000
+		},
+		"tahoe2": {
+			"g": "Cornelian Takho",
+			"i": "Chevrolet Tahoe",
+			"gos": 2500000
+		}
+	},
+	"byReal": {
+		"nissan 240sx": {
+			"g": "Aikawa 240CX",
+			"gos": 800000
+		},
+		"rivian r1t": {
+			"g": "Irvine RIT",
+			"gos": 5700000
+		},
+		"lamborghini fenomeno": {
+			"g": "Ferruccio Fenumeno",
+			"gos": 26900000
+		},
+		"rolls-royce droptail": {
+			"g": "Merlin Droptayl",
+			"gos": 12300000
+		},
+		"chevrolet corvette c1": {
+			"g": "Cornelian Corwertte C1",
+			"gos": 1000000
+		},
+		"chevrolet corvette c7": {
+			"g": "Cornelian Corwertte C7",
+			"gos": 5500000
+		},
+		"chevrolet corvette c8": {
+			"g": "Cornelian Corwertte C8",
+			"gos": 9400000
+		},
+		"—": {
+			"g": "Bravado Buffalo EVX",
+			"gos": 161000
+		},
+		"toyota corolla levin": {
+			"g": "Tatsuro Corona Hachiroku",
+			"gos": 625000
+		},
+		"lamborghini urus": {
+			"g": "Ferruccio Ursus",
+			"gos": 17200000
+		},
+		"mazda mx-5 nd": {
+			"g": "Matsuda MX-V NA",
+			"gos": 2600000
+		},
+		"porsche 911 992-series": {
+			"g": "Wurttem 911 992-Line",
+			"gos": 13400000
+		},
+		"mini hatch f56": {
+			"g": "ALEC Hach F56",
+			"gos": 1400000
+		},
+		"pontiac firebird": {
+			"g": "Obwand Fairbird",
+			"gos": 800000
+		},
+		"chevrolet camaro `67": {
+			"g": "Cornelian Cumaro `67",
+			"gos": 800000
+		},
+		"apollo project evo": {
+			"g": "Appolo Project EV.0",
+			"gos": 33400000
+		},
+		"mercedes-benz e-class s211": {
+			"g": "Daimler E-Class S211",
+			"gos": 2900000
+		},
+		"gmc syclone": {
+			"g": "Rapid Neilsen",
+			"gos": 1600000
+		},
+		"tesla semi": {
+			"g": "Elon Semie",
+			"gos": 20000000
+		},
+		"hsv maloo": {
+			"g": "SAW Malo",
+			"gos": 5500000
+		},
+		"mercedes-benz strinter br.907": {
+			"g": "Daimler Sprynter Br.907",
+			"gos": 4000000
+		},
+		"pachoud samara": {
+			"g": "Rotorua Samura",
+			"gos": 30000000
+		},
+		"ferrari vision gt": {
+			"g": "Maranello Vision GR",
+			"gos": 29100000
+		},
+		"chevrolet corvette c6": {
+			"g": "Cornelian Corwertte C6",
+			"gos": 3000000
+		},
+		"mini hatch j01": {
+			"g": "Alec Hach J01",
+			"gos": 2100000
+		},
+		"zeekr 9x": {
+			"g": "Shufu 9-X",
+			"gos": 8500000
+		},
+		"toyota land cruiser 100": {
+			"g": "Tatsuro Land Cruicer 100",
+			"gos": 1300000
+		},
+		"chevrolet c10": {
+			"g": "Cornelian S10",
+			"gos": 300000
+		},
+		"dodge charger lx": {
+			"g": "Betsy Chargher LX",
+			"gos": 2600000
+		},
+		"toyota alphard": {
+			"g": "Tatsuro Alphart",
+			"gos": 5100000
+		},
+		"dodge charger lb": {
+			"g": "Betsy Chargher LB",
+			"gos": 6400000
+		},
+		"alfa romeo stelvio": {
+			"g": "Merosi Stelwio Restyling",
+			"gos": 10600000
+		},
+		"lamborghini murcielago": {
+			"g": "Ferruccio Mursielago Restyling",
+			"gos": 10000000
+		},
+		"toyota land cruiser 250 prado": {
+			"g": "Tatsuro Land Cruicer 250 Prudo",
+			"gos": 7800000
+		},
+		"porsche carrera gt": {
+			"g": "Wurttem Curerra GT",
+			"gos": 9000000
+		},
+		"marussia b22": {
+			"g": "Moskowia V2",
+			"gos": 22100000
+		},
+		"toyota tundra": {
+			"g": "Tatsuro Tundhra",
+			"gos": 5600000
+		},
+		"ferrari gtc4lusso": {
+			"g": "Maranello GTS4 Luso",
+			"gos": 11000000
+		},
+		"mercedes-benz c-class a205": {
+			"g": "Daimler C-Class A205",
+			"gos": 5100000
+		},
+		"mercedes-benz g-class w464 4x4": {
+			"g": "Daimler G-Class W463 II 4x4",
+			"gos": 11100000
+		},
+		"mercedes-benz g-class w464": {
+			"g": "Daimler G-Class W463 II",
+			"gos": 11300000
+		},
+		"tank 300": {
+			"g": "Iron 300",
+			"gos": 4900000
+		},
+		"rolls-royce phantom limo": {
+			"g": "Merlin Phantasm Limo",
+			"gos": 15900000
+		},
+		"uaz 3151": {
+			"g": "SAZ 3151",
+			"gos": 1000000
+		},
+		"ferrari laferrari": {
+			"g": "Maranello LaMaranello",
+			"gos": 24000000
+		},
+		"jaguar 6 series f-pace": {
+			"g": "Lyons F-Pase",
+			"gos": 11000000
+		},
+		"bmw 6-series f13": {
+			"g": "Blau & Weiss 6-Series F13",
+			"gos": 6000000
+		},
+		"ford gt": {
+			"g": "Wayn GT",
+			"gos": 18000000
+		},
+		"lamborghini sian": {
+			"g": "Ferruccio Siun",
+			"gos": 23800000
+		},
+		"bugatti atlantic": {
+			"g": "Molsheim Atlantick",
+			"gos": 20000000
+		},
+		"toyota corolla e170": {
+			"g": "Tatsuro Corona E170",
+			"gos": 150000
+		},
+		"volkswagen polo 6r": {
+			"g": "Wulfsborg Marce 6R",
+			"gos": 800000
+		},
+		"volkswagen golf mk 8": {
+			"g": "Wulfsborg Wolf Mk 8",
+			"gos": 1800000
+		},
+		"mazda rx-8": {
+			"g": "Matsuda RX-8",
+			"gos": 2100000
+		},
+		"lamborghini gallardo": {
+			"g": "Ferruccio De Silva",
+			"gos": 12400000
+		},
+		"mitsubishi lancer evolution ix": {
+			"g": "Yataro Lance Revolution IX",
+			"gos": 1500000
+		},
+		"mitsubishi lancer evolution x": {
+			"g": "Yataro Lance Revolution X",
+			"gos": 1600000
+		},
+		"harley-davidson rh1250s": {
+			"g": "Ole Andreassen RH1250C",
+			"gos": 8100000
+		},
+		"ferrari 812 superfast": {
+			"g": "Maranello 812",
+			"gos": 19500000
+		},
+		"ford mustang s650": {
+			"g": "Wayn Musthang S650",
+			"gos": 6500000
+		},
+		"ford mustang": {
+			"g": "Wayn Musthang `69",
+			"gos": 900000
+		},
+		"ford mustang s550": {
+			"g": "Wayn Musthang S550",
+			"gos": 3300000
+		},
+		"ford mustang hoonigan": {
+			"g": "Wayn Musthang HG",
+			"gos": 3750000
+		},
+		"mclaren w1": {
+			"g": "Leslie M1",
+			"gos": 31700000
+		},
+		"ferrari 12cilindri": {
+			"g": "Maranello 12Cilindre",
+			"gos": 22200000
+		},
+		"audi a3 8y": {
+			"g": "Horen V3 8Y",
+			"gos": 6100000
+		},
+		"volkswagen tiguan ad": {
+			"g": "Wulfsborg Teguan AD",
+			"gos": 2100000
+		},
+		"mercedes-benz v-class": {
+			"g": "Daimler V-Class",
+			"gos": 5400000
+		},
+		"bentley 8 litre": {
+			"g": "Millner 8 Litre",
+			"gos": 4000000
+		},
+		"aston martin dbx": {
+			"g": "York Bamford DBX",
+			"gos": 15700000
+		},
+		"aston martin db5": {
+			"g": "York Bamford DB5",
+			"gos": 1400000
+		},
+		"mercedes-benz x-class bf": {
+			"g": "Daimler X-Class BF",
+			"gos": 20000000
+		},
+		"koenigsegg agera": {
+			"g": "Angelholm Aghera",
+			"gos": 28400000
+		},
+		"lamborghini countach": {
+			"g": "Ferruccio Cauntach",
+			"gos": 2200000
+		},
+		"porsche 718 s boxter": {
+			"g": "Wurttem 718 S Cabrio",
+			"gos": 4800000
+		},
+		"dodge durango": {
+			"g": "Betsy Myles",
+			"gos": 1800000
+		},
+		"subaru wrx": {
+			"g": "Pleiad VRX",
+			"gos": 6500000
+		},
+		"renault logan": {
+			"g": "Marcel Loghan",
+			"gos": 700000
+		},
+		"mitsubishi galant": {
+			"g": "Yataro Shinichi",
+			"gos": 750000
+		},
+		"land rover defender": {
+			"g": "Britland Runaway",
+			"gos": 1875000
+		},
+		"chevrolet express": {
+			"g": "Cornelian Cage",
+			"gos": 3125000
+		},
+		"ford f-150": {
+			"g": "Wayn F-150",
+			"gos": 1000000
+		},
+		"porsche 928": {
+			"g": "Wurttem 928",
+			"gos": 1250000
+		},
+		"audi 80 b4 avant": {
+			"g": "Horen 80 B4",
+			"gos": 1250000
+		},
+		"chrysler 300": {
+			"g": "Luxwell Gill 300",
+			"gos": 2500000
+		},
+		"mercedes-benz slr mclaren": {
+			"g": "Daimler SLR",
+			"gos": 3750000
+		},
+		"honda rc211v": {
+			"g": "Fujisawa RC211V",
+			"gos": 4375000
+		},
+		"dodge viper sr ii": {
+			"g": "Betsy Snake SR II",
+			"gos": 2187500
+		},
+		"gmc hummer hx": {
+			"g": "Rapid Hammer HX",
+			"gos": 5000000
+		},
+		"toyota land cruiser prado 150": {
+			"g": "Tatsuro Grand Cruiser Prato 150",
+			"gos": 5625000
+		},
+		"cadillac escalade": {
+			"g": "Castelsarrasin Excalibur",
+			"gos": 2600000
+		},
+		"honda civic fk2": {
+			"g": "Fujisawa Hiroshi FK2",
+			"gos": 1000000
+		},
+		"mercedes-benz actros": {
+			"g": "Daimler Actor",
+			"gos": 16000000
+		},
+		"kenworth t680": {
+			"g": "Gerlinger T680",
+			"gos": 12500000
+		},
+		"chevrolet camaro": {
+			"g": "Cornelian Camairo `70",
+			"gos": 800000
+		},
+		"chevrolet camaro 1lt": {
+			"g": "Cornelian Camairo 1TL",
+			"gos": 3000000
+		},
+		"toyota land cruiser 300": {
+			"g": "Tatsuro Grand Cruiser 300",
+			"gos": 5700000
+		},
+		"audi r8": {
+			"g": "Horen R8",
+			"gos": 8900000
+		},
+		"bugatti divo": {
+			"g": "Molsheim Vivo",
+			"gos": 31700000
+		},
+		"koenigsegg jesko": {
+			"g": "Angelholm Gesko",
+			"gos": 30700000
+		},
+		"mercedes-benz project one": {
+			"g": "Daimler ASG P-One",
+			"gos": 30100000
+		},
+		"bugatti chiron": {
+			"g": "Molsheim Shiron",
+			"gos": 29600000
+		},
+		"koenigsegg gemera": {
+			"g": "Angelholm Genera",
+			"gos": 29400000
+		},
+		"porsche 918 spyder": {
+			"g": "Wurttem 918 Spyder",
+			"gos": 29000000
+		},
+		"pagani imola": {
+			"g": "Haracio Emola",
+			"gos": 28600000
+		},
+		"lamborghini aventador svj": {
+			"g": "Ferruccio Avendore SVJ",
+			"gos": 19700000
+		},
+		"mclaren 720s": {
+			"g": "Leslie 720s",
+			"gos": 19300000
+		},
+		"lamborghini countach lpi 800-4": {
+			"g": "Ferruccio Cauntach",
+			"gos": 19000000
+		},
+		"mclaren p1": {
+			"g": "Leslie P1",
+			"gos": 19000000
+		},
+		"bugatti veyron": {
+			"g": "Molsheim Weyron",
+			"gos": 18500000
+		},
+		"lamborghini huracan": {
+			"g": "Ferruccio Hurricane",
+			"gos": 18000000
+		},
+		"ferrari 488 pista": {
+			"g": "Maranello 488 Pizta",
+			"gos": 17800000
+		},
+		"rolls-royce cullinan": {
+			"g": "Merlin Callinon",
+			"gos": 17600000
+		},
+		"rolls-royce phantom viii": {
+			"g": "Merlin Phantasm VIII",
+			"gos": 17600000
+		},
+		"ferrari f12 berlinetta": {
+			"g": "Maranello F12 Verleenetta",
+			"gos": 16900000
+		},
+		"aston martin vulcan": {
+			"g": "York Bamford Vulcore",
+			"gos": 15600000
+		},
+		"lamborghini reventon": {
+			"g": "Ferruccio Eventora",
+			"gos": 13900000
+		},
+		"bmw 7 g70": {
+			"g": "Blau & Weiss 7 G70",
+			"gos": 12200000
+		},
+		"mercedes-amg gt r": {
+			"g": "Daimler-AMX GT R",
+			"gos": 12100000
+		},
+		"bentley bentayga": {
+			"g": "Millner Benteygo",
+			"gos": 12000000
+		},
+		"mercedes-benz s-class w223": {
+			"g": "Daimler S-Class W223",
+			"gos": 11900000
+		},
+		"rolls-royce ghost": {
+			"g": "Merlin Shade",
+			"gos": 11000000
+		},
+		"bentley continental gt": {
+			"g": "Millner Mainland GT",
+			"gos": 10800000
+		},
+		"porsche cayenne": {
+			"g": "Wurttem Rayenne",
+			"gos": 10600000
+		},
+		"porsche taycan": {
+			"g": "Wurttem Teycan",
+			"gos": 10600000
+		},
+		"mercedes-benz e-class w214": {
+			"g": "Daimler E-Class W214",
+			"gos": 10500000
+		},
+		"mercedes-benz amg gt 63s": {
+			"g": "Daimler ASG GT 63s",
+			"gos": 10500000
+		},
+		"bmw x6 g06": {
+			"g": "Blau & Weiss X6 G06",
+			"gos": 10200000
+		},
+		"bmw 5 g60": {
+			"g": "Blau & Weiss 5 G60",
+			"gos": 10200000
+		},
+		"bmw m8 gran coupe": {
+			"g": "Blau & Weiss M8 Gran Coupe",
+			"gos": 10200000
+		},
+		"mercedes-benz gle v167": {
+			"g": "Daimler GLE V167",
+			"gos": 9900000
+		},
+		"mercedes-benz e-class w213": {
+			"g": "Daimler E-Class W213",
+			"gos": 9900000
+		},
+		"bmw x5 g05": {
+			"g": "Blau & Weiss X5 G05",
+			"gos": 9700000
+		},
+		"bmw m5 f90 competition": {
+			"g": "Blau & Weiss M5 F90 Contention",
+			"gos": 9700000
+		},
+		"mercedes-benz gls x167": {
+			"g": "Daimler GLS X167",
+			"gos": 9300000
+		},
+		"audi q8": {
+			"g": "Horen Q8",
+			"gos": 9300000
+		},
+		"audi rs7 ii": {
+			"g": "Horen RS7 II",
+			"gos": 9300000
+		},
+		"bmw x7 g07": {
+			"g": "Blau & Weiss X7 G07",
+			"gos": 9000000
+		},
+		"mercedes-benz s-class a217": {
+			"g": "Daimler S-Class A217",
+			"gos": 8500000
+		},
+		"mercedes-benz g-class w463 6x6": {
+			"g": "Daimler G-Class W463 6x6",
+			"gos": 8400000
+		},
+		"porsche panamera": {
+			"g": "Wurttem Paramena",
+			"gos": 8400000
+		},
+		"bmw 8": {
+			"g": "Blau & Weiss 8",
+			"gos": 8300000
+		},
+		"audi e-tron gt": {
+			"g": "Horen I-tron GT",
+			"gos": 7600000
+		},
+		"aston martin vanquish": {
+			"g": "York Bamford Wanquish",
+			"gos": 7400000
+		},
+		"audi tt s8": {
+			"g": "Horen TT S8",
+			"gos": 7400000
+		},
+		"mercedes-benz cls c218": {
+			"g": "Daimler CLS C218",
+			"gos": 7300000
+		},
+		"bmw 7 m760li": {
+			"g": "Blau & Weiss 7 M760Li",
+			"gos": 7100000
+		},
+		"mercedes-benz s-class w222": {
+			"g": "Daimler S-Class W222",
+			"gos": 6900000
+		},
+		"dodge viper vx": {
+			"g": "Betsy Snake VX",
+			"gos": 6900000
+		},
+		"ford f-150 raptor": {
+			"g": "Wayn F-150 Predator",
+			"gos": 6800000
+		},
+		"audi rs6": {
+			"g": "Horen RS6",
+			"gos": 6700000
+		},
+		"lexus lx 570": {
+			"g": "Alexis LX 570",
+			"gos": 6300000
+		},
+		"mercedes-benz c-class w206": {
+			"g": "Daimler C-Class W206",
+			"gos": 6300000
+		},
+		"bmw m4 g82 competition": {
+			"g": "Blau & Weiss M4 G82 Contention",
+			"gos": 5800000
+		},
+		"jaguar f-type r coupe": {
+			"g": "Lyons F-Model R Coupe",
+			"gos": 5700000
+		},
+		"nissan gt-r r35": {
+			"g": "Aikawa GT-R R35",
+			"gos": 5700000
+		},
+		"honda nsx nc1": {
+			"g": "Fujisawa NSX NC1",
+			"gos": 5200000
+		},
+		"mercedes-benz gle coupe c292": {
+			"g": "Daimler GLE Coupe C292",
+			"gos": 5200000
+		},
+		"audi rs5": {
+			"g": "Horen RS5",
+			"gos": 5000000
+		},
+		"bmw i8": {
+			"g": "Blau & Weiss i8",
+			"gos": 4800000
+		},
+		"audi rs7": {
+			"g": "Horen RS7",
+			"gos": 4700000
+		},
+		"bmw z4 m40i": {
+			"g": "Blau & Weiss Z4 M40i",
+			"gos": 4300000
+		},
+		"land rover range rover velar l560": {
+			"g": "Britland Gover Velora L560",
+			"gos": 3800000
+		},
+		"bmw x6 m f86": {
+			"g": "Blau & Weiss X6 M F86",
+			"gos": 3800000
+		},
+		"tesla model s": {
+			"g": "Elon Line S",
+			"gos": 3700000
+		},
+		"bmw x5 m e70": {
+			"g": "Blau & Weiss X5 M E70",
+			"gos": 3600000
+		},
+		"mercedes-benz gls x166": {
+			"g": "Daimler GLS X166",
+			"gos": 3600000
+		},
+		"porsche macan": {
+			"g": "Wurttem Mauer",
+			"gos": 3400000
+		},
+		"bmw m5 e60": {
+			"g": "Blau & Weiss M5 E60",
+			"gos": 3300000
+		},
+		"dodge challenger": {
+			"g": "Betsy Contender",
+			"gos": 3100000
+		},
+		"infiniti fx50 s": {
+			"g": "Immensity FX50 S",
+			"gos": 3100000
+		},
+		"land rover range rover l405": {
+			"g": "Britland Gover L405",
+			"gos": 3000000
+		},
+		"tesla model x": {
+			"g": "Elon Line X",
+			"gos": 3000000
+		},
+		"dodge charger srt": {
+			"g": "Betsy Changer SRT",
+			"gos": 2900000
+		},
+		"ford explorer": {
+			"g": "Wayn Bucher",
+			"gos": 2200000
+		},
+		"dodge ram 1500": {
+			"g": "Betsy RUM 1500",
+			"gos": 2900000
+		},
+		"bmw 3 g20": {
+			"g": "Blau & Weiss 3 G20",
+			"gos": 2600000
+		},
+		"mercedes-benz g-class w463": {
+			"g": "Daimler G-Class W463",
+			"gos": 2500000
+		},
+		"chevrolet tahoe": {
+			"g": "Cornelian Takho",
+			"gos": 2500000
+		},
+		"nissan skyline gt-r r34": {
+			"g": "Aikawa GT-R R34",
+			"gos": 2400000
+		},
+		"volkswagen touareg": {
+			"g": "Wulfsborg Twareg",
+			"gos": 2300000
+		},
+		"jaguar xe-s": {
+			"g": "Lyons XE-S",
+			"gos": 2200000
+		},
+		"jeep grand cherokee": {
+			"g": "Euge Great Cherokee",
+			"gos": 2200000
+		},
+		"toyota land cruiser 200": {
+			"g": "Tatsuro Grand Cruiser 200",
+			"gos": 2000000
+		},
+		"mercedes-benz a-class v177": {
+			"g": "Daimler A-Class V177",
+			"gos": 2000000
+		},
+		"kia stinger": {
+			"g": "AKI Sprinter",
+			"gos": 1900000
+		},
+		"toyota gr supra": {
+			"g": "Tatsuro GR Superia",
+			"gos": 1875000
+		},
+		"mazda rx-7": {
+			"g": "Matsuda RX-7",
+			"gos": 1843750
+		},
+		"nissan 370z": {
+			"g": "Aikawa 370Z",
+			"gos": 1812500
+		},
+		"volkswagen touareg r50": {
+			"g": "Wulfsborg Twareg R50",
+			"gos": 1800000
+		},
+		"toyota supra": {
+			"g": "Tatsuro Superia",
+			"gos": 1781250
+		},
+		"nissan silvia s15": {
+			"g": "Aikawa Slivia S15",
+			"gos": 1750000
+		},
+		"toyota mark ii 100": {
+			"g": "Tatsuro Marco II 100",
+			"gos": 1625000
+		},
+		"toyota camry xv55": {
+			"g": "Tatsuro Camria XV55",
+			"gos": 1600000
+		},
+		"ford focus rs": {
+			"g": "Wayn Fox RS",
+			"gos": 1600000
+		},
+		"toyota camry xv70": {
+			"g": "Tatsuro Camria XV70",
+			"gos": 1600000
+		},
+		"mercedes-benz e-class w210": {
+			"g": "Daimler E-Class W210",
+			"gos": 1300000
+		},
+		"bmw 5 e39": {
+			"g": "Blau & Weiss 5 E39",
+			"gos": 1300000
+		},
+		"volkswagen golf mk 7": {
+			"g": "Wulfsborg Wolf Mk 7",
+			"gos": 1200000
+		},
+		"bmw 7 e38": {
+			"g": "Blau & Weiss 7 E38",
+			"gos": 1100000
+		},
+		"mercedes-benz s-class w140": {
+			"g": "Daimler S-Class W140",
+			"gos": 1100000
+		},
+		"subaru impreza wrx": {
+			"g": "Pleiad Impresa VRX",
+			"gos": 1100000
+		},
+		"honda accord": {
+			"g": "Fujisawa Paccord",
+			"gos": 1100000
+		},
+		"skoda octavia rs": {
+			"g": "Emil Olivia RS",
+			"gos": 1000000
+		},
+		"ford taurus": {
+			"g": "Wayn Deming",
+			"gos": 1000000
+		},
+		"kia rio fb": {
+			"g": "AKI Rino FB",
+			"gos": 750000
+		},
+		"chevrolet impala": {
+			"g": "Cornelian Implata",
+			"gos": 400000
+		},
+		"toyota sprinter trueno": {
+			"g": "Tatsuro Runner Hachiroku",
+			"gos": 562500
+		},
+		"zeekr 009": {
+			"g": "Shufu 009",
+			"gos": 5600000
+		},
+		"brp ski-doo sammit rev-xm": {
+			"g": "BJA Snowshark",
+			"gos": 4000000
+		},
+		"kia k5": {
+			"g": "AKI K-Five",
+			"gos": 2800000
+		},
+		"audi q7": {
+			"g": "Horen Q7",
+			"gos": 7300000
+		},
+		"bmw m1": {
+			"g": "Blau & Weiss M1",
+			"gos": 1600000
+		},
+		"lamborghini tecnomar": {
+			"g": "Ferruccio Viareggio",
+			"gos": 30000000
+		},
+		"rolls-royce aeroboat v12": {
+			"g": "Merlin Airboat V12",
+			"gos": 20000000
+		},
+		"sea ray l650 fly": {
+			"g": "Kramer L650",
+			"gos": 28000000
+		},
+		"eurocopter ec135 gendarmerie": {
+			"g": "Buckingham EC135",
+			"gos": 24000000
+		},
+		"eurocopter ec120 colibri": {
+			"g": "Buckingham EC120",
+			"gos": 26000000
+		},
+		"robinson r66": {
+			"g": "Buckingham R66",
+			"gos": 18000000
+		},
+		"md helicopters ah-6 little bird": {
+			"g": "Buckingham AH-6",
+			"gos": 22000000
+		},
+		"volkswagen beetle": {
+			"g": "Wulfsborg Beatle",
+			"gos": 200000
+		},
+		"bmw 3-series e30": {
+			"g": "Blau & Weiss 3-Series E30",
+			"gos": 600000
+		},
+		"hyundai creta": {
+			"g": "Hyeonji Cretia",
+			"gos": 1800000
+		},
+		"lexus lx 600": {
+			"g": "Alexis LX 600",
+			"gos": 7400000
+		},
+		"aston martin vanquish zagato": {
+			"g": "York Bamford Vanquesh Zagado",
+			"gos": 17200000
+		},
+		"porsche 935": {
+			"g": "Wurttem 935",
+			"gos": 16900000
+		},
+		"devel sixteen": {
+			"g": "Attar Motors Sixtean",
+			"gos": 27100000
+		},
+		"ktm rc 16": {
+			"g": "KMG RC 16",
+			"gos": 5100000
+		},
+		"bell 429 globalranger": {
+			"g": "Dale 429",
+			"gos": 25000000
+		},
+		"chevrolet bel air": {
+			"g": "Cornelian Bal Air",
+			"gos": 200000
+		},
+		"volvo amazon": {
+			"g": "Assar Amason",
+			"gos": 300000
+		},
+		"nissan fairlady 240z": {
+			"g": "Aikawa Firelady 240Z",
+			"gos": 1000000
+		},
+		"mazda cx-5": {
+			"g": "Matsuda CX-5",
+			"gos": 2500000
+		},
+		"mercedes-benz cla c174": {
+			"g": "Daimler CLA",
+			"gos": 3200000
+		},
+		"ssc tuatara": {
+			"g": "JSC Tuataira",
+			"gos": 25400000
+		},
+		"lamborghini vision gt": {
+			"g": "Ferruccio Vision GR",
+			"gos": 28000000
+		},
+		"ducati panigale v4 speciale": {
+			"g": "Felsina Ranigale V4 Speciale",
+			"gos": 4700000
+		},
+		"vaz 2109": {
+			"g": "TAZ 2109",
+			"gos": 350000
+		},
+		"vaz 2107": {
+			"g": "TAZ 2107",
+			"gos": 300000
+		},
+		"lada samara": {
+			"g": "TAZ 2114",
+			"gos": 400000
+		},
+		"daewoo matiz": {
+			"g": "Keun Uju Maxiz",
+			"gos": 300000
+		},
+		"lada vesta": {
+			"g": "TAZ Westa",
+			"gos": 650000
+		},
+		"lada niva": {
+			"g": "TAZ Niwa",
+			"gos": 800000
+		},
+		"lada priora": {
+			"g": "TAZ Prior",
+			"gos": 500000
+		},
+		"kia rio qb 5-doors": {
+			"g": "AKI Rino QB 5-doors",
+			"gos": 700000
+		},
+		"mv agusta brutale": {
+			"g": "Domenico Brutora",
+			"gos": 6000000
+		},
+		"mercedes-benz x-class": {
+			"g": "Daimler X-Class",
+			"gos": 8700000
+		},
+		"bugatti bolide": {
+			"g": "Molsheim Formula",
+			"gos": 32800000
+		},
+		"lamborghini essenza sv12": {
+			"g": "Ferruccio Ezensa SV12",
+			"gos": 21300000
+		},
+		"suzuki gsx-r 1000": {
+			"g": "Michio GSX-R 1000",
+			"gos": 2800000
+		},
+		"mercedes-amg sls": {
+			"g": "Daimler-AMX SLS",
+			"gos": 14200000
+		},
+		"honda s2000": {
+			"g": "Fujisawa S2000",
+			"gos": 1700000
+		},
+		"porsche carrera 911": {
+			"g": "Wurttem Carcio 911",
+			"gos": 1100000
+		},
+		"infiniti q60s": {
+			"g": "Immensity Q60S",
+			"gos": 3400000
+		},
+		"lexus lc 500": {
+			"g": "Alexis LC 500",
+			"gos": 12700000
+		},
+		"audi a8": {
+			"g": "Horen A8",
+			"gos": 10000000
+		},
+		"koenigsegg cc850": {
+			"g": "Angelholm Selip-CC850",
+			"gos": 34500000
+		},
+		"hot wheels twin mill": {
+			"g": "Fast Wheels Milltown",
+			"gos": 12000000
+		},
+		"hot wheels bone shaker": {
+			"g": "Fast Wheels Boner",
+			"gos": 2300000
+		},
+		"koenigsegg regera": {
+			"g": "Angelholm RG-R",
+			"gos": 29100000
+		},
+		"pagani huayra r": {
+			"g": "Haracio Wayra R",
+			"gos": 33400000
+		},
+		"pininfarina battista": {
+			"g": "Cortanze Farina",
+			"gos": 28700000
+		},
+		"li auto l9": {
+			"g": "Xi Auto L9",
+			"gos": 8300000
+		},
+		"mercedes-benz cls c257": {
+			"g": "Daimler CLS C257",
+			"gos": 5800000
+		},
+		"bmw 2 g42": {
+			"g": "Blau & Weiss 2 G42",
+			"gos": 5700000
+		},
+		"peugeot 308": {
+			"g": "Armand 308",
+			"gos": 400000
+		},
+		"land rover range rover l322": {
+			"g": "Britland Gover L322",
+			"gos": 2100000
+		},
+		"aston martin db12": {
+			"g": "York Bamford DB12",
+			"gos": 13900000
+		},
+		"ferrari monza sp2": {
+			"g": "Maranello Monscia SP2",
+			"gos": 19500000
+		},
+		"mercedes-benz s-class vv222 pullman": {
+			"g": "Daimler S-Class VV222 Limo",
+			"gos": 11900000
+		},
+		"bmw s1000rr": {
+			"g": "Blau & Weiss S1000RR",
+			"gos": 4900000
+		},
+		"bmw i8 roadster": {
+			"g": "Blau & Weiss i8 Roadster",
+			"gos": 5600000
+		},
+		"porsche panamera g2 sport turismo": {
+			"g": "Wurttem Paramena G2 Sport Touring",
+			"gos": 10600000
+		},
+		"audi tt 8s roadster": {
+			"g": "Horen TT 8S Cabrio",
+			"gos": 7500000
+		},
+		"ferrari j50": {
+			"g": "Maranello Flaman J50",
+			"gos": 22700000
+		},
+		"bentley bentayga ii": {
+			"g": "Millner Benteygo II",
+			"gos": 16900000
+		},
+		"honda civic ek6": {
+			"g": "Fujisawa Hiroshi EK6",
+			"gos": 400000
+		},
+		"aston martin db11 volante": {
+			"g": "York Bamford DB11 Cabrio",
+			"gos": 12000000
+		},
+		"volkswagen golf mk 2": {
+			"g": "Wulfsborg Wolf Mk 2",
+			"gos": 200000
+		},
+		"mercedes-amg sl r232": {
+			"g": "Daimler-AMX SL R232",
+			"gos": 11200000
+		},
+		"mercedes-benz eqs": {
+			"g": "Daimler EQS",
+			"gos": 9500000
+		},
+		"mazda mx-5": {
+			"g": "Matsuda MX-5",
+			"gos": 1300000
+		},
+		"bmw 5 f10": {
+			"g": "Blau & Weiss 5 F10",
+			"gos": 4600000
+		},
+		"audi a4 b5 avant": {
+			"g": "Horen A4 B5",
+			"gos": 800000
+		},
+		"land rover defender l633": {
+			"g": "Britland Runaway L633",
+			"gos": 4100000
+		},
+		"chevrolet silverado t1xx": {
+			"g": "Cornelian Tylemo T1XX",
+			"gos": 3600000
+		},
+		"cadillac xts royale": {
+			"g": "Castelsarrasin XTS Limo",
+			"gos": 7700000
+		},
+		"cadillac ct5": {
+			"g": "Castelsarrasin CT5",
+			"gos": 8800000
+		},
+		"opel astra j gtc": {
+			"g": "ADEL Rose J GTC",
+			"gos": 1300000
+		},
+		"kia rio qb sedan": {
+			"g": "AKI Rino QB Sedan",
+			"gos": 700000
+		},
+		"mercedes-benz e-class w212": {
+			"g": "Daimler E-Class W212",
+			"gos": 4300000
+		},
+		"mercedes-benz c-class w203": {
+			"g": "Daimler C-Class W203",
+			"gos": 1000000
+		},
+		"bmw xm g09": {
+			"g": "Blau & Weiss XM G09",
+			"gos": 11500000
+		},
+		"xiaomi su7": {
+			"g": "Lumi SU7",
+			"gos": 7500000
+		},
+		"haval f7": {
+			"g": "HEBEI F7",
+			"gos": 4100000
+		},
+		"acura rsx": {
+			"g": "Fujisawa RSX",
+			"gos": 1000000
+		},
+		"kia ev6": {
+			"g": "AKI EV6",
+			"gos": 4000000
+		},
+		"kia sportage nq5": {
+			"g": "AKI Turboweek NQ5",
+			"gos": 3900000
+		},
+		"mercedes-benz ml": {
+			"g": "Daimler ML",
+			"gos": 2400000
+		},
+		"mazda 3 bm": {
+			"g": "Matsuda 3 BM",
+			"gos": 1500000
+		},
+		"mercedes-benz a-class w177": {
+			"g": "Daimler A-Class W177",
+			"gos": 2300000
+		},
+		"yamaha yz 450 f": {
+			"g": "Genichi YZ 450 F",
+			"gos": 1900000
+		},
+		"honda nsx na1": {
+			"g": "Fujisawa NSX NA1",
+			"gos": 3500000
+		},
+		"cadillac escalade gm t1xl": {
+			"g": "Castelsarrasin Excalibur GM T1XL",
+			"gos": 13900000
+		},
+		"mercedes-benz 190 e": {
+			"g": "Daimler 190 E",
+			"gos": 700000
+		},
+		"nissan skyline gt-r r32": {
+			"g": "Aikawa GT-R R32",
+			"gos": 2500000
+		},
+		"ford f-150 raptor 6x6": {
+			"g": "Wayn F-150 Predator 6X6",
+			"gos": 7000000
+		},
+		"mitsubishi eclipse d30": {
+			"g": "Yataro Sunrise D30",
+			"gos": 1900000
+		},
+		"subaru brz": {
+			"g": "Pleiad BRZ",
+			"gos": 3500000
+		},
+		"aston martin db11": {
+			"g": "York Bamford DB11",
+			"gos": 12000000
+		},
+		"hyundai solaris i": {
+			"g": "Hyeonji Lunar I",
+			"gos": 600000
+		},
+		"buick gnx": {
+			"g": "Dunbar GNX",
+			"gos": 1000000
+		},
+		"ferrari f8 tributo": {
+			"g": "Maranello F8",
+			"gos": 19500000
+		},
+		"volkswagen id r": {
+			"g": "Wulfsborg Norma",
+			"gos": 26500000
+		},
+		"audi q8 e-tron": {
+			"g": "Horen Q8 I-tron",
+			"gos": 10400000
+		},
+		"mercedes-benz cle c236": {
+			"g": "Daimler CLE C236",
+			"gos": 7800000
+		},
+		"volvo ex90": {
+			"g": "Assar EX90",
+			"gos": 8600000
+		},
+		"mercedes-benz glc coupe c254": {
+			"g": "Daimler GLC Coupe C254",
+			"gos": 7000000
+		},
+		"nissan 350z": {
+			"g": "Aikawa 350Z",
+			"gos": 3000000
+		},
+		"ford bronco u725": {
+			"g": "Wayn Frey U725",
+			"gos": 3500000
+		},
+		"bmw 5 g61": {
+			"g": "Blau & Weiss 5 G61",
+			"gos": 6300000
+		},
+		"land rover range rover sport l461": {
+			"g": "Britland Gover Sport L461",
+			"gos": 11100000
+		},
+		"lexus lfa": {
+			"g": "Alexis LFA",
+			"gos": 9400000
+		},
+		"donkervoort d8 gto": {
+			"g": "Tessenderlo D8 GTO",
+			"gos": 5600000
+		},
+		"mercedes-amg gt c192": {
+			"g": "Daimler-AMX GT C192",
+			"gos": 16000000
+		},
+		"volvo xc90": {
+			"g": "Assar XC90",
+			"gos": 2800000
+		},
+		"bmw m3 g81 touring": {
+			"g": "Blau & Weiss M3 G81 Touring",
+			"gos": 6600000
+		},
+		"maserati mc20": {
+			"g": "Alfieri MC20",
+			"gos": 14400000
+		},
+		"land rover range rover l460": {
+			"g": "Britland Gover L460",
+			"gos": 10400000
+		},
+		"mercedes-benz s-class z223": {
+			"g": "Daimler S-Class Z223",
+			"gos": 13200000
+		},
+		"mercedes-benz 300 slr": {
+			"g": "Daimler 300 SLR",
+			"gos": 1500000
+		},
+		"bmw ix": {
+			"g": "Blau & Weiss IX",
+			"gos": 5300000
+		},
+		"ferrari daytona sp3": {
+			"g": "Maranello Timucua SP3",
+			"gos": 23900000
+		},
+		"dodge ram trx": {
+			"g": "Betsy RUM TRX",
+			"gos": 7500000
+		},
+		"mercedes-benz e-class s214 estate": {
+			"g": "Daimler E-Class S214 Estate",
+			"gos": 8700000
+		},
+		"bmw m4 f82": {
+			"g": "Blau & Weiss M4 F82",
+			"gos": 4400000
+		},
+		"bmw m3 e46": {
+			"g": "Blau & Weiss M3 E46",
+			"gos": 2800000
+		},
+		"kawasaki z800": {
+			"g": "Kagoshima Z800",
+			"gos": 4800000
+		},
+		"delorean dmc-12": {
+			"g": "Emmett DMC-12",
+			"gos": 1600000
+		},
+		"ferrari fxx-k": {
+			"g": "Maranello FXX-K",
+			"gos": 25800000
+		},
+		"nissan gt-r50": {
+			"g": "Aikawa GT-R50",
+			"gos": 9900000
+		},
+		"ferrari f40": {
+			"g": "Maranello F40",
+			"gos": 8900000
+		},
+		"ferrari sf90": {
+			"g": "Maranello SF90",
+			"gos": 19500000
+		},
+		"pagani utopia": {
+			"g": "Haracio Paradise",
+			"gos": 34500000
+		},
+		"lamborghini diablo": {
+			"g": "Ferruccio Devil",
+			"gos": 7200000
+		},
+		"ford model t": {
+			"g": "Wayn Line T",
+			"gos": 500000
+		},
+		"dodge charger ff": {
+			"g": "Betsy Changer FF",
+			"gos": 1700000
+		},
+		"gmc hummer ev": {
+			"g": "Rapid Hammer EV 6x6",
+			"gos": 7200000
+		},
+		"porsche mission r": {
+			"g": "Wurttem Messiah",
+			"gos": 26700000
+		},
+		"jeep wrangler": {
+			"g": "Euge JW",
+			"gos": 1000000
+		},
+		"pontiac firebird kitt": {
+			"g": "Obwand KITT",
+			"gos": 1400000
+		},
+		"amg m12b warthog": {
+			"g": "Daimler-AMX M12B Warthog",
+			"gos": 3300000
+		},
+		"bentley mulliner batur": {
+			"g": "Millner Bangli",
+			"gos": 20500000
+		},
+		"bugatti la voiture noire": {
+			"g": "Molsheim Blanche",
+			"gos": 31700000
+		},
+		"aston martin valour": {
+			"g": "York Bamford Malicious",
+			"gos": 18900000
+		},
+		"porsche cayenne coupe": {
+			"g": "Wurttem Rayenne Coupe",
+			"gos": 15600000
+		},
+		"jeep gladiator": {
+			"g": "Euge Langhals",
+			"gos": 5400000
+		},
+		"tesla cybertruck": {
+			"g": "Elon Alt-Truck",
+			"gos": 9500000
+		},
+		"gmc hummer ev 4x4": {
+			"g": "Rapid Hammer EV 4x4",
+			"gos": 7500000
+		},
+		"dodge sprinter": {
+			"g": "Betsy Runner",
+			"gos": 2800000
+		},
+		"mercedes-benz sprinter": {
+			"g": "Daimler Runner",
+			"gos": 3200000
+		},
+		"rolls-royce ghost ii": {
+			"g": "Merlin Shade II",
+			"gos": 17600000
+		},
+		"mclaren artura": {
+			"g": "Leslie Melville",
+			"gos": 22000000
+		},
+		"mercedes-benz amg f1": {
+			"g": "Daimler AMX F1",
+			"gos": 27100000
+		},
+		"mercedes-benz vision avtr": {
+			"g": "Daimler Avatar",
+			"gos": 23000000
+		},
+		"aston martin valkyrie": {
+			"g": "York Bamford Newey",
+			"gos": 29300000
+		},
+		"bentley flying spur": {
+			"g": "Millner Doncker Wolk",
+			"gos": 16900000
+		},
+		"sea ray xk": {
+			"g": "Kramer XK",
+			"gos": 10000000
+		},
+		"mini countryman": {
+			"g": "ALEC Mich",
+			"gos": 2600000
+		},
+		"ford crown victoria gt": {
+			"g": "Wayn Coronet V GT",
+			"gos": 3400000
+		},
+		"mclaren speedtail": {
+			"g": "Leslie Alex",
+			"gos": 27700000
+		},
+		"lamborghini huracan spyder": {
+			"g": "Ferruccio Hurricane Spyder",
+			"gos": 17100000
+		},
+		"lamborghini invencible": {
+			"g": "Ferruccio Borkert",
+			"gos": 24200000
+		},
+		"gmc hummer h1 4x4": {
+			"g": "Rapid Hammer 4x4",
+			"gos": 2900000
+		},
+		"maserati levante": {
+			"g": "Alfieri Turin",
+			"gos": 7200000
+		},
+		"plymouth fury": {
+			"g": "Mayflower Calm",
+			"gos": 200000
+		},
+		"rimac nevera": {
+			"g": "Rimus 4-VR",
+			"gos": 31300000
+		},
+		"plymouth barracuda": {
+			"g": "Mayflower Herlitz",
+			"gos": 500000
+		},
+		"ferrari testarossa": {
+			"g": "Maranello Ottina",
+			"gos": 6200000
+		},
+		"dodge charger": {
+			"g": "Betsy Changer",
+			"gos": 900000
+		},
+		"ford crown victoria": {
+			"g": "Wayn Coronet V",
+			"gos": 1000000
+		},
+		"mclaren senna": {
+			"g": "Leslie Ayrton",
+			"gos": 28100000
+		},
+		"lotus emira": {
+			"g": "Hethel Remir",
+			"gos": 9700000
+		},
+		"bugatti tourbillon": {
+			"g": "Molsheim Heyl",
+			"gos": 36200000
+		},
+		"lamborghini temerario": {
+			"g": "Ferruccio Mitja",
+			"gos": 24200000
+		},
+		"rolls-royce spectre": {
+			"g": "Merlin Rosenthal",
+			"gos": 17500000
+		},
+		"ferrari roma": {
+			"g": "Maranello Manzoni",
+			"gos": 14900000
+		},
+		"tesla model 3": {
+			"g": "Elon Line 3",
+			"gos": 4500000
+		},
+		"lucid air": {
+			"g": "Atieva Jenks",
+			"gos": 6500000
+		},
+		"lotus evija": {
+			"g": "Hethel Aevij",
+			"gos": 18600000
+		},
+		"rolls-royce wraith": {
+			"g": "Merlin Veil",
+			"gos": 14300000
+		},
+		"porsche macan ev": {
+			"g": "Wurttem Mauer EV",
+			"gos": 8200000
+		},
+		"bugatti w16 mistral": {
+			"g": "Molsheim Wistral",
+			"gos": 33400000
+		},
+		"ducati diavel": {
+			"g": "Felsina Diawel",
+			"gos": 4700000
+		},
+		"lamborghini revuelto": {
+			"g": "Ferruccio Rewuelto",
+			"gos": 23300000
+		},
+		"alfa romeo giulia": {
+			"g": "Merosi Jiulia",
+			"gos": 3400000
+		},
+		"nissan z": {
+			"g": "Aikawa 400X",
+			"gos": 3800000
+		},
+		"lamborghini lanzador": {
+			"g": "Ferruccio Brocca",
+			"gos": 17900000
+		},
+		"ferrari purosangue": {
+			"g": "Maranello Primogenito",
+			"gos": 19600000
+		},
+		"volvo polestar 1": {
+			"g": "Assar Solarstar 1",
+			"gos": 4200000
+		},
+		"lamborghini terzo millennio": {
+			"g": "Ferruccio Tenzo",
+			"gos": 29500000
+		},
+		"bentley mulliner bacalar": {
+			"g": "Millner Blanco",
+			"gos": 13600000
+		},
+		"rolls-royce dawn": {
+			"g": "Merlin Veil Cabrio",
+			"gos": 12800000
+		},
+		"lamborghini centenario": {
+			"g": "Ferruccio Centerio",
+			"gos": 24600000
+		},
+		"lamborghini veneno": {
+			"g": "Ferruccio Verano",
+			"gos": 28000000
+		}
+	},
+	"market": {
+		"faggio": "Pegassi Faggio Sport",
+		"tornado3": "Declasse Tornado",
+		"galant": "Mitsubishi Galant",
+		"bmx": "BMX",
+		"faggio2": "Pegassi Faggio",
+		"taxi": "Taxi",
+		"premier": "Declasse Premier",
+		"f1503": "Ford F-150",
+		"rebel2": "Karin Rebel",
+		"stanier": "Vapid Stanier",
+		"cclass3": "Mercedes-Benz C-Class A205",
+		"logan": "Renault Logan",
+		"primo": "Albany Primo",
+		"zr350": "Annis ZR350",
+		"corolla": "Toyota Corolla E170",
+		"boxville2": "Boxville",
+		"faggio3": "Pegassi Faggio Mod",
+		"p928": "Porsche 928",
+		"f620": "Ocelot F620",
+		"asterope": "Karin Asterope",
+		"seminole": "Canis Seminole",
+		"cog55": "Enus Cognoscenti 55",
+		"vamos": "Declasse Vamos",
+		"fagaloa": "Vulcar Fagaloa",
+		"cruiser": "Cruiser",
+		"rancherxl": "Declasse Rancher XL",
+		"clique2": "Vapid Clique Wagon",
+		"a42": "Audi 80 B4 Avant",
+		"chino": "Vapid Chino",
+		"3series3": "BMW 3-Series E30",
+		"virgo3": "Dundreary Virgo Classic",
+		"msprinter": "Mercedes-Benz Sprinter",
+		"broadway": "Classique Broadway",
+		"asea": "Declasse Asea",
+		"hustler": "Vapid Hustler",
+		"boxville4": "Brute Boxville",
+		"tribike": "Whippet Race Bike",
+		"peyote": "Vapid Peyote",
+		"seashark": "Speedophile Seashark",
+		"trash": "Trashmaster",
+		"manana": "Albany Manana",
+		"defender2": "Land Rover Defender",
+		"dubsta3": "Benefactor Dubsta 6x6",
+		"furia": "Grotti Furia",
+		"bmwg20": "BMW 3 G20",
+		"mustang5": "Ford Mustang `65",
+		"tornado": "Declasse Tornado",
+		"blazer2": "Nagasaki Blazer Lifeguard",
+		"vaz2107": "VAZ 2107",
+		"chevroletc10": "Chevrolet C10",
+		"cavalcade2": "Albany Cavalcade",
+		"rio3": "KIA Rio QB 5-doors",
+		"ram": "Dodge RAM 1500",
+		"beetle": "Volkswagen Beetle",
+		"240sx": "Nissan 240SX",
+		"enduro": "Dinka Enduro",
+		"patriot2": "Mammoth Patriot Stretch",
+		"g55": "Mercedes-Benz G-Class W463",
+		"fcr2": "Pegassi FCR 1000 Custom",
+		"cheburek": "RUNE Cheburek",
+		"lc200": "Toyota Land Cruiser 200",
+		"f1502": "Ford F-150 Raptor 6x6",
+		"cavalcade3": "Albany Cavalcade XL",
+		"hellion2": "Annis Hellion XL",
+		"stretch": "Dundreary Stretch",
+		"sentinel4": "Ubermacht Sentinel Classic Widebody",
+		"massacro2": "Dewbauchee Massacro (Racecar)",
+		"tenf2": "Obey 10F Widebody",
+		"vigero3": "Declasse Vigero ZX Convertible",
+		"boxville": "Boxville",
+		"evo10": "Mitsubishi Lancer Evolution X",
+		"blista3": "Dinka Go Go Monkey Blista",
+		"yosemite2": "Declasse Drift Yosemite",
+		"dubsta2": "Benefactor Dubsta",
+		"italigtb2": "Progen Itali GTB Custom",
+		"kamacho": "Canis Kamacho",
+		"bus": "Bus",
+		"countach2": "Lamborghini Countach",
+		"dominator": "Vapid Dominator",
+		"veto": "Dinka Veto Classic",
+		"taycan": "Porsche Taycan",
+		"samara": "LADA Samara",
+		"bodhi2": "Canis Bodhi",
+		"paragon3": "Enus Paragon S",
+		"manchez": "Maibatsu Manchez",
+		"snowmobile": "BRP Ski-Doo Sammit Rev-XM",
+		"fixter": "Fixter",
+		"contender": "Vapid Contender",
+		"blazer3": "Nagasaki Hot Rod Blazer",
+		"primo2": "Albany Primo Custom",
+		"moonbeam2": "Declasse Moonbeam Custom",
+		"matiz": "Daewoo Matiz",
+		"hakuchou": "Shitzu Hakuchou",
+		"sandking": "Vapid Sandking XL",
+		"faction3": "Willard Faction Custom Donk",
+		"v4sp": "Ducati Panigale V4 Speciale",
+		"camry70": "Toyota Camry XV70",
+		"blazer": "Nagasaki Blazer",
+		"viper2": "Dodge Viper SR II",
+		"buffalo5": "Bravado Buffalo EVX",
+		"pts21": "Porsche 911 992-Series",
+		"gauntlet3": "Bravado Gauntlet Classic",
+		"manchez2": "Maibatsu Manchez Scout",
+		"bmwe39": "BMW 5 E39",
+		"slamvan3": "Vapid Slamvan Custom",
+		"rc16": "KTM RC 16",
+		"baller4": "Gallivanter Baller LE LWB",
+		"creta": "Hyundai Creta",
+		"subwrx": "Subaru Impreza WRX",
+		"g63": "Mercedes-Benz G-Class W463 II",
+		"aclass": "Mercedes-Benz A-Class V177",
+		"yosemite3": "Declasse Yosemite Rancher",
+		"a80": "Toyota Supra",
+		"bell429": "Bell 429 GlobalRanger",
+		"mark2": "Toyota Mark II 100",
+		"ignus": "Pegassi Ignus",
+		"skyline": "Nissan Skyline GT-R R34",
+		"bdivo": "Bugatti Divo",
+		"bjxl": "Karin BeeJay XL",
+		"emperor": "Albany Emperor",
+		"vaz2109": "VAZ 2109",
+		"supragr": "Toyota GR Supra",
+		"priora": "LADA Priora",
+		"urban": "LADA Niva",
+		"bmwx7": "BMW X7 G07",
+		"gresley": "Bravado Gresley",
+		"yosemite1500": "Declasse Yosemite 1500",
+		"190e": "Mercedes-Benz 190 E",
+		"comet3": "Pfister Comet Retro Custom",
+		"turismo2": "Grotti Turismo Classic",
+		"comet7": "Pfister Comet S2 Cabrio",
+		"s15": "Nissan Silvia S15",
+		"5series": "BMW 5 G60",
+		"rrocket": "Western Rampant Rocket",
+		"evo9": "Mitsubishi Lancer Evolution IX",
+		"elegy": "Annis Elegy Retro Custom",
+		"octavia18": "Skoda Octavia RS",
+		"agera": "Koenigsegg Agera",
+		"warrener": "Vulcar Warrener",
+		"bmwm1": "BMW M1",
+		"s600": "Mercedes-Benz S-Class W140",
+		"kiastinger": "KIA Stinger",
+		"m5comp": "BMW M5 F90 Competition",
+		"issi2": "Weeny Issi",
+		"virgo2": "Dundreary Virgo Classic Custom",
+		"infernus2": "Pegassi Infernus Classic",
+		"jgc": "Jeep Grand Cherokee",
+		"brioso3": "Grotti Brioso 300 Widebody",
+		"audir8": "Audi R8 Type 42",
+		"bolide": "Bugatti Bolide",
+		"porsche935": "Porsche 935",
+		"panto": "Benefactor Panto",
+		"nebula": "Vulcar Nebula Turbo",
+		"maverickc": "Maverick S",
+		"chino2": "Vapid Chino Custom",
+		"uaz3151": "UAZ 3151",
+		"sixteen": "Devel Sixteen",
+		"solaris": "Hyundai Solaris I",
+		"t680": "Kenworth T680",
+		"bmwe38": "BMW 7 E38",
+		"ninef2": "Obey 9F Cabrio",
+		"emira": "Lotus Emira",
+		"wolfsbane": "Western Wolfsbane",
+		"370z": "Nissan 370Z",
+		"w210": "Mercedes-Benz E-Class W210",
+		"dsprinter": "Dodge Sprinter",
+		"m8gc": "BMW M8 Gran Coupe",
+		"rebel": "Karin Rusty Rebel",
+		"16challenger": "Dodge Challenger",
+		"euros": "Annis Euros",
+		"landstalker2": "Dundreary Landstalker XL",
+		"rx7": "Mazda RX-7",
+		"dilettante": "Karin Dilettante",
+		"nisgtr": "Nissan GT-R R35",
+		"m4comp": "BMW M4 G82 Competition",
+		"banshee": "Bravado Banshee",
+		"ae86": "Toyota Sprinter Trueno",
+		"jubilee": "Enus Jubilee",
+		"essenza": "Lamborghini Essenza SV12",
+		"torero2": "Pegassi Torero XO",
+		"slamvan": "Vapid Slamvan",
+		"voodoo": "Declasse Voodoo Custom",
+		"nero2": "Truffade Nero Custom",
+		"2020mustang": "Ford Mustang S550",
+		"lc100": "Toyota Land Cruiser 100",
+		"su7": "Xiaomi SU7",
+		"tiguan2": "Volkswagen Tiguan AD",
+		"bagger": "Western Bagger",
+		"bati2": "Pegassi Bati 801RR",
+		"lx600": "Lexus LX 600",
+		"prototipo": "Grotti X80 Proto",
+		"lc300": "Toyota Land Cruiser 300",
+		"m4f82": "BMW M4 F82",
+		"i8": "BMW i8",
+		"mjc": "MINI Hatch F56",
+		"sandking2": "Vapid Sandking SWB",
+		"belair": "Chevrolet Bel Air",
+		"voodoo2": "Declasse Voodoo",
+		"rs72": "Audi RS7 II",
+		"penumbra2": "Maibatsu Penumbra FF",
+		"eclass3": "Mercedes-Benz E-Class W214",
+		"granger2": "Declasse Granger 3600LX",
+		"vclass": "Mercedes-Benz V-Class",
+		"turismo3": "Grotti Turismo Omaggio",
+		"camry2": "Toyota Camry XV55",
+		"tornado5": "Declasse Tornado Custom",
+		"gt63s": "Mercedes-Benz AMG GT 63s",
+		"accord": "Honda Accord",
+		"ratloader": "Rat-Loader",
+		"dinghy2": "Nagasaki Dinghy MK2",
+		"golf7r": "Volkswagen Golf Mk 7",
+		"pipistrello": "Overflod Pipistrello",
+		"f150": "Ford F-150 Raptor",
+		"windsor2": "Enus Windsor Drop",
+		"tribike3": "Tri-Cycles Race Bike",
+		"hellion": "Annis Hellion",
+		"cla": "Mercedes-Benz CLA C174",
+		"gt500": "Grotti GT500",
+		"panamera17turbo": "Porsche Panamera",
+		"ml": "Mercedes-Benz ML",
+		"bobcatxl": "Vapid Bobcat XL",
+		"firetruk": "MLT Tarrton Fire Truck",
+		"daemon": "Western Daemon",
+		"f8": "Ferrari F8 Tributo",
+		"rs6": "Audi RS6",
+		"cx5": "Mazda CX-5",
+		"coquette3": "Invetero Coquette BlackFin",
+		"ferrari812": "Ferrari 812 Superfast",
+		"rocoto": "Obey Rocoto",
+		"durango": "Dodge Durango",
+		"m3e46": "BMW M3 E46",
+		"jugular": "Ocelot Jugular",
+		"buffalo2": "Bravado Buffalo S",
+		"omnis": "Obey Omnis",
+		"continental": "Bentley Continental GT",
+		"huntley": "Enus Huntley S",
+		"xes": "Jaguar XE-S",
+		"pcj": "Shitzu PCJ 600",
+		"impala": "Chevrolet Impala",
+		"rs7": "Audi RS7",
+		"touareg": "Volkswagen Touareg",
+		"rio": "KIA Rio FB",
+		"urus": "Lamborghini Urus",
+		"tribike2": "Endurex Race Bike",
+		"issi8": "Weeny Issi Rally",
+		"hummer2": "GMC Hummer EV 4x4",
+		"cls63s": "Mercedes-Benz CLS C218",
+		"neon": "Pfister Neon",
+		"m5e60": "BMW M5 E60",
+		"e63s": "Mercedes-Benz E-Class W213",
+		"vigero": "Declasse Vigero",
+		"buffalo3": "Bravado Sprunk Buffalo",
+		"buzzard2c": "Buzzard S",
+		"models": "Tesla Model S",
+		"tahoe2": "Chevrolet Tahoe",
+		"touareg2": "Volkswagen Touareg R50",
+		"aclass2": "Mercedes-Benz A-Class W177",
+		"superd": "Enus Super Diamond",
+		"dorado": "Bravado Dorado",
+		"actros": "Mercedes-Benz Actros",
+		"dominator9": "Vapid Dominator GT",
+		"trophytruck": "Vapid Trophy Truck",
+		"63gls2": "Mercedes-Benz GLS X167",
+		"amazon": "Volvo Amazon",
+		"cognoscenti": "Enus Cognoscenti",
+		"explorer": "Ford Explorer",
+		"vanquish2": "Aston Martin Vanquish Zagato",
+		"serrano": "Benefactor Serrano",
+		"sclass3": "Mercedes-Benz S-Class W223",
+		"gle63": "Mercedes-Benz GLE Coupe C292",
+		"s63w222": "Mercedes-Benz S-Class W222",
+		"gsx1000": "Suzuki GSX-R 1000",
+		"stockade": "Brute Stockade",
+		"golf3": "Volkswagen Golf Mk 8",
+		"cullinan": "Rolls-Royce Cullinan",
+		"dominator2": "Vapid Pisswasser Dominator",
+		"streiter": "Benefactor Streiter",
+		"g63amg6x6": "Mercedes-Benz G-Class W463 6x6",
+		"bati": "Pegassi Bati 801",
+		"corvette2": "Chevrolet Corvette C8",
+		"mustang2": "Ford Mustang `69",
+		"focusrs": "Ford Focus RS",
+		"gauntlet2": "Bravado Redwood Gauntlet",
+		"senna": "McLaren Senna",
+		"m850": "BMW 8",
+		"model3": "Tesla Model 3",
+		"63gls": "Mercedes-Benz GLS X166",
+		"faction2": "Willard Faction Custom",
+		"charger2": "Dodge Charger",
+		"918s": "Porsche 918 Spyder",
+		"fxxk": "Ferrari FXX-K",
+		"landstalker": "Dundreary Landstalker",
+		"reever": "Western Reever",
+		"a4": "Audi A4 B5 Avant",
+		"trophytruck2": "Vapid Desert Raid",
+		"omnisegt": "Obey Omnis e-GT",
+		"caracara2": "Vapid Caracara 4x4",
+		"a8": "Audi A8",
+		"wraithb": "Rolls-Royce Wraith",
+		"x5me70": "BMW X5 M E70",
+		"jester3": "Dinka Jester Classic",
+		"x6m": "BMW X6 M F86",
+		"ix": "BMW IX",
+		"dinghy3": "Nagasaki Dinghy SV",
+		"tulip2": "Declasse Tulip M-100",
+		"kalahari": "Canis Kalahari",
+		"emperor2": "Albany Emperor",
+		"stalion2": "Declasse Burger Shot Stallion",
+		"raptor": "BF Raptor",
+		"murcielago": "Lamborghini Murcielago",
+		"cliffhanger": "Western Cliffhanger",
+		"carrera": "Porsche 911 901-Series",
+		"tundra": "Toyota Tundra",
+		"dominator3": "Vapid Dominator GTX",
+		"surge": "Cheval Surge",
+		"kuruma": "Karin Kuruma",
+		"amggt": "Mercedes-AMG GT R",
+		"718bs": "Porsche 718 S Boxter",
+		"gauntlet5": "Bravado Gauntlet Classic Custom",
+		"taurus": "Ford Taurus",
+		"ghost": "Rolls-Royce Ghost",
+		"c300": "Mercedes-Benz C-Class W206",
+		"sanchez2": "Maibatsu Sanchez",
+		"froggerc": "Frogger S",
+		"rrab": "Land Rover Range Rover L405",
+		"x5g05": "BMW X5 G05",
+		"jester2": "Dinka Jester (Racecar)",
+		"fairlady": "Nissan Fairlady 240Z",
+		"zeekr009": "Zeekr 009",
+		"corvette4": "Chevrolet Corvette C6",
+		"glendale2": "Benefactor Glendale Custom",
+		"gclass4": "Mercedes-Benz G-Class W463 II 4x4",
+		"tank300": "Tank 300",
+		"etron": "Audi e-tron GT",
+		"nsx": "Honda NCX NC1",
+		"brutale": "MV Agusta Brutale",
+		"brigham": "Albany Brigham",
+		"cesc21": "Cadillac Escalade",
+		"monstrociti": "Maibatsu MonstroCiti",
+		"centenario": "Lamborghini Centenario",
+		"impaler": "Declasse Impaler",
+		"vigero2": "Declasse Vigero ZX",
+		"gemera": "Koenigsegg Gemera",
+		"rs5": "Audi RS5",
+		"idr": "Volkswagen ID R",
+		"krieger": "Benefactor Krieger",
+		"audia3": "Audi A3 8Y",
+		"q8": "Audi Q8",
+		"z4b": "BMW Z4 M40i",
+		"lex570": "Lexus LX 570",
+		"gtr32": "Nissan Skyline GT-R R32",
+		"barracuda": "Plymouth Barracuda",
+		"carbonrs": "Nagasaki Carbon RS",
+		"hermes": "Albany Hermes",
+		"patriot": "Mammoth Patriot",
+		"entity2": "Overflod Entity XXR",
+		"modelx": "Tesla Model X",
+		"double": "Dinka Double-T",
+		"bmwm7": "BMW 7 M760Li",
+		"velar": "Land Rover Range Rover Velar L560",
+		"mazda3": "Mazda 3 BM",
+		"rx8": "Mazda RX-8",
+		"amgone": "Mercedes-Benz Project One",
+		"delorean": "DeLorean DMC-12",
+		"z800": "Kawasaki Z800",
+		"comet6": "Pfister Comet S2",
+		"rsx": "Acura RSX",
+		"lc250": "Toyota Land Cruiser 250 Prado",
+		"buccaneer2": "Albany Buccaneer Custom",
+		"dawn": "Rolls-Royce Dawn",
+		"alphard": "Toyota Alphard",
+		"hatch2": "MINI Hatch J01",
+		"virtue": "Ocelot Virtue",
+		"gnx": "Buick GNX",
+		"macan": "Porsche Macan",
+		"camaro2": "Chevrolet Camaro `70",
+		"vesta": "LADA Vesta",
+		"eclass6": "Mercedes-Benz E-Class S211",
+		"charger5": "Dodge Charger LB",
+		"lil9": "Li Auto L9",
+		"sabregt2": "Declasse Sabre Turbo Custom",
+		"camaro21": "Chevrolet Camaro 1LT",
+		"chiron19": "Bugatti Chiron",
+		"gtr50": "Nissan GT-R50",
+		"ram2": "Dodge RAM TRX",
+		"stelvio": "Alfa Romeo Stelvio",
+		"dominator7": "Vapid Dominator ASP",
+		"nero": "Truffade Nero",
+		"charger20": "Dodge Charger LD",
+		"veneno": "Lamborghini Veneno",
+		"m2g42": "BMW 2 G42",
+		"350z": "Nissan 350Z",
+		"camaro3": "Chevrolet Camaro `67",
+		"sprinter": "Mercedes-Benz Sprinter Br.907",
+		"rhinehart": "Ubermacht Rhinehart",
+		"massacro": "Dewbauchee Massacro",
+		"x6m2": "BMW X6 G06",
+		"ftype": "Jaguar F-Type R Coupe",
+		"scorcher": "Scorcher",
+		"blazer4": "Nagasaki Street Blazer",
+		"toros": "Pegassi Toros",
+		"k5": "KIA K5",
+		"firebird2": "Pontiac Firebird",
+		"dubsta": "Benefactor Dubsta",
+		"manana2": "Albany Manana Custom",
+		"iwagen": "Obey I-Wagen",
+		"civic": "Honda Civic EK6",
+		"testarossa": "Ferrari Testarossa",
+		"nevera": "Rimac Nevera",
+		"outlaw": "Nagasaki Outlaw",
+		"l35": "Declasse Walton L35",
+		"rebla": "Ubermacht Rebla GTS",
+		"xclass": "Mercedes-Benz X-Class",
+		"rh1250s": "Harley-Davidson RH1250S",
+		"corvett08": "Chevrolet Corvette C7",
+		"s63cab": "Mercedes-Benz S-Class A217",
+		"tuatara": "SSC Tuatara",
+		"r1t": "Rivian R1T",
+		"droptail": "Rolls-Royce Droptail",
+		"oracle2": "Ubermacht Oracle",
+		"ruiner4": "Imponte Ruiner ZZ-8",
+		"schwarzer": "Benefactor Schwartzer",
+		"brz": "Subaru BRZ",
+		"cayen19": "Porsche Cayenne",
+		"kanjo": "Dinka Blista Kanjo",
+		"ellie": "Vapid Ellie",
+		"sentinel3": "Ubermacht Sentinel Classic",
+		"peyote3": "Vapid Peyote Custom",
+		"turismor": "Grotti Turismo R",
+		"sparrowc": "Sparrow S",
+		"niobe": "Ubermacht Niobe",
+		"q60s": "Infiniti Q60S",
+		"eclass5": "Mercedes-Benz E-Class W212",
+		"r820": "Audi R8 Type 4S",
+		"bacalar": "Bentley Mulliner Bacalar",
+		"nsx2": "Honda NSX NA1",
+		"roma": "Ferrari Roma",
+		"mx52": "Mazda MX-5 ND",
+		"stryder": "Nagasaki Stryder",
+		"vader": "Shitzu Vader",
+		"nightshade": "Imponte Nightshade",
+		"cypher": "Cypher",
+		"tt": "Audi TT S8",
+		"carreragt": "Porsche Carrera GT",
+		"calico": "Karin Calico GTF",
+		"tyrant": "Overflod Tyrant",
+		"zeno": "Overflod Zeno",
+		"nspeedo": "Vapid Speedo Express",
+		"12cilindri": "Ferrari 12Cilindri",
+		"s2000": "Honda S2000",
+		"viper": "Dodge Viper VX",
+		"projectevo": "Apollo Project Evo",
+		"zeekr9x": "Zeekr 9X",
+		"charger4": "Dodge Charger LX",
+		"nightblade": "Western Nightblade",
+		"picador": "Cheval Picador",
+		"virgo": "Albany Virgo",
+		"eclipse": "Mitsubishi Eclipse D30",
+		"mclarenw1": "McLaren W1",
+		"laferrari": "Ferrari LaFerrari",
+		"cayenne2": "Porsche Cayenne Coupe",
+		"xclass2": "Mercedes-Benz X-Class BF",
+		"golf2": "Volkswagen Golf Mk 2",
+		"etron2": "Audi Q8 e-tron",
+		"victoria": "Ford Crown Victoria",
+		"polo": "Volkswagen Polo 6R",
+		"jesko20": "Koenigsegg Jesko",
+		"fordgt": "Ford GT",
+		"f40": "Ferrari F40",
+		"hummer5": "GMC Hummer H1 4x4",
+		"semi": "Tesla Semi",
+		"samara2": "Pachoud Samara",
+		"fenomeno": "Lamborghini Fenomeno",
+		"bf400": "Nagasaki BF400",
+		"dune": "BF Dune Buggy",
+		"vectre": "Emperor Vectre",
+		"fmj": "Vapid FMJ",
+		"paradise": "Bravado Paradise",
+		"fx50s": "Infiniti FX50 S",
+		"bentaygast": "Bentley Bentayga",
+		"sf90": "Ferrari SF90",
+		"terzo": "Lamborghini Terzo Millennio",
+		"cybertruck": "Tesla Cybertruck",
+		"gallardo": "Lamborghini Gallardo",
+		"issi3": "Weeny Issi Classic",
+		"zombiea": "Western Zombie Bobber",
+		"zombieb": "Western Zombie Chopper",
+		"stingertt": "Grotti Itali GTO Stinger TT",
+		"cyclone": "Coil Cyclone",
+		"emerus": "Progen Emerus",
+		"mp1": "McLaren P1",
+		"yz450f": "Yamaha YZ 450 F",
+		"sportage": "KIA Sportage NQ5",
+		"f7": "Haval F7",
+		"lamborghinivision": "Lamborghini Vision GT",
+		"tug": "Buckingham Tug",
+		"baller2": "Gallivanter Baller",
+		"imorgon": "Overflod Imorgon",
+		"italigtb": "Progen Itali GTB",
+		"osiris": "Pegassi Osiris",
+		"t20": "Progen T20",
+		"speedo": "Vapid Speedo",
+		"5series3": "BMW 5 F10",
+		"rrphantom": "Rolls-Royce Phantom VIII",
+		"gle2": "Mercedes-Benz GLE V167",
+		"polestar": "Volvo Polestar 1",
+		"glc": "Mercedes-Benz GLC Coupe C254",
+		"suntrap": "Shitzu Suntrap",
+		"clique": "Vapid Clique",
+		"gauntlet4": "Bravado Gauntlet Hellfire",
+		"ratloader2": "Bravado Rat-Truck",
+		"raiden": "Coil Raiden",
+		"futo2": "Karin Futo GTX",
+		"voltic": "Coil Voltic",
+		"huracan2": "Lamborghini Huracan Spyder",
+		"mx5": "Mazda MX-5 NA",
+		"brioso2": "Grotti Brioso 300",
+		"akuma": "Dinka Akuma",
+		"moonbeam": "Declasse Moonbeam",
+		"phoenix": "Imponte Phoenix",
+		"bfinjection": "BF Injection",
+		"boor": "Karin Boor",
+		"ruston": "Hijak Ruston",
+		"reaper": "Pegassi Reaper",
+		"italirsx": "Grotti Itali RSX",
+		"cclass2": "Mercedes-Benz C-Class W203",
+		"mustang3": "Ford Mustang S650",
+		"regera": "Koenigsegg Regera",
+		"temerario": "Lamborghini Temerario",
+		"ev6": "KIA EV6",
+		"mclaren570s": "McLaren 570S",
+		"tropic2": "Shitzu Tropic SW",
+		"kanjosj": "Dinka Kanjo SJ",
+		"sovereign": "Western Sovereign",
+		"dukes": "Imponte Dukes",
+		"faction": "Willard Faction",
+		"hotknife": "Vapid Hotknife",
+		"sabregt": "Declasse Sabre Turbo",
+		"granger": "Declasse Granger",
+		"lynx": "Ocelot Lynx",
+		"growler": "Pfister Growler",
+		"savestra": "Annis Savestra",
+		"pfister811": "Pfister 811",
+		"tempesta": "Pegassi Tempesta",
+		"yosemiteswb": "Declasse Yosemite SWB",
+		"silverado": "Chevrolet Silverado T1XX",
+		"488pista": "Ferrari 488 Pista",
+		"asvj": "Lamborghini Aventador SVJ",
+		"5series2": "BMW 5 G61",
+		"corvette3": "Chevrolet Corvette C1",
+		"i82": "BMW i8 Roadster",
+		"spectre": "Rolls-Royce Spectre",
+		"tulip": "Declasse Tulip",
+		"paragon": "Enus Paragon R",
+		"drafter": "Obey 8F Drafter",
+		"jester4": "Dinka Jester RR",
+		"remus": "Annis Remus",
+		"casco": "Lampadati Casco",
+		"z190": "Karin 190z",
+		"cheetah": "Grotti Cheetah",
+		"xa21": "Ocelot XA-21",
+		"zorrusso": "Pegassi Zorrusso",
+		"deity": "Enus Deity",
+		"terminus": "Canis Terminus",
+		"mustang4": "Ford Mustang Hoonigan",
+		"sian": "Lamborghini Sian",
+		"syclone": "GMC Syclone",
+		"imola": "Pagani Imola",
+		"veyron": "Bugatti Veyron",
+		"ast": "Aston Martin Vanquish",
+		"hummer3": "GMC Hummer EV",
+		"purosangue": "Ferrari Purosangue",
+		"dbx": "Aston Martin DBX",
+		"cc850": "Koenigsegg CC850",
+		"amggt2": "Mercedes-AMG GT C192",
+		"civic2": "Honda Civic FK2",
+		"panamera2": "Porsche Panamera G2 Sport Turismo",
+		"dinghy": "Nagasaki Dinghy MK4",
+		"asbo": "Maxwell Asbo",
+		"prairie": "Bollokan Prairie",
+		"felon": "Lampadati Felon",
+		"guardian": "Vapid Guardian",
+		"diablous": "Principe Diabolus",
+		"eudora": "Willard Eudora",
+		"seminole2": "Canis Seminole Frontier",
+		"xls": "Benefactor XLS",
+		"stratum": "Zirconium Stratum",
+		"comet4": "Pfister Comet Safari",
+		"comet5": "Pfister Comet SR",
+		"elegy2": "Annis Elegy RH8",
+		"fusilade": "Schyster Fusilade",
+		"jester": "Dinka Jester",
+		"taco": "Taco Van",
+		"astron": "Pfister Astron",
+		"vivanite": "Karin Vivanite",
+		"bentley8": "Bentley 8 Litre",
+		"720s": "McLaren 720S",
+		"reventon": "Lamborghini Reventon",
+		"giulia": "Alfa Romeo Giulia",
+		"eclass4": "Mercedes-Benz E-Class S214 Estate",
+		"escalade2": "Cadillac Escalade GM T1XL",
+		"countryman": "MINI Countryman",
+		"peugeot308": "Peugeot 308",
+		"rhapsody": "Declasse Rhapsody",
+		"defiler": "Shitzu Defiler",
+		"gargoyle": "Western Gargoyle",
+		"thrust": "Dinka Thrust",
+		"blade": "Vapid Blade",
+		"everon": "Karin Everon",
+		"regina": "Dundreary Regina",
+		"bestiagts": "Grotti Bestia GTS",
+		"rapidgt2": "Dewbauchee Rapid GT",
+		"specter": "Dewbauchee Specter",
+		"vacca": "Pegassi Vacca",
+		"champion": "Dewbauchee Champion",
+		"atlantic": "Bugatti Atlantic",
+		"defender": "Land Rover Defender L633",
+		"vulcan": "Aston Martin Vulcan",
+		"huracan": "Lamborghini Huracan",
+		"ec135": "Eurocopter EC135 Gendarmerie",
+		"sclass4": "Mercedes-Benz S-Class Z223",
+		"cls2": "Mercedes-Benz CLS C257",
+		"daytona": "Ferrari Daytona SP3",
+		"utopia": "Pagani Utopia",
+		"evija": "Lotus Evija",
+		"macan2": "Porsche Macan EV",
+		"invencible": "Lamborghini Invencible",
+		"tourbillon": "Bugatti Tourbillon",
+		"ghost2": "Rolls-Royce Ghost II",
+		"s1000rr": "BMW S1000RR",
+		"pullman": "Mercedes-Benz S-Class VV222 Pullman",
+		"rr3": "Land Rover Range Rover L322",
+		"seashark3": "Speedophile Seashark Astro",
+		"toro2": "Lampadati Toro GT",
+		"tropic": "Shitzu Tropic",
+		"mule": "Maibatsu Mule",
+		"phantom": "JoBuilt Phantom",
+		"club": "BF Club",
+		"weevil": "BF Weevil",
+		"sentinel": "Ubermacht Sentinel XS",
+		"zion": "Ubermacht Zion",
+		"nemesis": "Principe Nemesis",
+		"gauntlet": "Bravado Gauntlet",
+		"tampa": "Declasse Tampa",
+		"freecrawler": "Canis Freecrawler",
+		"komoda": "Lampadati Komoda",
+		"sultan": "Karin Sultan",
+		"r300": "Annis 300R",
+		"dynasty": "Weeny Dynasty",
+		"stingergt": "Grotti Stinger GT",
+		"torero": "Pegassi Torero",
+		"zion3": "Ubermacht Zion Classic",
+		"hummer": "GMC Hummer EV",
+		"xm": "BMW XM G09",
+		"db11": "Aston Martin DB11",
+		"slr": "Mercedes-Benz 300 SLR",
+		"m3g81": "BMW M3 G81 Touring",
+		"rrs": "Land Rover Range Rover Sport L461",
+		"victoria2": "Ford Crown Victoria GT",
+		"ah6": "MD Helicopters AH-6 Little Bird",
+		"cle": "Mercedes-Benz CLE C236",
+		"gladiator": "Jeep Gladiator",
+		"ferrarivision": "Ferrari Vision GT",
+		"marussiab2": "Marussia B2",
+		"blista": "Dinka Blista",
+		"postlude": "Dinka Postlude",
+		"fcr": "Pegassi FCR 1000",
+		"hexer": "LCC Hexer",
+		"ruffian": "Pegassi Ruffian",
+		"vortex": "Pegassi Vortex",
+		"buccaneer": "Albany Buccaneer",
+		"bifta": "BF Bifta",
+		"cavalcade": "Albany Cavalcade",
+		"glendale": "Benefactor Glendale",
+		"intruder": "Karin Intruder",
+		"blista2": "Dinka Blista Compact",
+		"comet2": "Pfister Comet",
+		"ninef": "Obey 9F",
+		"revolter": "Ubermacht Revolter",
+		"sugoi": "Dinka Sugoi",
+		"cheetah2": "Grotti Cheetah Classic",
+		"tornado4": "Declasse Tornado",
+		"tornado6": "Declasse Tornado Rat Rod",
+		"gp1": "Progen GP1",
+		"burrito3": "Declasse Burrito",
+		"swiftc": "Buckingham Swift S",
+		"impaler5": "Declasse Impaler SZ",
+		"coquette5": "Invetero Coquette D1",
+		"missionr": "Porsche Mission R",
+		"noire": "Bugatti La Voiture Noire",
+		"xts": "Cadillac XTS Royale",
+		"astra": "Opel Astra J GTC",
+		"m7g70": "BMW 7 G70",
+		"revuelto": "Lamborghini Revuelto",
+		"lanzador": "Lamborghini Lanzador",
+		"r66": "Robinson R66",
+		"lfa": "Lexus LFA",
+		"bronco": "Ford Bronco U725",
+		"j50": "Ferrari J50",
+		"sl": "Mercedes-AMG SL R232",
+		"lc500": "Lexus LC 500",
+		"tt2": "Audi TT 8S Roadster",
+		"fury": "Plymouth Fury",
+		"q7": "Audi Q7",
+		"monza": "Ferrari Monza SP2",
+		"squalo": "Shitzu Squalo",
+		"submersible": "Kraken Submersible PS-1021",
+		"brioso": "Grotti Brioso R/A",
+		"felon2": "Lampadati Felon GT",
+		"buzzard2": "Buzzard",
+		"vindicator": "Dinka Vindicator",
+		"stalion": "Declasse Stallion",
+		"tahoma": "Declasse Tahoma Coupe",
+		"vagrant": "Maxwell Vagrant",
+		"baller": "Gallivanter Baller",
+		"habanero": "Emperor Habanero",
+		"radi": "Vapid Radius",
+		"ingot": "Vulcar Ingot",
+		"carbonizzare": "Grotti Carbonizzare",
+		"pariah": "Ocelot Pariah",
+		"vstr": "Albany V-STR",
+		"retinue": "Vapid Retinue",
+		"tornado2": "Declasse Tornado",
+		"entityxf": "Overflod Entity XF",
+		"infernus": "Pegassi Infernus",
+		"pony2": "Brute Pony",
+		"supervolitoc": "Buckingham SuperVolito S",
+		"volatusc": "Buckingham Volatus S",
+		"baller8": "Gallivanter Baller ST-D",
+		"huayrar": "Pagani Huayra R",
+		"battista": "Pininfarina Battista",
+		"rio2": "KIA Rio QB Sedan",
+		"countach": "Lamborghini Countach LPI 800-4",
+		"ff12": "Ferrari F12 Berlinetta",
+		"l650": "Sea Ray L650 Fly",
+		"mistral": "Bugatti W16 Mistral",
+		"400z": "Nissan Z",
+		"xc90": "Volvo XC90",
+		"speedtail": "McLaren Speedtail",
+		"bentayga2": "Bentley Bentayga II",
+		"db112": "Aston Martin DB11 Volante",
+		"impala2": "Chevrolet Impala",
+		"ex90": "Volvo EX90",
+		"amgf1": "Mercedes-Benz AMG F1",
+		"artura": "McLaren Artura",
+		"db12": "Aston Martin DB12",
+		"ae862": "Toyota Corolla Levin",
+		"jetmax": "Shitzu Jetmax",
+		"speeder": "Pegassi Speeder",
+		"speeder2": "Pegassi Speeder RT",
+		"toro": "Lampadati Toro",
+		"longfin": "Shitzu Longfin",
+		"hauler": "JoBuilt Hauler",
+		"packer": "MTL Packer",
+		"frogger": "Frogger",
+		"maverick": "Maverick",
+		"barracks": "Barracks",
+		"barracks2": "HVY Barracks Semi",
+		"barracks5": "HVY Barracks Flatbed",
+		"avarus": "LCC Avarus",
+		"riata": "Vapid Riata",
+		"luxor2": "Buckingham Luxor Deluxe",
+		"fq2": "Fathom FQ 2",
+		"mesa": "Canis Mesa",
+		"schafter2": "Benefactor Schafter",
+		"warrener2": "Vulcar Warrener HKR",
+		"buffalo": "Bravado Buffalo",
+		"penumbra": "Maibatsu Penumbra",
+		"surano": "Benefactor Surano",
+		"sultan3": "Karin Sultan RS Classic",
+		"mamba": "Declasse Mamba",
+		"monroe": "Pegassi Monroe",
+		"swinger": "Ocelot Swinger",
+		"bullet": "Vapid Bullet",
+		"supervolito2c": "Buckingham SuperVolito Carbone S",
+		"buffalo4": "Bravado Buffalo STX",
+		"impaler6": "Declasse Impaler LX",
+		"tor_police_cruiser": "Vapid Cruiser Police",
+		"diablo": "Lamborghini Diablo",
+		"ab2": "Land Rover Range Rover L460",
+		"diavel": "Ducati Diavel",
+		"xk": "Sea Ray XK",
+		"air": "Lucid Air",
+		"tecnomar": "Lamborghini Tecnomar",
+		"levante": "Maserati Levante",
+		"rb001": "Aston Martin Valkyrie",
+		"avtr": "Mercedes-Benz Vision AVTR",
+		"dinghy4": "Nagasaki Dinghy SV MK 2",
+		"marquis": "Dinka Marquis",
+		"seashark2": "Speedophile Seashark LG",
+		"submersible2": "Kraken Poseidon",
+		"kosatka": "RUNE Kosatka",
+		"patrolboat": "Buckingham Kurtz 31",
+		"avisa": "Kraken Avisa",
+		"benson": "Vapid Benson",
+		"biff": "HVY Biff",
+		"cerberus": "MTL Cerberus Apocalypse",
+		"cerberus2": "MTL Cerberus Fiction",
+		"cerberus3": "MTL Cerberus Nightmare",
+		"hauler2": "JoBuilt Hauler Custom",
+		"mule2": "Maibatsu Mule",
+		"mule3": "Maibatsu Mule",
+		"mule4": "Maibatsu Mule Custom",
+		"phantom2": "JoBuilt Phantom Wedge",
+		"phantom3": "JoBuilt Phantom Custom",
+		"pounder": "MTL Pounder",
+		"pounder2": "MTL Pounder Custom",
+		"stockade3": "Brute Stockade",
+		"terbyte": "Benefactor Terrorbyte",
+		"dilettante2": "Karin Dilettante",
+		"issi4": "Weeny Issi Apocalypse",
+		"issi5": "Weeny Issi Fiction",
+		"issi6": "Weeny Issi Nightmare",
+		"veto2": "Dinka Veto Modern",
+		"cogcabrio": "Enus Cognoscenti Cabrio",
+		"exemplar": "Dewbauchee Exemplar",
+		"jackal": "Ocelot Jackal",
+		"oracle": "Ubermacht Oracle XS",
+		"sentinel2": "Ubermacht Sentinel",
+		"windsor": "Enus Windsor",
+		"zion2": "Ubermacht Zion Cabrio",
+		"previon": "Karin Previon",
+		"inductor": "Coil Inductor",
+		"inductor2": "Junk Energy Inductor",
+		"akula": "Akula",
+		"annihilator": "Annihilator",
+		"annihilator2": "Annihilator Stels",
+		"buzzard": "Buzzard Attack Chopper",
+		"cargobob": "Cargobob",
+		"cargobob2": "Cargobob",
+		"cargobob3": "Cargobob",
+		"cargobob4": "Cargobob",
+		"frogger2": "Frogger",
+		"havok": "Nagasaki Havok",
+		"hunter": "FH-1 Hunter",
+		"savage": "Savage",
+		"skylift": "Skylift",
+		"supervolito": "Buckingham SuperVolito",
+		"supervolito2": "Buckingham SuperVolito Carbon",
+		"swift": "Buckingham Swift",
+		"swift2": "Buckingham Swift Deluxe",
+		"valkyrie": "Valkyrie",
+		"valkyrie2": "Valkyrie MOD.0",
+		"volatus": "Buckingham Volatus",
+		"seasparrow2": "Sparrow",
+		"seasparrow3": "Sparrow",
+		"conada": "Buckingham Conada",
+		"conada2": "Buckingham Weaponized Conada",
+		"bulldozer": "HVY Dozer",
+		"cutter": "HVY Cutter",
+		"dump": "HVY Dump",
+		"flatbed": "MTL Flatbed",
+		"handler": "Dock Handler",
+		"mixer": "HVY Mixer",
+		"mixer2": "HVY Mixer",
+		"rubble": "JoBuilt Rubble",
+		"tiptruck": "Brute Tipper",
+		"tiptruck2": "Tipper",
+		"apc": "HVY APC",
+		"barracks3": "HVY Barracks",
+		"vetir": "Vetir",
+		"barrage": "Barrage",
+		"chernobog": "Chernobog",
+		"crusader": "Canis Crusader",
+		"halftrack": "Bravado Half-track",
+		"khanjali": "TM-02 Khanjali",
+		"rhino": "Rhino Tank",
+		"scarab": "HVY Scarab Apocalypse",
+		"scarab2": "HVY Scarab Fiction",
+		"scarab3": "HVY Scarab Nightmare",
+		"thruster": "Mammoth Thruster",
+		"trailersmall2": "Vom Feuer Anti-Aircraft Trailer",
+		"minitank": "Tank Invade and Persuade",
+		"squaddie": "Mammoth Squaddie",
+		"squaddie2": "Mammoth Armed Squaddie",
+		"squaddie3": "Mammoth Squaddie Classic",
+		"winky": "Vapid Winky",
+		"chimera": "Nagasaki Chimera",
+		"daemon2": "Western Daemon",
+		"deathbike": "Western Deathbike Apocalypse",
+		"deathbike2": "Western Deathbike Fiction",
+		"deathbike3": "Western Deathbike Nightmare",
+		"diablous2": "Principe Diabolus Custom",
+		"esskey": "Pegassi Esskey",
+		"hakuchou2": "Shitzu Hakuchou Drag",
+		"innovation": "LCC Innovation",
+		"lectro": "Principe Lectro",
+		"oppressor": "Pegassi Oppressor",
+		"oppressor2": "Pegassi Oppressor Mk II",
+		"ratbike": "Western Rat Bike",
+		"sanctus": "LCC Sanctus",
+		"shotaro": "Nagasaki Shotaro",
+		"manchez3": "Maibatsu Manchez Scout C",
+		"powersurge": "Western Powersurge",
+		"deviant": "Schyster Deviant",
+		"dominator4": "Vapid Dominator Apocalypse",
+		"dominator5": "Vapid Dominator Fiction",
+		"dominator6": "Vapid Dominator Nightmare",
+		"dukes2": "Imponte Duke O Death",
+		"dukes3": "Imponte Beater Dukes",
+		"impaler2": "Declasse Impaler Apocalypse",
+		"impaler3": "Declasse Impaler Fiction",
+		"impaler4": "Declasse Impaler Nightmare",
+		"imperator": "Vapid Imperator Apocalypse",
+		"imperator2": "Vapid Imperator Fiction",
+		"imperator3": "Vapid Imperator Nightmare",
+		"lurcher": "Albany Lurcher",
+		"peyote2": "Vapid Peyote Gasser",
+		"ruiner": "Imponte Ruiner",
+		"ruiner2": "Imponte Ruiner 2000",
+		"ruiner3": "Imponte Ruiner",
+		"slamvan2": "Vapid Lost Slamvan",
+		"slamvan4": "Vapid Slamvan Apocalypse",
+		"slamvan5": "Vapid Slamvan Fiction",
+		"slamvan6": "Vapid Slamvan Nightmare",
+		"tampa3": "Declasse Weaponized Tampa",
+		"yosemite": "Declasse Yosemite",
+		"dominator8": "Vapid Dominator GTT",
+		"greenwood": "Bravado Greenwood",
+		"weevil2": "BF Weevil Custom",
+		"blazer5": "Nagasaki Blazer Aqua",
+		"verus": "Dinka Verus",
+		"brawler": "Coil Brawler",
+		"bruiser": "Benefactor Bruiser Apocalypse",
+		"bruiser2": "Benefactor Bruiser Fiction",
+		"bruiser3": "Benefactor Bruiser Nightmare",
+		"brutus": "Declasse Brutus Apocalypse",
+		"brutus2": "Declasse Brutus Fiction",
+		"brutus3": "Declasse Brutus Nightmare",
+		"caracara": "Vapid Caracara",
+		"dloader": "Bravado Duneloader",
+		"dune2": "BF Dune UFO",
+		"dune3": "BF Dune FAV",
+		"dune4": "Ramp Buggy",
+		"dune5": "Ramp Buggy",
+		"insurgent": "HVY Insurgent Pick-Up",
+		"insurgent2": "HVY Insurgent",
+		"insurgent3": "HVY Insurgent Pick-Up Custom",
+		"marshall": "Cheval Marshall",
+		"mesa3": "Canis Mesa",
+		"monster": "Vapid Liberator",
+		"monster3": "Bravado Sasquatch Apocalypse",
+		"monster4": "Bravado Sasquatch Fiction",
+		"monster5": "Bravado Sasquatch Nightmare",
+		"menacer": "HVY Menacer",
+		"nightshark": "HVY Nightshark",
+		"rancherxl2": "Declasse Rancher XL",
+		"rcbandito": "RC Bandito",
+		"technical": "Karin Technical",
+		"technical2": "Karin Technical Aqua",
+		"technical3": "Karin Technical Custom",
+		"zhaba": "RUNE Zhaba",
+		"draugur": "Declasse Draugur",
+		"ratel": "Vapid Ratel",
+		"formula": "Progen PR4",
+		"formula2": "Ocelot R88",
+		"openwheel1": "Benefactor BR8",
+		"openwheel2": "Declasse DR1",
+		"alphaz1": "Buckingham Alpha-Z1",
+		"avenger": "Mammoth Avenger",
+		"avenger2": "Mammoth Avenger",
+		"avenger3": "Mammoth Avenger",
+		"besra": "Western Besra",
+		"blimp": "Atomic Blimp",
+		"blimp2": "Xero Blimp",
+		"blimp3": "Дирижабль",
+		"bombushka": "RM-10 Bombushka",
+		"cargoplane": "Cargo Plane",
+		"cuban800": "Cuban 800",
+		"dodo": "Mammoth Dodo",
+		"duster": "Duster",
+		"howard": "Buckingham Howard NX-25",
+		"hydra": "Mammoth Hydra",
+		"jet": "Jet",
+		"lazer": "P-996 LAZER",
+		"luxor": "Buckingham Luxor",
+		"mammatus": "Mammatus",
+		"microlight": "Nagasaki Ultralight",
+		"miljet": "Buckingham Miljet",
+		"mogul": "Mammoth Mogul",
+		"molotok": "V-65 Molotok",
+		"nimbus": "Buckingham Nimbus",
+		"nokota": "P-45 Nokota",
+		"pyro": "Buckingham Pyro",
+		"rogue": "Western Rogue",
+		"seabreeze": "Western Seabreeze",
+		"shamal": "Buckingham Shamal",
+		"starling": "LF-22 Starling",
+		"strikeforce": "B-11 Strikeforce",
+		"stunt": "Mallard",
+		"titan": "Titan",
+		"tula": "Mammoth Tula",
+		"velum": "Velum",
+		"velum2": "Velum 5-Seater",
+		"vestra": "Buckingham Vestra",
+		"volatol": "Volatol",
+		"alkonost": "RO-86 Alkonost",
+		"raiju": "Mammoth F-160 Raiju",
+		"sled": "Sled",
+		"baller3": "Gallivanter Baller LE",
+		"baller5": "Gallivanter Baller LE (Armored)",
+		"baller6": "Gallivanter Baller LE LWB (Armored)",
+		"mesa2": "Canis Mesa",
+		"novak": "Lampadati Novak",
+		"xls2": "Benefactor XLS (Armored)",
+		"asea2": "Declasse Asea",
+		"cog552": "Enus Cognoscenti 55 (Armored)",
+		"cognoscenti2": "Enus Cognoscenti (Armored)",
+		"emperor3": "Albany Emperor",
+		"fugitive": "Cheval Fugitive",
+		"limo2": "Benefactor Turreted Limo",
+		"romero": "Chariot Romero Hearse",
+		"schafter5": "Benefactor Schafter V12 (Armored)",
+		"schafter6": "Benefactor Schafter LWB (Armored)",
+		"stafford": "Enus Stafford",
+		"tailgater": "Obey Tailgater",
+		"washington": "Albany Washington",
+		"tailgater2": "Obey Tailgater S",
+		"airbus": "Airport Bus",
+		"brickade": "MLT Brickade",
+		"coach": "Dashound",
+		"pbus2": "Party Bus",
+		"rallytruck": "MTL Dune",
+		"rentalbus": "Rental Shuttle Bus",
+		"tourbus": "Tourbus",
+		"trash2": "Trashmaster",
+		"wastelander": "MTL Wastelander",
+		"brickade2": "MTL Brickade 6x6",
+		"alpha": "Albany Alpha",
+		"coquette": "Invetero Coquette",
+		"deveste": "Principe Deveste Eight",
+		"feltzer2": "Benefactor Feltzer",
+		"flashgt": "Vapid Flash GT",
+		"furoregt": "Lampadati Furore GT",
+		"futo": "Karin Futo",
+		"gb200": "Vapid GB200",
+		"hotring": "Declasse Hotring Sabre",
+		"issi7": "Weeny Issi Sport",
+		"italigto": "Grotti Itali GTO",
+		"khamelion": "Hijak Khamelion",
+		"kuruma2": "Karin Kuruma (Armored)",
+		"locust": "Ocelot Locust",
+		"neo": "Vysser Neo",
+		"paragon2": "Enus Paragon R Armorr",
+		"rapidgt": "Dewbauchee Rapid GT",
+		"schafter3": "Benefactor Schafter V12",
+		"schafter4": "Benefactor Schafter LWB",
+		"schlagen": "Benefactor Schlagen GT",
+		"seven70": "Dewbauchee Seven-70",
+		"specter2": "Dewbauchee Specter Custom",
+		"sultan2": "Karin Sultan Classic",
+		"tampa2": "Declasse Drift Tampa",
+		"tropos": "Lampadati Tropos Rallye",
+		"verlierer2": "Bravado Verlierer",
+		"zr380": "Annis ZR380 Apocalypse",
+		"zr3802": "Annis ZR380 Fiction",
+		"zr3803": "Annis ZR380 Nightmare",
+		"coquette4": "Invetero Coquette D10",
+		"rt3000": "Dinka RT3000",
+		"corsita": "Lampadati Corsita",
+		"sm722": "Benefactor SM722",
+		"tenf": "Obey 10F",
+		"panthere": "Toundra Panthere",
+		"everon2": "Karin Hotring Everon",
+		"coureur": "Penaud La Coureuse",
+		"gauntlet6": "Bravado Hotring Hellfire",
+		"ardent": "Ocelot Ardent",
+		"btype": "Albany Roosevelt",
+		"btype2": "Albany Fränken Stange",
+		"btype3": "Albany Roosevelt Valor",
+		"coquette2": "Invetero Coquette Classic",
+		"deluxo": "Imponte Deluxo",
+		"feltzer3": "Benefactor Stirling GT",
+		"jb700": "Dewbauchee JB 700",
+		"jb7002": "Dewbauchee JB 700W",
+		"michelli": "Lampadati Michelli GT",
+		"pigalle": "Lampadati Pigalle",
+		"rapidgt3": "Dewbauchee Rapid GT Classic",
+		"retinue2": "Vapid Retinue Mk II",
+		"stinger": "Grotti Stinger",
+		"stromberg": "Ocelot Stromberg",
+		"viseris": "Lampadati Viseris",
+		"ztype": "Truffade Z-Type",
+		"toreador": "Pegassi Toreador",
+		"adder": "Truffade Adder",
+		"autarch": "Overflod Autarch",
+		"banshee2": "Bravado Banshee 900R",
+		"le7b": "Annis RE-7B",
+		"penetrator": "Ocelot Penetrator",
+		"s80": "Annis S80RR",
+		"sc1": "Ubermacht SC1",
+		"scramjet": "Declasse Scramjet",
+		"sheava": "Emperor ETR1",
+		"sultanrs": "Karin Sultan RS",
+		"taipan": "Cheval Taipan",
+		"tezeract": "Pegassi Tezeract",
+		"thrax": "Truffade Thrax",
+		"tyrus": "Progen Tyrus",
+		"vagner": "Dewbauchee Vagner",
+		"vigilante": "Vigilante",
+		"visione": "Grotti Visione",
+		"voltic2": "Coil Rocket Voltic",
+		"zentorno": "Pegassi Zentorno",
+		"tigon": "Lampadati Tigon",
+		"lm87": "Benefactor LM87",
+		"entity3": "Overflod Entity MT",
+		"armytanker": "Army Trailer",
+		"armytrailer": "Army Trailer",
+		"armytrailer2": "Army Trailer",
+		"baletrailer": "Baletrailer",
+		"boattrailer": "Boat Trailer",
+		"cablecar": "Cable Car",
+		"docktrailer": "docktrailer",
+		"freighttrailer": "freighttrailer",
+		"graintrailer": "graintrailer",
+		"proptrailer": "proptrailer",
+		"raketrailer": "Trailer",
+		"tr2": "Trailer",
+		"tr3": "Trailer",
+		"tr4": "Trailer",
+		"trflat": "Trailer",
+		"tvtrailer": "Trailer",
+		"tanker": "Trailer",
+		"tanker2": "tanker2",
+		"trailerlarge": "Mobile Operations Center",
+		"trailerlogs": "Trailer",
+		"trailersmall": "Trailer",
+		"trailers": "Trailer",
+		"trailers2": "Trailer",
+		"trailers3": "Trailer",
+		"trailers4": "Trailer",
+		"mjtanker": "HVY Tanker",
+		"mjtrailer": "HVY Trailer",
+		"mjtrailer2": "HVY Trailer MK2",
+		"mjtrailer3": "HVY Trailer MK3",
+		"mjtrailer4": "HVY Trailer MK4",
+		"mjtrailer5": "HVY Trailer MK5",
+		"mjtrailerflat": "HVY Trailer Flat",
+		"mjtrailerflat2": "HVY Trailer Flat MK2",
+		"mjtrailerflat3": "HVY Trailer Flat MK3",
+		"mjtrailerveh": "HVY Trailer Vehicles Flat",
+		"mjfiretruck": "MLT Tarrton Fire Truck 6x6",
+		"freight": "Freight Train",
+		"freightcar": "Freight Train",
+		"freightcont1": "Freight Train",
+		"freightcont2": "Freight Train",
+		"freightgrain": "Freight Train",
+		"tankercar": "Freight Train",
+		"airtug": "Airtug",
+		"caddy": "Caddy",
+		"caddy2": "Caddy",
+		"caddy3": "Caddy",
+		"docktug": "Docktug",
+		"forklift": "HVY Forklift",
+		"mower": "Lawn Mower",
+		"ripley": "Ripley",
+		"sadler": "Vapid Sadler",
+		"sadler2": "Vapid Sadler",
+		"scrap": "Scrap Truck",
+		"towtruck": "Towtruck",
+		"towtruck2": "Towtruck",
+		"tractor": "Tractor",
+		"tractor2": "Stanley Fieldmaster",
+		"tractor3": "Stanley Fieldmaster",
+		"utillitruck": "Utility Truck",
+		"utillitruck2": "Utility Truck",
+		"utillitruck3": "Utility Truck",
+		"slamtruck": "Vapid Slamtruck",
+		"bison": "Bravado Bison",
+		"bison2": "Bravado Bison 2",
+		"bison3": "Bravado Bison 3",
+		"boxville3": "Brute Boxville",
+		"boxville5": "Armored Boxville",
+		"burrito": "Declasse Burrito",
+		"burrito2": "Declasse Burrito",
+		"burrito4": "Declasse Burrito",
+		"burrito5": "Declasse Burrito",
+		"camper": "Brute Camper",
+		"gburrito": "Declasse Gang Burrito",
+		"gburrito2": "Declasse Gang Burrito",
+		"journey": "Zirconium Journey",
+		"minivan": "Vapid Minivan",
+		"minivan2": "Vapid Minivan Custom",
+		"pony": "Brute Pony",
+		"rumpo": "Bravado Rumpo",
+		"rumpo2": "Bravado Rumpo",
+		"rumpo3": "Bravado Rumpo Custom",
+		"speedo2": "Vapid Clown Van",
+		"speedo4": "Vapid Clown Van",
+		"surfer": "BF Surfer",
+		"surfer2": "BF Surfer",
+		"youga": "Bravado Youga",
+		"youga2": "Bravado Youga Classic",
+		"youga3": "Bravado Youga Classic 4x4",
+		"journey2": "Zirconium Journey II",
+		"surfer3": "BF Surfer Custom",
+		"speedo5": "Vapid Ratel",
+		"mule5": "Maibatsu Mule",
+		"shinobi": "Nagasaki Shinobi",
+		"patriot3": "Mammoth Patriot Mil-Spec",
+		"cinquemila": "Lampadati Cinquemila",
+		"baller7": "Gallivanter Baller ST",
+		"youga4": "Vapid Youga Custom",
+		"aleutian": "Vapid Aleutian",
+		"fr36": "Fathom FR36",
+		"castigator": "Canis Castigator",
+		"envisage": "Bollokan Envisage",
+		"eurosx32": "Annis Euros X32",
+		"vorschlaghammer": "Benefactor Vorschlaghammer",
+		"dominator10": "Vapid Dominator FX",
+		"ambulance": "Ambulance",
+		"fbi": "FIB",
+		"fbi2": "FIB",
+		"lguard": "Declasse Granger Lifeguard",
+		"pbus": "Prison Bus",
+		"police": "Police Cruiser",
+		"police2": "Police Cruiser",
+		"police3": "Police Cruiser",
+		"police4": "Unmarked Cruiser",
+		"policeb": "Police Bike",
+		"policeold1": "Police Rancher",
+		"policeold2": "Police Roadcruiser",
+		"policet": "Police Transporter",
+		"pranger": "Park Ranger",
+		"riot": "Police Riot",
+		"riot2": "RCV",
+		"sheriff": "Sheriff Cruiser",
+		"sheriff2": "Sheriff SUV",
+		"predator": "Police Predator",
+		"polmav": "Police Maverick",
+		"polbuz": "Police Buzzard",
+		"polbuz1": "Police Buzzard",
+		"polbuz2": "Ambulance Buzzard",
+		"polbuz3": "Sheriff LSC Buzzard",
+		"polbuz4": "SANG Buzzard",
+		"polbuz5": "Weazel News Buzzard",
+		"polbuz6": "FIB Buzzard",
+		"bulletems": "Vapid Bullet Highway Patrol",
+		"coquetteems": "Invetero Coquette Highway Patrol",
+		"dominator3ems": "Vapid Dominator GTX Highway Patrol",
+		"vigero2ems": "Declasse Vigero ZX Highway Patrol",
+		"tor_police_buffalo": "Bravado Buffalo Police",
+		"tor_police_contender": "Vapid Contender Police",
+		"tor_police_cruiser2": "Vapid Cruiser II Police",
+		"tor_police_insurgent": "HVY Insurgent Police",
+		"tor_police_scout": "Vapid Scout Police",
+		"tor_police_scout_k9": "Vapid Scout Police K9",
+		"tor_police_speedo": "Vapid Speedo Police",
+		"tor_police_unmarked": "Vapid Cruiser Unmarked P",
+		"tor_police_speedunit": "Bravado Gauntlet Hellfire Police",
+		"tor_sheriff_cruiser": "Cruiser Sheriff",
+		"tor_sheriff_cheval": "Bravado Cheval Sheriff",
+		"tor_sheriff_granger": "Declasse Granger Sheriff",
+		"tor_sheriff_insurgent": "HVY Insurgent Sheriff",
+		"tor_sheriff_scout": "Vapid Scout Sheriff",
+		"tor_sheriff_scout_k9": "Vapid Scout Sheriff K9",
+		"tor_sheriff_speedunit": "Bravado Gauntlet Hellfire Sheriff",
+		"tor_sheriff_unmarked": "Vapid Cruiser Unmarked S",
+		"tor_sang_insurgent": "HVY Insurgent SANG",
+		"tor_fib_insurgent": "HVY Insurgent FIB",
+		"tor_fib_armor1": "Benefactor XLS (Armored)",
+		"tor_fib_jugular": "Ocelot Jugular Unmarked",
+		"tor_fib_speedo": "Vapid Speedo Unmarked",
+		"tor_fib_neon": "Pfister Neon Unmarked",
+		"tor_fib_rumpo": "Bravado Rumpo Unmarked",
+		"tor_fib_novak": "Lampadati Novak Unmarked",
+		"tor_fib_caracara": "Vapid Caracara Unmarked",
+		"tor_fib_gresley": "Bravado Gresley Unmarked",
+		"tor_unmarked_scout": "Vapid Scout Unmarked F",
+		"tor_fib_speedunit": "Bravado Gauntlet Hellfire FIB",
+		"tor_fib_speedunit1": "Vapid Dominator GTX FIB",
+		"bcat": "Vapid Tarv",
+		"emsnspeedo": "Vapid Speedo II EMS",
+		"emsroamer": "Dundreary Landstalker EMS",
+		"pscoutnew": "Vapid Scout II Police",
+		"swatstalker": "Dundreary Landstalker II Unmarked",
+		"zr380c": "Annis ZR-380 Custom",
+		"zr380s": "Annis ZR-380",
+		"zionks": "Krieger Specials Zion Classic",
+		"sigma2": "Karin Sigma-Two",
+		"schwartzerc": "Benefactor Schwartzer Classic",
+		"s230": "Annis S-230",
+		"gauntlets": "Bravado Gauntlet S",
+		"clubgtr": "BF Club GTR",
+		"bison4": "Bravado Bison 4",
+		"ferocid": "Bravado Feroci Custom",
+		"jester5": "Dinka Jester (Vanilla)",
+		"scout": "Vapid Scout",
+		"seraph3": "Ubermacht Seraph XS",
+		"skart": "Nagasaki Shopping Kart",
+		"vincent2": "Maibatsu Vincent Sport",
+		"packer2": "MTL Semi-Truck",
+		"towtruck3": "MTL Tow Truck",
+		"pounder3": "MTL Flatbed",
+		"flatbed2": "MTL Flatbed",
+		"jackgpr": "Ocelot Jackal Custom",
+		"pentro": "Maibatsu Penumbra Retro",
+		"pentro2": "Maibatsu Penumbra Retro (RHD)",
+		"pentro3": "Maibatsu Penumbra Retro Spyder",
+		"pentrogpr": "Maibatsu Penumbra Retro Custom",
+		"pentrogpr2": "Maibatsu Penumbra Retro S-Custom",
+		"urus58": "Lamborghini Urus Kreed Edition",
+		"chrysler300": "Chrysler 300",
+		"express": "Chevrolet Express",
+		"slr2": "Mercedes-Benz SLR McLaren",
+		"rc211v": "Honda RC211V",
+		"hummer6": "GMC Hummer HX",
+		"lc150": "Toyota Land Cruiser 150 Prado",
+		"wrx": "Subaru WRX",
+		"maloo": "HSV Maloo",
+		"6series": "BMW 6-Series F13",
+		"fpace": "Jaguar F-Pace",
+		"gtc4": "Ferrari GTC4Lusso",
+		"valour": "Aston Martin Valour",
+		"batur": "Bentley Mulliner Batur",
+		"sls": "Mercedes-AMG SLS",
+		"ct5": "Cadillac CT5",
+		"db5": "Aston Martin DB5",
+		"charger3": "Dodge Charger FF",
+		"modelt": "Ford Model T",
+		"regalia": "Quartz Regalia",
+		"turbor": "Quadra Turbo-R V-Tech",
+		"m12b": "AMG M12B Warthog",
+		"firebird": "Pontiac Firebird KITT",
+		"wrangler": "Jeep Wrangler",
+		"hotwheels": "Hot Wheels Twin Mill",
+		"hotwheels2": "Hot Wheels Bone Shaker",
+		"ae86rw": "Toyota Sprinter Trueno",
+		"aeroboat": "Rolls-Royce Aeroboat V12",
+		"ec120": "Eurocopter EC120 Colibri",
+		"mc20": "Maserati MC20",
+		"rrphantom2": "Rolls-Royce Phantom Limo",
+		"d8": "Donkervoort D8 GTO",
+		"eqs": "Mercedes-Benz EQS",
+		"spur": "Bentley Flying Spur",
+		"victorias": "Ford Crown Victoria",
+		"tauruss": "Ford Taurus",
+		"explorers": "Ford Explorer",
+		"f150s": "Ford F-150 Raptor",
+		"mustangs": "Ford Mustang S550",
+		"fordgts": "Ford GT",
+		"transit2s2": "Ford Transit Service",
+		"charger4s": "Dodge Charger SRT",
+		"chargers": "Dodge Charger SRT",
+		"durangos": "Dodge Durango",
+		"rams": "Dodge RAM 1500",
+		"challengers": "Dodge Challenger",
+		"vipers": "Dodge Viper VX",
+		"dsprinters": "Dodge Sprinter",
+		"ct5s": "Cadillac CT5",
+		"escalade2s": "Cadillac Escalade GM T1XL",
+		"xtss": "Cadillac XTS Royale",
+		"caprices": "Chevrolet Caprice",
+		"volts": "Chevrolet Volt",
+		"tahoe2s": "Chevrolet Tahoe",
+		"silverados": "Chevrolet Silverado T1XX",
+		"expresss": "Chevrolet Express",
+		"camaros": "Chevrolet Camaro 1LT",
+		"corvette3s": "Chevrolet Corvette C1"
+	},
+	"specs": {
+		"mclarengt": {
+			"spd": 295,
+			"trunk": 70,
+			"fuel": 72,
+			"cls": "donate",
+			"ft": "Premium"
+		},
+		"samara2": {
+			"spd": 0,
+			"trunk": 0,
+			"fuel": 14000,
+			"cls": "boatdonate",
+			"ft": "Premium"
+		},
+		"projectevo": {
+			"spd": 335,
+			"trunk": 0,
+			"fuel": 100,
+			"cls": "donate",
+			"ft": "Premium"
+		},
+		"fenomeno": {
+			"spd": 315,
+			"trunk": 100,
+			"fuel": 90,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"mclaren570s": {
+			"spd": 295,
+			"trunk": 70,
+			"fuel": 72,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"sprinter": {
+			"spd": 195,
+			"trunk": 190,
+			"fuel": 93,
+			"cls": "donate",
+			"ft": "Regular"
+		},
+		"zeekr9x": {
+			"spd": 250,
+			"trunk": 120,
+			"fuel": 100,
+			"cls": "unique",
+			"ft": "Electro"
+		},
+		"r1t": {
+			"spd": 240,
+			"trunk": 150,
+			"fuel": 100,
+			"cls": "unique",
+			"ft": "Electro"
+		},
+		"alphard": {
+			"spd": 225,
+			"trunk": 100,
+			"fuel": 75,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"eclass6": {
+			"spd": 225,
+			"trunk": 90,
+			"fuel": 80,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"lc100": {
+			"spd": 215,
+			"trunk": 90,
+			"fuel": 96,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"240sx": {
+			"spd": 205,
+			"trunk": 70,
+			"fuel": 65,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"chevroletc10": {
+			"spd": 175,
+			"trunk": 110,
+			"fuel": 75,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"ferrarivision": {
+			"spd": 355,
+			"trunk": 0,
+			"fuel": 100,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"marussiab2": {
+			"spd": 325,
+			"trunk": 50,
+			"fuel": 80,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"stelvio": {
+			"spd": 285,
+			"trunk": 120,
+			"fuel": 64,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"droptail": {
+			"spd": 295,
+			"trunk": 0,
+			"fuel": 100,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"carreragt": {
+			"spd": 280,
+			"trunk": 30,
+			"fuel": 92,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"murcielago": {
+			"spd": 275,
+			"trunk": 50,
+			"fuel": 100,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"lc250": {
+			"spd": 260,
+			"trunk": 130,
+			"fuel": 80,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"charger5": {
+			"spd": 275,
+			"trunk": 70,
+			"fuel": 90,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"corvette4": {
+			"spd": 240,
+			"trunk": 90,
+			"fuel": 68,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"mx52": {
+			"spd": 230,
+			"trunk": 50,
+			"fuel": 45,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"charger4": {
+			"spd": 0,
+			"trunk": 80,
+			"fuel": 80,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"hatch2": {
+			"spd": 235,
+			"trunk": 70,
+			"fuel": 44,
+			"cls": "unique",
+			"ft": "Electro"
+		},
+		"gtc4": {
+			"spd": 285,
+			"trunk": 130,
+			"fuel": 91,
+			"cls": "donate",
+			"ft": "Premium"
+		},
+		"cclass3": {
+			"spd": 245,
+			"trunk": 60,
+			"fuel": 66,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"uaz3151": {
+			"spd": 0,
+			"trunk": 120,
+			"fuel": 72,
+			"cls": "null",
+			"ft": "Regular"
+		},
+		"fpace": {
+			"spd": 275,
+			"trunk": 130,
+			"fuel": 63,
+			"cls": "donate",
+			"ft": "Premium"
+		},
+		"corolla": {
+			"spd": 205,
+			"trunk": 65,
+			"fuel": 55,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"mclarenw1": {
+			"spd": 335,
+			"trunk": 0,
+			"fuel": 62,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"12cilindri": {
+			"spd": 315,
+			"trunk": 60,
+			"fuel": 92,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"rh1250s": {
+			"spd": 300,
+			"trunk": 0,
+			"fuel": 12,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"audia3": {
+			"spd": 270,
+			"trunk": 80,
+			"fuel": 55,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"tank300": {
+			"spd": 240,
+			"trunk": 110,
+			"fuel": 80,
+			"cls": "unique",
+			"ft": "Regular"
+		},
+		"tiguan2": {
+			"spd": 225,
+			"trunk": 100,
+			"fuel": 58,
+			"cls": "unique",
+			"ft": "Plus"
+		},
+		"sian": {
+			"spd": 330,
+			"trunk": 30,
+			"fuel": 85,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"6series": {
+			"spd": 270,
+			"trunk": 90,
+			"fuel": 70,
+			"cls": "donate",
+			"ft": "Premium"
+		},
+		"atlantic": {
+			"spd": 305,
+			"trunk": 110,
+			"fuel": 100,
+			"cls": "unique",
+			"ft": "Premium"
+		},
+		"bentley8": {
+			"spd": 200,
+			"trunk": 80,
+			"fuel": 108,
+			"cls": "donate",
+			"ft": "Premium"
+		},
+		"etron": {
+			"spd": 255,
+			"trunk": 95,
+			"fuel": 90,
+			"cls": "null",
+			"ft": "Electro"
+		},
+		"taycan": {
+			"spd": 275,
+			"trunk": 80,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Electro"
+		},
+		"x6m2": {
+			"spd": 260,
+			"trunk": 100,
+			"fuel": 90,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"models": {
+			"spd": 240,
+			"trunk": 85,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Electro"
+		},
+		"5series": {
+			"spd": 275,
+			"trunk": 80,
+			"fuel": 92,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"eclass3": {
+			"spd": 275,
+			"trunk": 90,
+			"fuel": 84,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"gt63s": {
+			"spd": 280,
+			"trunk": 80,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"f150": {
+			"spd": 245,
+			"trunk": 175,
+			"fuel": 120,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"rs72": {
+			"spd": 275,
+			"trunk": 85,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"63gls": {
+			"spd": 240,
+			"trunk": 120,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"cayen19": {
+			"spd": 260,
+			"trunk": 100,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"bmwx7": {
+			"spd": 255,
+			"trunk": 120,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"viper": {
+			"spd": 265,
+			"trunk": 45,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"s63w222": {
+			"spd": 240,
+			"trunk": 90,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"bmwm7": {
+			"spd": 240,
+			"trunk": 80,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"xes": {
+			"spd": 230,
+			"trunk": 85,
+			"fuel": 82,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"gle63": {
+			"spd": 255,
+			"trunk": 100,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"ftype": {
+			"spd": 250,
+			"trunk": 30,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"x6m": {
+			"spd": 240,
+			"trunk": 100,
+			"fuel": 100,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"r820": {
+			"spd": 275,
+			"trunk": 25,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"m850": {
+			"spd": 265,
+			"trunk": 70,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"nsx": {
+			"spd": 250,
+			"trunk": 25,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"m4comp": {
+			"spd": 260,
+			"trunk": 75,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"rs5": {
+			"spd": 235,
+			"trunk": 80,
+			"fuel": 65,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"jgc": {
+			"spd": 235,
+			"trunk": 125,
+			"fuel": 67,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"z4b": {
+			"spd": 240,
+			"trunk": 40,
+			"fuel": 60,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"tt": {
+			"spd": 260,
+			"trunk": 50,
+			"fuel": 55,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"gle2": {
+			"spd": 260,
+			"trunk": 130,
+			"fuel": 110,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"x5g05": {
+			"spd": 260,
+			"trunk": 120,
+			"fuel": 100,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"macan": {
+			"spd": 230,
+			"trunk": 115,
+			"fuel": 110,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"rs6": {
+			"spd": 250,
+			"trunk": 90,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"lc300": {
+			"spd": 240,
+			"trunk": 110,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"g55": {
+			"spd": 225,
+			"trunk": 120,
+			"fuel": 100,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"i8": {
+			"spd": 250,
+			"trunk": 40,
+			"fuel": 100,
+			"cls": "null",
+			"ft": "Electro"
+		},
+		"corvett08": {
+			"spd": 250,
+			"trunk": 60,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"ast": {
+			"spd": 250,
+			"trunk": 40,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"skyline": {
+			"spd": 235,
+			"trunk": 60,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"modelx": {
+			"spd": 230,
+			"trunk": 85,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Electro"
+		},
+		"cesc21": {
+			"spd": 225,
+			"trunk": 120,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"gsx1000": {
+			"spd": 280,
+			"trunk": 0,
+			"fuel": 18,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"charger20": {
+			"spd": 230,
+			"trunk": 80,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"fx50s": {
+			"spd": 240,
+			"trunk": 75,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"lex570": {
+			"spd": 245,
+			"trunk": 105,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"rrab": {
+			"spd": 230,
+			"trunk": 120,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"evo10": {
+			"spd": 230,
+			"trunk": 50,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"rs7": {
+			"spd": 245,
+			"trunk": 85,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"x5me70": {
+			"spd": 240,
+			"trunk": 100,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"lc200": {
+			"spd": 225,
+			"trunk": 110,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"camaro21": {
+			"spd": 235,
+			"trunk": 80,
+			"fuel": 80,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"2020mustang": {
+			"spd": 235,
+			"trunk": 75,
+			"fuel": 85,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"bmwg20": {
+			"spd": 230,
+			"trunk": 70,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"kiastinger": {
+			"spd": 230,
+			"trunk": 80,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"m5e60": {
+			"spd": 230,
+			"trunk": 80,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Premium"
+		},
+		"evo9": {
+			"spd": 230,
+			"trunk": 60,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"touareg": {
+			"spd": 225,
+			"trunk": 95,
+			"fuel": 70,
+			"cls": "null",
+			"ft": "Plus"
+		},
+		"explorer": {
+			"spd": 235,
+			"trunk": 105,
+			"fuel": 83,
+			"cls": "null",
+			"ft": "Plus"
+		}
+	},
+	"realBrands": [
+		"bmw",
+		"mercedes",
+		"mercedes-benz",
+		"toyota",
+		"porsche",
+		"ferrari",
+		"lamborghini",
+		"audi",
+		"volkswagen",
+		"ford",
+		"chevrolet",
+		"nissan",
+		"honda",
+		"mazda",
+		"kia",
+		"hyundai",
+		"mclaren",
+		"bugatti",
+		"bentley",
+		"rolls-royce",
+		"aston martin",
+		"jaguar",
+		"land rover",
+		"range rover",
+		"dodge",
+		"jeep",
+		"tesla",
+		"koenigsegg",
+		"pagani",
+		"maserati",
+		"lexus",
+		"infiniti",
+		"subaru",
+		"mitsubishi",
+		"kenworth",
+		"volvo",
+		"cadillac",
+		"gmc",
+		"chrysler",
+		"peugeot",
+		"renault",
+		"citroen",
+		"skoda",
+		"seat",
+		"fiat",
+		"alfa romeo",
+		"suzuki",
+		"acura",
+		"lincoln",
+		"buick",
+		"genesis",
+		"rivian",
+		"lucid",
+		"hummer",
+		"mini",
+		"smart",
+		"datsun",
+		"pontiac",
+		"dacia"
+	]
+}
