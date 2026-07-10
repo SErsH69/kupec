@@ -83,8 +83,47 @@ export function CraftTab() {
           defaultSort={{ key: 'perHour', dir: -1 }}
           rowKey={(r) => r.out}
           empty="Импортируй раздел «Предметы» — появятся расчёты крафта."
+          renderExpanded={(r) => <IngredientBreakdown recipe={r} />}
         />
       </Card>
+    </div>
+  );
+}
+
+function IngredientBreakdown({ recipe }: { recipe: CraftResult }) {
+  return (
+    <div className="text-xs">
+      <div className="mb-2 text-muted">
+        Ингредиенты на 1 крафт (выход ~{recipe.outQty} шт, шанс с {recipe.chBase}%):
+      </div>
+      <table className="w-full">
+        <tbody>
+          {recipe.ingDetail.map((ing) => (
+            <tr key={ing.n} className="border-b border-line/30">
+              <td className="py-1 pr-2">
+                {ing.n} <span className="text-muted">×{ing.q}</span>
+              </td>
+              <td className="py-1 pr-2">
+                {ing.via === 'craft' && <Badge tone="accent">крафт</Badge>}
+                {ing.via === 'market' && <Badge>рынок</Badge>}
+                {ing.via === 'none' && <Badge tone="amber">нет цены</Badge>}
+              </td>
+              <td className="py-1 pr-2 text-right tabular-nums text-muted">
+                {ing.unit != null ? money(ing.unit) : '—'}/шт
+              </td>
+              <td className="py-1 text-right font-medium tabular-nums">
+                {ing.line != null ? money(ing.line) : '—'}
+              </td>
+            </tr>
+          ))}
+          <tr>
+            <td className="pt-2 text-muted" colSpan={3}>
+              Ингредиенты + {money(recipe.money)} за крафт
+            </td>
+            <td className="pt-2 text-right font-semibold tabular-nums">= {money(recipe.cost)}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }

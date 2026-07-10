@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useMemo, useState, type ReactNode } from 'react';
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
@@ -76,14 +76,24 @@ export function DataTable<T>({
   defaultSort,
   rowKey,
   empty = 'Нет данных',
+  renderExpanded,
 }: {
   columns: Column<T>[];
   data: T[];
   defaultSort?: { key: string; dir: 1 | -1 };
   rowKey: (row: T, i: number) => string;
   empty?: ReactNode;
+  /** Если задан — строки кликабельны и раскрывают деталь под собой. */
+  renderExpanded?: (row: T) => ReactNode;
 }) {
   const [sort, setSort] = useState(defaultSort ?? { key: columns[0]!.key, dir: -1 as 1 | -1 });
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const toggle = (k: string) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
 
   const sorted = useMemo(() => {
     const col = columns.find((c) => c.key === sort.key);
@@ -129,18 +139,37 @@ export function DataTable<T>({
           </tr>
         </thead>
         <tbody>
-          {sorted.map((row, i) => (
-            <tr key={rowKey(row, i)} className="border-b border-line/50 hover:bg-surface-2/50">
-              {columns.map((c) => (
-                <td
-                  key={c.key}
-                  className={`px-3 py-2 tabular-nums ${c.align === 'right' ? 'text-right' : ''}`}
+          {sorted.map((row, i) => {
+            const k = rowKey(row, i);
+            const isOpen = open.has(k);
+            return (
+              <Fragment key={k}>
+                <tr
+                  onClick={renderExpanded ? () => toggle(k) : undefined}
+                  className={`border-b border-line/50 hover:bg-surface-2/50 ${renderExpanded ? 'cursor-pointer' : ''}`}
                 >
-                  {c.render(row)}
-                </td>
-              ))}
-            </tr>
-          ))}
+                  {columns.map((c, ci) => (
+                    <td
+                      key={c.key}
+                      className={`px-3 py-2 tabular-nums ${c.align === 'right' ? 'text-right' : ''}`}
+                    >
+                      {renderExpanded && ci === 0 && (
+                        <span className="mr-1 inline-block w-3 text-muted">{isOpen ? '▾' : '▸'}</span>
+                      )}
+                      {c.render(row)}
+                    </td>
+                  ))}
+                </tr>
+                {renderExpanded && isOpen && (
+                  <tr className="border-b border-line/50 bg-bg/40">
+                    <td colSpan={columns.length} className="px-3 py-3">
+                      {renderExpanded(row)}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
         </tbody>
       </table>
     </div>
