@@ -34,3 +34,6 @@ majestic_recovery.json
 
 # Бэкапы прототипа (шумят в истории)
 *.backup-*.html
+
+# TypeScript build info
+*.tsbuildinfo
