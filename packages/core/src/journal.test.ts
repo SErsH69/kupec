@@ -78,9 +78,27 @@ describe('journalSummary (flip + craft)', () => {
     expect(s.realized).toBe(1400); // 500 (b) + 700 (c) + 200 (d)
     // realizedCost = 500 (b) + 700 (c) + 400 (d sold) = 1600
     expect(s.roi).toBeCloseTo((1400 / 1600) * 100, 5);
+    // d: непродано 4 шт, listPrice не задан → в продаже не учитывается
+    expect(s.listedValue).toBe(0);
+  });
+
+  it('«сейчас в продаже» = непроданные × цена выставления', () => {
+    const s = journalSummary([
+      trade({ id: 'a', kind: 'craft', qty: 10, materials: 100000, soldUnits: 4, listPrice: 15000 }),
+    ]);
+    expect(s.listedUnits).toBe(6);
+    expect(s.listedValue).toBe(90000); // 6 * 15000
   });
 
   it('пустой журнал', () => {
-    expect(journalSummary([])).toEqual({ open: 0, closed: 0, invested: 0, realized: 0, roi: 0 });
+    expect(journalSummary([])).toEqual({
+      open: 0,
+      closed: 0,
+      invested: 0,
+      realized: 0,
+      roi: 0,
+      listedValue: 0,
+      listedUnits: 0,
+    });
   });
 });

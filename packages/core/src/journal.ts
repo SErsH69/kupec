@@ -115,12 +115,16 @@ export function isOpen(t: Trade): boolean {
 export interface JournalSummary {
   open: number;
   closed: number;
-  /** Вложено в открытые позиции (деньги «в товаре»). */
+  /** Вложено в открытые позиции (себестоимость непроданного). */
   invested: number;
   /** Реализованная прибыль. */
   realized: number;
   /** ROI по реализованному, %. */
   roi: number;
+  /** Стоимость непроданных товаров по цене выставления («сейчас в продаже»). */
+  listedValue: number;
+  /** Непроданных штук выставлено. */
+  listedUnits: number;
 }
 
 /** Сводка по журналу (обрабатывает flip и craft). */
@@ -130,6 +134,8 @@ export function journalSummary(trades: Trade[]): JournalSummary {
   let invested = 0;
   let realized = 0;
   let realizedCost = 0;
+  let listedValue = 0;
+  let listedUnits = 0;
 
   for (const t of trades) {
     if (t.kind === 'craft') {
@@ -139,6 +145,10 @@ export function journalSummary(trades: Trade[]): JournalSummary {
       invested += m.invested;
       realized += m.realized;
       realizedCost += m.costPerUnit * m.soldUnits;
+      if (m.unsold > 0 && m.listPrice != null) {
+        listedValue += m.unsold * m.listPrice;
+        listedUnits += m.unsold;
+      }
     } else {
       const p = tradePnl(t);
       if (p.open) {
@@ -153,5 +163,5 @@ export function journalSummary(trades: Trade[]): JournalSummary {
   }
 
   const roi = realizedCost > 0 ? (realized / realizedCost) * 100 : 0;
-  return { open, closed, invested, realized, roi };
+  return { open, closed, invested, realized, roi, listedValue, listedUnits };
 }

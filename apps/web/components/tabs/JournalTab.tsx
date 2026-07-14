@@ -25,15 +25,26 @@ export function JournalTab() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Открыто позиций" value={summary.open} hint={money(summary.invested)} />
-        <StatCard label="Закрыто" value={summary.closed} />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <StatCard
+          label="Открыто позиций"
+          value={summary.open}
+          hint={`вложено ${money(summary.invested)}`}
+        />
+        <StatCard
+          label="Сейчас в продаже"
+          value={money(summary.listedValue)}
+          hint={`${summary.listedUnits} шт по выставл.`}
+          tone="accent"
+        />
         <StatCard
           label="Реализовано"
           value={money(summary.realized)}
+          hint={`ROI ${summary.roi.toFixed(0)}% по закрытым`}
           tone={summary.realized >= 0 ? 'green' : 'red'}
         />
-        <StatCard label="ROI" value={`${summary.roi.toFixed(0)}%`} tone="accent" />
+        <StatCard label="Закрыто" value={summary.closed} />
+        <StatCard label="Всего сделок" value={summary.open + summary.closed} />
       </div>
 
       <AddTradeForm onAdd={addTrade} items={itemNames} server={server} />
