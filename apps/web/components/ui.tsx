@@ -61,6 +61,22 @@ export function Badge({
   );
 }
 
+/** Звезда «в избранное». */
+export function FavStar({ active, onClick }: { active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      title="В избранное"
+      className={active ? 'text-amber' : 'text-muted/40 hover:text-muted'}
+    >
+      {active ? '★' : '☆'}
+    </button>
+  );
+}
+
 export interface Column<T> {
   key: string;
   header: string;

@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { OverviewTab } from '../components/tabs/OverviewTab';
+import { FavTab } from '../components/tabs/FavTab';
 import { FlipTab } from '../components/tabs/FlipTab';
 import { CraftTab } from '../components/tabs/CraftTab';
 import { KitchenTab } from '../components/tabs/KitchenTab';
@@ -22,6 +23,7 @@ export interface TabDef {
 
 export const TABS: TabDef[] = [
   { key: 'overview', label: 'Топ выгодных', icon: '⭐', Component: OverviewTab, needsData: true },
+  { key: 'fav', label: 'Избранное', icon: '🔖', Component: FavTab, needsData: true },
   { key: 'flip', label: 'Перекупка', icon: '💱', Component: FlipTab, needsData: true },
   { key: 'workshop', label: 'Мастерская', icon: '🔧', Component: CraftTab, needsData: true },
   { key: 'kitchen', label: 'Кухня', icon: '🍳', Component: KitchenTab, needsData: true },

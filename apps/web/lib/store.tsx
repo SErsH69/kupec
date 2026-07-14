@@ -25,10 +25,17 @@ interface StoreState {
   server: string;
   data: Record<string, ServerData>;
   history: Record<string, Snapshot[]>;
+  /** Ключи избранного (`${_path}:${id}`), общие для всех серверов. */
+  favorites: string[];
 }
 
 const LS_KEY = 'kupec.store.v1';
-const EMPTY: StoreState = { server: 'RU17', data: {}, history: {} };
+const EMPTY: StoreState = { server: 'RU17', data: {}, history: {}, favorites: [] };
+
+/** Стабильный ключ строки рынка для избранного. */
+export function rowKey(r: Pick<MarketRow, 'id' | '_path'>): string {
+  return `${r._path ?? ''}:${r.id}`;
+}
 
 interface StoreContextValue {
   ready: boolean;
@@ -44,6 +51,12 @@ interface StoreContextValue {
   /** Загрузить готовые строки рынка (напр. с API) для сервера. */
   loadServerRows: (sid: string, rows: MarketRow[]) => void;
   clear: () => void;
+  /** Избранное. */
+  isFav: (key: string) => boolean;
+  toggleFav: (key: string) => void;
+  /** Строки текущего сервера, отмеченные избранными. */
+  favRows: MarketRow[];
+  favCount: number;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -138,6 +151,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const favSet = useMemo(() => new Set(state.favorites), [state.favorites]);
+  const isFav = useCallback((key: string) => favSet.has(key), [favSet]);
+  const toggleFav = useCallback((key: string) => {
+    setState((p) => {
+      const has = p.favorites.includes(key);
+      track('favorite_toggle', { on: !has });
+      return {
+        ...p,
+        favorites: has ? p.favorites.filter((k) => k !== key) : [...p.favorites, key],
+      };
+    });
+  }, []);
+
   const clear = useCallback(
     () =>
       setState((p) => ({
@@ -159,6 +185,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (k) => (serverData[k as MarketPath]?.length ?? 0) > 0,
   ) as MarketPath[];
 
+  const favRows = useMemo(() => rows.filter((r) => favSet.has(rowKey(r))), [rows, favSet]);
+
   const value: StoreContextValue = {
     ready,
     server: state.server,
@@ -170,6 +198,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     importJson,
     loadServerRows,
     clear,
+    isFav,
+    toggleFav,
+    favRows,
+    favCount: state.favorites.length,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
