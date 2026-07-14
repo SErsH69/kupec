@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useAuth } from '../lib/auth';
+import { NotifyButton } from '../components/NotifyButton';
 import { theme } from '../lib/theme';
 
 export default function Account() {
@@ -20,6 +21,7 @@ export default function Account() {
         <Pressable style={[styles.btn, styles.btnGhost]} onPress={logout}>
           <Text style={styles.btnGhostText}>Выйти</Text>
         </Pressable>
+        <NotifyButton />
       </View>
     );
   }
@@ -73,6 +75,7 @@ export default function Account() {
         <Text style={styles.btnText}>{busy ? '…' : mode === 'register' ? 'Создать аккаунт' : 'Войти'}</Text>
       </Pressable>
       <Text style={styles.hint}>Аккаунт синхронизирует журнал между устройствами.</Text>
+      <NotifyButton />
     </View>
   );
 }

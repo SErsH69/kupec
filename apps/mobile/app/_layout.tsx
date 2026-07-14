@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../lib/auth';
 import { MarketProvider } from '../lib/market';
 import { JournalProvider } from '../lib/journal';
+import { AlertsWatcher } from '../components/AlertsWatcher';
 import { theme } from '../lib/theme';
 
 function tabIcon(emoji: string) {
@@ -19,6 +20,7 @@ export default function RootLayout() {
       <AuthProvider>
         <MarketProvider>
           <JournalProvider>
+            <AlertsWatcher />
             <StatusBar style="light" />
             <Tabs
               screenOptions={{
