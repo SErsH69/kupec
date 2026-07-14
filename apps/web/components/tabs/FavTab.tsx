@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { money, sellAdvice, targetHit, trendFor, trendMap, type MarketRow, type TargetType } from '@kupec/core';
 import { rowKey, useStore } from '../../lib/store';
 import { Badge, Card } from '../ui';
@@ -46,10 +46,12 @@ function FavCard({ row, trend }: { row: MarketRow; trend: number | null }) {
   const hit = target ? targetHit(row, target) : false;
   const advice = sellAdvice(row.avg, row.min, row.max);
 
-  const update = (patch: { price?: number; type?: TargetType }) => {
-    const price = patch.price ?? target?.price ?? 0;
-    const type = patch.type ?? target?.type ?? 'buy';
-    setTarget(key, price > 0 ? { price, type } : null);
+  // Тип цели — локальный стейт, чтобы выбор «купить/продать» не терялся до ввода цены.
+  const [type, setType] = useState<TargetType>(target?.type ?? 'buy');
+  const setPrice = (price: number) => setTarget(key, price > 0 ? { price, type } : null);
+  const pickType = (t: TargetType) => {
+    setType(t);
+    if (target && target.price > 0) setTarget(key, { price: target.price, type: t });
   };
 
   return (
@@ -77,14 +79,14 @@ function FavCard({ row, trend }: { row: MarketRow; trend: number | null }) {
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-line/50 pt-3">
         <div className="flex rounded-lg bg-bg p-0.5 text-xs">
           <button
-            onClick={() => update({ type: 'buy' })}
-            className={`rounded-md px-2 py-1 ${target?.type === 'buy' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
+            onClick={() => pickType('buy')}
+            className={`rounded-md px-2 py-1 ${type === 'buy' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
           >
             купить ≤
           </button>
           <button
-            onClick={() => update({ type: 'sell' })}
-            className={`rounded-md px-2 py-1 ${target?.type === 'sell' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
+            onClick={() => pickType('sell')}
+            className={`rounded-md px-2 py-1 ${type === 'sell' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
           >
             продать ≥
           </button>
@@ -92,7 +94,7 @@ function FavCard({ row, trend }: { row: MarketRow; trend: number | null }) {
         <input
           type="number"
           value={target?.price ?? ''}
-          onChange={(e) => update({ price: Number(e.target.value) || 0 })}
+          onChange={(e) => setPrice(Number(e.target.value) || 0)}
           placeholder="цена цели"
           className="w-28 rounded-lg border border-line bg-bg px-2 py-1 text-sm outline-none focus:border-accent"
         />

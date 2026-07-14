@@ -10,4 +10,5 @@ export const theme = {
   accent2: '#22d3a6',
   green: '#34d399',
   red: '#f87171',
+  amber: '#fbbf24',
 };

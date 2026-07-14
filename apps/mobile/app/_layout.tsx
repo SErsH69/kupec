@@ -35,6 +35,10 @@ export default function RootLayout() {
                 options={{ title: 'Топ выгодных', tabBarLabel: 'Топ', tabBarIcon: tabIcon('⭐') }}
               />
               <Tabs.Screen
+                name="fav"
+                options={{ title: 'Избранное', tabBarLabel: 'Избранное', tabBarIcon: tabIcon('🔖') }}
+              />
+              <Tabs.Screen
                 name="flip"
                 options={{ title: 'Перекупка', tabBarLabel: 'Перекуп', tabBarIcon: tabIcon('💱') }}
               />
