@@ -49,9 +49,9 @@ export function AppShell() {
   const showEmpty = ready && tab.needsData && !hasData;
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-surface/60 p-4 md:flex">
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar — закреплён на высоту экрана */}
+      <aside className="hidden h-screen w-60 shrink-0 flex-col border-r border-line bg-surface/60 p-4 md:flex">
         <div className="mb-6 flex items-center gap-2 px-2">
           <Logo size={26} />
           <span className="text-xl font-black tracking-tight">kupec</span>
@@ -109,8 +109,8 @@ export function AppShell() {
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* Main — прокручивается независимо от сайдбара */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <header className="flex items-center gap-3 border-b border-line px-4 py-3 md:px-6">
           <span className="md:hidden">
             <Logo size={24} />
@@ -173,7 +173,7 @@ export function AppShell() {
           </div>
         )}
 
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {!ready ? (
             <div className="p-8 text-center text-sm text-muted">Загрузка…</div>
           ) : showEmpty ? (
