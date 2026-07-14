@@ -78,8 +78,34 @@ export function AppShell() {
             </button>
           ))}
         </nav>
-        <div className="mt-auto px-2 pt-4 text-[11px] leading-relaxed text-muted">
-          Неофициальный инструмент. Данные — из публичного API игрового проекта.
+        <div className="mt-auto flex flex-col gap-2 pt-4">
+          {user ? (
+            <div className="flex items-center gap-2 rounded-lg border border-line bg-surface-2/40 px-2.5 py-2">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-sm font-bold text-accent">
+                {user.email[0]?.toUpperCase()}
+              </div>
+              <span className="min-w-0 flex-1 truncate text-sm" title={user.email}>
+                {user.email}
+              </span>
+              <button
+                onClick={logout}
+                title="Выйти"
+                className="shrink-0 rounded-md px-2 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt"
+              >
+                Выйти
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white hover:opacity-90"
+            >
+              Войти
+            </button>
+          )}
+          <div className="px-1 text-[11px] leading-relaxed text-muted">
+            Неофициальный инструмент. Данные — из публичного API игрового проекта.
+          </div>
         </div>
       </aside>
 
@@ -117,22 +143,18 @@ export function AppShell() {
             >
               📥 Импорт
             </button>
+            {/* Аккаунт — в топбаре только на мобильном (на десктопе он в сайдбаре внизу) */}
             {user ? (
-              <div className="flex items-center gap-2">
-                <span className="hidden max-w-32 truncate text-sm text-muted sm:inline" title={user.email}>
-                  {user.email}
-                </span>
-                <button
-                  onClick={logout}
-                  className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
-                >
-                  Выйти
-                </button>
-              </div>
+              <button
+                onClick={logout}
+                className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2 md:hidden"
+              >
+                Выйти
+              </button>
             ) : (
               <button
                 onClick={() => setAuthOpen(true)}
-                className="rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-white hover:opacity-90"
+                className="rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-white hover:opacity-90 md:hidden"
               >
                 Войти
               </button>
