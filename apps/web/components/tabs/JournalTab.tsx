@@ -13,6 +13,17 @@ export function JournalTab() {
 
   const summary = useMemo(() => journalSummary(trades), [trades]);
 
+  // По умолчанию: открытые позиции сверху, затем свежие.
+  const ordered = useMemo(
+    () =>
+      [...trades].sort((a, b) => {
+        const oa = tradePnl(a).open ? 0 : 1;
+        const ob = tradePnl(b).open ? 0 : 1;
+        return oa - ob || b.createdAt - a.createdAt;
+      }),
+    [trades],
+  );
+
   const columns: Column<Trade>[] = [
     {
       key: 'item',
@@ -96,8 +107,8 @@ export function JournalTab() {
       <Card>
         <DataTable
           columns={columns}
-          data={trades}
-          defaultSort={{ key: 'item', dir: 1 }}
+          data={ordered}
+          defaultSort={{ key: 'actions', dir: 1 }}
           rowKey={(t) => t.id}
           empty="Журнал пуст. Добавь первую сделку выше."
         />
