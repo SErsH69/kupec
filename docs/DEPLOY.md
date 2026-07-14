@@ -38,6 +38,7 @@ curl -X POST localhost:8787/v1/auth/register -H 'content-type: application/json'
 | GET | `/v1/servers` | список серверов |
 | GET | `/v1/market/:server` | последние строки всех разделов (enriched) |
 | GET | `/v1/market/:server/:path` | последние строки раздела |
+| POST | `/v1/refresh/:server` | опросить сервер вживую (Majestic→БД) и вернуть свежие строки |
 | POST | `/v1/auth/register` | регистрация → `{token}` |
 | POST | `/v1/auth/login` | вход → `{token}` |
 | GET | `/v1/trades` | журнал (нужен `Authorization: Bearer`) |

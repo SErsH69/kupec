@@ -24,7 +24,7 @@ export function AlertsWatcher() {
     if (importedPaths.length === 0) return;
     const id = setInterval(() => {
       api
-        .getMarket(server)
+        .refresh(server)
         .then((r) => loadServerRows(server, r.rows))
         .catch(() => {});
     }, REFRESH_MS);

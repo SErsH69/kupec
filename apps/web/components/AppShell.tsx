@@ -23,10 +23,17 @@ export function AppShell() {
   const loadFromServer = async () => {
     setLoadingSrv(true);
     try {
-      const { rows } = await api.getMarket(server);
+      // Опрашиваем выбранный сервер вживую (сервер → БД → сюда).
+      const { rows } = await api.refresh(server);
       loadServerRows(server, rows);
     } catch {
-      /* ignore — сервер может быть недоступен */
+      // Фолбэк: показать, что уже лежит в БД.
+      try {
+        const { rows } = await api.getMarket(server);
+        loadServerRows(server, rows);
+      } catch {
+        /* ignore — сервер может быть недоступен */
+      }
     } finally {
       setLoadingSrv(false);
     }

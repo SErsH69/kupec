@@ -83,6 +83,8 @@ export function createApi(baseUrl: string, getToken: () => string | null) {
         body: JSON.stringify({ email, password }),
       }),
     getMarket: (server: string) => req<{ rows: MarketRow[] }>(`/v1/market/${server}`),
+    /** Опросить сервер вживую (сервер → БД) и вернуть свежие строки. */
+    refresh: (server: string) => req<{ rows: MarketRow[] }>(`/v1/refresh/${server}`, { method: 'POST' }),
     listTrades: async () => (await req<{ trades: ServerTrade[] }>('/v1/trades')).trades.map(toTrade),
     addTrade: async (t: TradeInput) =>
       toTrade((await req<{ trade: ServerTrade }>('/v1/trades', { method: 'POST', body: JSON.stringify(t) })).trade),

@@ -84,7 +84,8 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-      const r = await api.getMarket(SERVER);
+      // Опрашиваем сервер вживую (сервер → БД → сюда).
+      const r = await api.refresh(SERVER).catch(() => api.getMarket(SERVER));
       setRows(r.rows);
       setLoaded(true);
       AsyncStorage.setItem(MARKET_KEY, JSON.stringify(r.rows)).catch(() => {});

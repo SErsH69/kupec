@@ -83,7 +83,7 @@
 
 **Карта расчётной логики → `docs/PORTING_SPEC.md`** — точные формулы/константы, сверять оттуда. Хрупкие места: средний (не max) шанс крафта, рекурсия себестоимости с защитой циклов, `deal=max(min, avg*0.6)` во flip, отсечка `cur>0 && prev>0` в movers, кухня — блюдо по id, ингредиенты по name.
 
-**Локальный запуск с ЖИВЫМИ данными (без VPS):** поллер — это Node, ходит к публичному API Majestic server-side (CORS не мешает). `./start-local.command RU17` поднимает Postgres+поллер+API+веб; в вебе «🔄 С сервера» тянет живой рынок. Проверено на реальном API: 1 цикл RU17 = ~4668 строк (items/houses/apartments/vehicles), 0 ошибок. Живой публичный API отвечает 200, ключ в `services/poller/src/majestic.ts` (env `MAJESTIC_KEY`). Так пользователь юзает инструмент уже сейчас, до покупки VPS.
+**Локальный запуск с ЖИВЫМИ данными (без VPS):** `./start-local.command` — ОДНА команда: авто-ставит зависимости при первом запуске, поднимает Postgres+API+веб, открывает localhost:3000. **Сервер выбирается в UI** (выпадашка), не в аргументе. Данные тянутся **по запросу**: `POST /v1/refresh/:server` (API берёт `@kupec/poller` pollPath + общий MajesticClient/рейт-лимит, опрашивает REFRESH_PATHS=items,vehicles,houses,apartments вживую → БД → enriched). «🔄 С сервера» в вебе и `load()` в мобилке зовут refresh. Проверено на реальном API: refresh RU5 = 4 раздела, 4668 строк, цены именно RU5 (7.62 avg 745 vs 1100 на RU17). Поллер-цикл (`services/poller` loop) остаётся для VPS (один опрос на всех); локально не нужен — refresh покрывает любой сервер. Ключ Majestic в `services/poller/src/majestic.ts` (env `MAJESTIC_KEY`).
 
 Команды: `pnpm install`, `pnpm test` (turbo), `pnpm typecheck`, `pnpm --filter @kupec/core test`. pnpm ставится через `corepack enable pnpm`.
 

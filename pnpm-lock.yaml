@@ -175,6 +175,9 @@ importers:
       '@kupec/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@kupec/poller':
+        specifier: workspace:*
+        version: link:../poller
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3

@@ -1,6 +1,6 @@
 import { Hono, type Context, type Next } from 'hono';
 import { cors } from 'hono/cors';
-import { enrich, SERVERS, type MarketPath } from '@kupec/core';
+import { enrich, isServerId, SERVERS, type MarketPath } from '@kupec/core';
 import {
   addTrade,
   closeTrade,
@@ -11,9 +11,19 @@ import {
   listTrades,
   type Sql,
 } from '@kupec/db';
+import { MajesticClient, pollPath } from '@kupec/poller';
 import { hashPassword, signToken, verifyPassword, verifyToken } from './auth';
 
 type Env = { Variables: { userId: string } };
+
+/** Разделы для опроса «по запросу». Общий клиент — чтобы рейт-лимит 5/60с был единым. */
+const REFRESH_PATHS: MarketPath[] = (process.env.REFRESH_PATHS?.split(',') as MarketPath[]) ?? [
+  'items',
+  'vehicles',
+  'houses',
+  'apartments',
+];
+const majestic = new MajesticClient();
 
 /** Собрать Hono-приложение поверх подключения к БД (для тестов — с мок-совместимым sql). */
 export function createApp(sql: Sql) {
@@ -31,6 +41,19 @@ export function createApp(sql: Sql) {
   app.get('/v1/market/:server/:path', async (c) => {
     const rows = (await latestRows(sql, c.req.param('server'), c.req.param('path') as MarketPath)).map(enrich);
     return c.json({ server: c.req.param('server'), path: c.req.param('path'), rows });
+  });
+
+  // Опросить сервер вживую (публичный API Majestic → БД), вернуть свежие строки.
+  // Позволяет выбрать любой сервер в UI и получить его данные по запросу.
+  app.post('/v1/refresh/:server', async (c) => {
+    const server = c.req.param('server');
+    if (!isServerId(server)) return c.json({ error: 'неизвестный сервер' }, 400);
+    const results = await Promise.all(
+      REFRESH_PATHS.map((path) => pollPath(sql, majestic, server, path)),
+    );
+    const failed = results.filter((r) => !r.ok);
+    const rows = (await latestRows(sql, server)).map(enrich);
+    return c.json({ server, rows, polled: results.length - failed.length, failed: failed.length });
   });
 
   // --- авторизация ---
