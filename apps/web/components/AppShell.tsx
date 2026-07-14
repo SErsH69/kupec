@@ -57,7 +57,8 @@ export function AppShell() {
 
   const tab = TABS.find((t) => t.key === active) ?? TABS[0]!;
   const hasData = importedPaths.length > 0;
-  const showEmpty = ready && tab.needsData && !hasData;
+  const showAuth = ready && tab.needsAuth && !user;
+  const showEmpty = ready && !showAuth && tab.needsData && !hasData;
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -187,6 +188,8 @@ export function AppShell() {
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {!ready ? (
             <div className="p-8 text-center text-sm text-muted">Загрузка…</div>
+          ) : showAuth ? (
+            <AuthRequired onLogin={() => setAuthOpen(true)} />
           ) : showEmpty ? (
             <EmptyState onImport={() => setImportOpen(true)} />
           ) : (
@@ -197,6 +200,25 @@ export function AppShell() {
 
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
       <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
+    </div>
+  );
+}
+
+function AuthRequired({ onLogin }: { onLogin: () => void }) {
+  return (
+    <div className="mx-auto max-w-md rounded-[var(--radius-xl)] border border-dashed border-line p-10 text-center">
+      <div className="text-4xl">🔐</div>
+      <h2 className="mt-3 text-lg font-semibold">Войдите в аккаунт</h2>
+      <p className="mt-1 text-sm text-muted">
+        Журнал сделок индивидуален для каждого игрока и хранится в аккаунте — войди или
+        зарегистрируйся, чтобы вести его и синхронизировать между устройствами.
+      </p>
+      <button
+        onClick={onLogin}
+        className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+      >
+        Войти / Регистрация
+      </button>
     </div>
   );
 }

@@ -19,6 +19,8 @@ export interface TabDef {
   Component: ComponentType;
   /** Требует импортированных рыночных данных. */
   needsData?: boolean;
+  /** Требует входа в аккаунт (личные данные). */
+  needsAuth?: boolean;
 }
 
 export const TABS: TabDef[] = [
@@ -29,7 +31,7 @@ export const TABS: TabDef[] = [
   { key: 'kitchen', label: 'Кухня', icon: '🍳', Component: KitchenTab, needsData: true },
   { key: 'farm', label: 'Что фармить', icon: '🌾', Component: FarmTab, needsData: true },
   { key: 'movers', label: 'Движения', icon: '📈', Component: MoversTab, needsData: true },
-  { key: 'journal', label: 'Журнал сделок', icon: '📒', Component: JournalTab },
+  { key: 'journal', label: 'Журнал сделок', icon: '📒', Component: JournalTab, needsAuth: true },
   { key: 'rlcars', label: 'RL авто', icon: '🏎️', Component: RLTab, needsData: true },
   { key: 'gov', label: 'Гос-цены', icon: '🏛️', Component: GovTab },
 ];
