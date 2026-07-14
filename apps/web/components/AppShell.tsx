@@ -9,6 +9,7 @@ import { PATH_LABEL } from '../lib/labels';
 import { track } from '../lib/analytics';
 import { ImportDialog } from './ImportDialog';
 import { AuthDialog } from './AuthDialog';
+import { NotifyBell } from './NotifyBell';
 import { Logo } from './Logo';
 
 export function AppShell() {
@@ -94,6 +95,7 @@ export function AppShell() {
                 </option>
               ))}
             </select>
+            <NotifyBell />
             <button
               onClick={loadFromServer}
               disabled={loadingSrv}
