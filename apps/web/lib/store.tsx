@@ -13,8 +13,10 @@ import {
   ingestMarketJson,
   recordSnapshot,
   snapshotPrices,
+  targetHit,
   type MarketPath,
   type MarketRow,
+  type PriceTarget,
   type Snapshot,
 } from '@kupec/core';
 import { track } from './analytics';
@@ -27,10 +29,12 @@ interface StoreState {
   history: Record<string, Snapshot[]>;
   /** Ключи избранного (`${_path}:${id}`), общие для всех серверов. */
   favorites: string[];
+  /** Ценовые цели по ключу товара. */
+  targets: Record<string, PriceTarget>;
 }
 
 const LS_KEY = 'kupec.store.v1';
-const EMPTY: StoreState = { server: 'RU17', data: {}, history: {}, favorites: [] };
+const EMPTY: StoreState = { server: 'RU17', data: {}, history: {}, favorites: [], targets: {} };
 
 /** Стабильный ключ строки рынка для избранного. */
 export function rowKey(r: Pick<MarketRow, 'id' | '_path'>): string {
@@ -57,6 +61,11 @@ interface StoreContextValue {
   /** Строки текущего сервера, отмеченные избранными. */
   favRows: MarketRow[];
   favCount: number;
+  /** Ценовые цели. */
+  getTarget: (key: string) => PriceTarget | undefined;
+  setTarget: (key: string, target: PriceTarget | null) => void;
+  /** Сколько избранных достигли цели сейчас. */
+  alertCount: number;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -164,6 +173,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const getTarget = useCallback((key: string) => state.targets[key], [state.targets]);
+  const setTarget = useCallback((key: string, target: PriceTarget | null) => {
+    setState((p) => {
+      const targets = { ...p.targets };
+      if (target && target.price > 0) targets[key] = target;
+      else delete targets[key];
+      return { ...p, targets };
+    });
+  }, []);
+
   const clear = useCallback(
     () =>
       setState((p) => ({
@@ -186,6 +205,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   ) as MarketPath[];
 
   const favRows = useMemo(() => rows.filter((r) => favSet.has(rowKey(r))), [rows, favSet]);
+  const alertCount = useMemo(
+    () =>
+      favRows.filter((r) => {
+        const t = state.targets[rowKey(r)];
+        return t && targetHit(r, t);
+      }).length,
+    [favRows, state.targets],
+  );
 
   const value: StoreContextValue = {
     ready,
@@ -202,6 +229,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     toggleFav,
     favRows,
     favCount: state.favorites.length,
+    getTarget,
+    setTarget,
+    alertCount,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

@@ -12,7 +12,7 @@ import { AuthDialog } from './AuthDialog';
 import { Logo } from './Logo';
 
 export function AppShell() {
-  const { ready, server, setServer, importedPaths, loadServerRows } = useStore();
+  const { ready, server, setServer, importedPaths, loadServerRows, alertCount } = useStore();
   const { user, logout, api } = useAuth();
   const [active, setActive] = useState('overview');
   const [importOpen, setImportOpen] = useState(false);
@@ -62,11 +62,16 @@ export function AppShell() {
             >
               <span className="w-5 text-center">{t.icon}</span>
               {t.label}
+              {t.key === 'fav' && alertCount > 0 && (
+                <span className="ml-auto rounded-full bg-green px-1.5 py-0.5 text-[10px] font-bold text-black">
+                  {alertCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
         <div className="mt-auto px-2 pt-4 text-[11px] leading-relaxed text-muted">
-          Данные Majestic — из публичного API. Инструмент неофициальный.
+          Неофициальный инструмент. Данные — из публичного API игрового проекта.
         </div>
       </aside>
 
