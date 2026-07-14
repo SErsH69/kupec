@@ -12,6 +12,7 @@ export function JournalTab() {
   const { trades, addTrade, updateTrade, closeTrade, deleteTrade } = useJournal();
   const { items, server } = useStore();
   const [editing, setEditing] = useState<Trade | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const summary = useMemo(() => journalSummary(trades), [trades]);
   const ordered = useMemo(
@@ -47,7 +48,25 @@ export function JournalTab() {
         <StatCard label="Всего сделок" value={summary.open + summary.closed} />
       </div>
 
-      <AddTradeForm onAdd={addTrade} items={itemNames} server={server} />
+      <div>
+        <button
+          onClick={() => setAddOpen(true)}
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+        >
+          + Добавить сделку
+        </button>
+      </div>
+
+      {addOpen && (
+        <Modal onClose={() => setAddOpen(false)} title="Новая сделка" wide>
+          <AddTradeForm
+            onAdd={addTrade}
+            items={itemNames}
+            server={server}
+            onDone={() => setAddOpen(false)}
+          />
+        </Modal>
+      )}
 
       {ordered.length === 0 ? (
         <Card className="p-8 text-center text-sm text-muted">Журнал пуст. Добавь сделку выше.</Card>
@@ -184,10 +203,12 @@ function AddTradeForm({
   onAdd,
   items,
   server,
+  onDone,
 }: {
   onAdd: (t: import('../../lib/api').TradeInput) => void;
   items: string[];
   server: string;
+  onDone?: () => void;
 }) {
   const [kind, setKind] = useState<Kind>('flip');
   const [item, setItem] = useState('');
@@ -231,10 +252,11 @@ function AddTradeForm({
       });
     }
     reset();
+    onDone?.();
   };
 
   return (
-    <Card className="p-4">
+    <div>
       <div className="mb-3 flex w-fit rounded-lg bg-bg p-1 text-sm">
         <button
           onClick={() => setKind('flip')}
@@ -296,7 +318,7 @@ function AddTradeForm({
           + Добавить
         </button>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -369,6 +391,35 @@ function EditModal({
             Сохранить
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function Modal({
+  title,
+  onClose,
+  children,
+  wide,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  wide?: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
+      <div
+        className={`w-full ${wide ? 'max-w-2xl' : 'max-w-sm'} rounded-[var(--radius-xl)] border border-line bg-surface p-5`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          <button onClick={onClose} className="text-muted hover:text-txt">
+            ✕
+          </button>
+        </div>
+        {children}
       </div>
     </div>
   );
