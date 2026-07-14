@@ -87,7 +87,11 @@ export function JournalTab() {
         <StatCard label="ROI по закрытым" value={`${summary.roi.toFixed(0)}%`} tone="accent" />
       </div>
 
-      <AddTradeForm onAdd={addTrade} items={items.map((i) => i.name)} server={server} />
+      <AddTradeForm
+        onAdd={addTrade}
+        items={Array.from(new Set(items.map((i) => i.name).filter(Boolean)))}
+        server={server}
+      />
 
       <Card>
         <DataTable
