@@ -9,6 +9,7 @@ import {
   findUserByEmail,
   latestRows,
   listTrades,
+  updateTrade,
   type Sql,
 } from '@kupec/db';
 import { MajesticClient, pollPath } from '@kupec/poller';
@@ -90,8 +91,16 @@ export function createApp(sql: Sql) {
 
   app.post('/v1/trades', auth, async (c) => {
     const b = await c.req.json().catch(() => ({}));
-    if (!b.item || !(b.qty > 0) || !(b.buy > 0)) return c.json({ error: 'item, qty, buy обязательны' }, 400);
+    const okCost = b.kind === 'craft' ? b.materials > 0 || b.buy >= 0 : b.buy > 0;
+    if (!b.item || !(b.qty > 0) || !okCost) return c.json({ error: 'item, qty и стоимость обязательны' }, 400);
     const trade = await addTrade(sql, c.get('userId'), b);
+    return c.json({ trade });
+  });
+
+  app.patch('/v1/trades/:id', auth, async (c) => {
+    const patch = await c.req.json().catch(() => ({}));
+    const trade = await updateTrade(sql, c.get('userId'), c.req.param('id')!, patch);
+    if (!trade) return c.json({ error: 'не найдено' }, 404);
     return c.json({ trade });
   });
 

@@ -10,6 +10,8 @@ export interface AuthUser {
   email: string;
 }
 
+export type TradeKind = 'flip' | 'craft';
+
 export interface TradeInput {
   item: string;
   qty: number;
@@ -17,6 +19,11 @@ export interface TradeInput {
   sell?: number | null;
   server?: string;
   note?: string;
+  kind?: TradeKind;
+  materials?: number | null;
+  listPrice?: number | null;
+  soldUnits?: number | null;
+  soldRevenue?: number | null;
 }
 
 /** Форма сделки с сервера (snake_case, даты строкой). */
@@ -30,6 +37,11 @@ interface ServerTrade {
   note: string | null;
   created_at: string;
   closed_at: string | null;
+  kind: string;
+  materials: number | null;
+  list_price: number | null;
+  sold_units: number | null;
+  sold_revenue: number | null;
 }
 
 export class ApiError extends Error {
@@ -52,6 +64,11 @@ function toTrade(t: ServerTrade): Trade {
     note: t.note ?? undefined,
     createdAt: new Date(t.created_at).getTime(),
     closedAt: t.closed_at ? new Date(t.closed_at).getTime() : null,
+    kind: (t.kind as TradeKind) ?? 'flip',
+    materials: t.materials,
+    listPrice: t.list_price,
+    soldUnits: t.sold_units,
+    soldRevenue: t.sold_revenue,
   };
 }
 
@@ -88,6 +105,11 @@ export function createApi(baseUrl: string, getToken: () => string | null) {
     listTrades: async () => (await req<{ trades: ServerTrade[] }>('/v1/trades')).trades.map(toTrade),
     addTrade: async (t: TradeInput) =>
       toTrade((await req<{ trade: ServerTrade }>('/v1/trades', { method: 'POST', body: JSON.stringify(t) })).trade),
+    updateTrade: async (id: string, patch: Partial<TradeInput>) =>
+      toTrade(
+        (await req<{ trade: ServerTrade }>(`/v1/trades/${id}`, { method: 'PATCH', body: JSON.stringify(patch) }))
+          .trade,
+      ),
     closeTrade: (id: string, sell: number) =>
       req<{ ok: true }>(`/v1/trades/${id}/close`, { method: 'POST', body: JSON.stringify({ sell }) }),
     deleteTrade: (id: string) => req<{ ok: true }>(`/v1/trades/${id}`, { method: 'DELETE' }),

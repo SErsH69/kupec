@@ -56,7 +56,7 @@
 - `flip` (computeFlip/flipScore/planBudget), `trends` (snapshotPrices/recordSnapshot/trendMap/computeMovers)
 - `craft` (itemIndex/bestUnitCost/computeRecipes — средний шанс, рекурсия себестоимости с защитой циклов)
 - `kitchen` (computeKitchen — блюдо по id, ингредиенты по name), `farm` (farmType/computeFarm), `vehicles` (buildRL)
-- `journal` (tradePnl/journalSummary — «своя» функция, P&L журнала сделок)
+- `journal` (tradePnl/craftMetrics/journalSummary — «своя» функция, P&L журнала; 2 вида: flip и craft с материалами/частичными продажами)
 - `ingest` (detectPath/ingestMarketJson — импорт JSON из API/закладки в строки по разделам)
 - Вшитые справочники извлечены из прототипа в `packages/core/src/data/*.json` (RECIPES 40, KITCHEN_RECIPES 69, GOV 209, JOBS 23, транспорт, классификаторы), типизированы в `data/index.ts`.
 

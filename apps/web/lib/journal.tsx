@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Trade } from '@kupec/core';
+import type { TradeInput } from './api';
 import { useAuth } from './auth';
 import { track } from './analytics';
 
@@ -19,7 +20,8 @@ interface JournalContextValue {
   /** Синхронизируется с аккаунтом (иначе — только localStorage). */
   synced: boolean;
   trades: Trade[];
-  addTrade: (t: { item: string; qty: number; buy: number; sell?: number | null; server?: string; note?: string }) => void;
+  addTrade: (t: TradeInput) => void;
+  updateTrade: (id: string, patch: Partial<TradeInput>) => void;
   closeTrade: (id: string, sell: number) => void;
   deleteTrade: (id: string) => void;
 }
@@ -109,6 +111,8 @@ export function JournalProvider({ children }: { children: ReactNode }) {
           .catch(() => {});
         return;
       }
+      const soldFull =
+        t.kind === 'craft' ? (t.soldUnits ?? 0) >= t.qty && (t.soldUnits ?? 0) > 0 : t.sell != null;
       setTrades((prev) => [
         {
           id: uid(),
@@ -118,11 +122,30 @@ export function JournalProvider({ children }: { children: ReactNode }) {
           sell: t.sell ?? null,
           server: t.server,
           note: t.note,
+          kind: t.kind ?? 'flip',
+          materials: t.materials ?? null,
+          listPrice: t.listPrice ?? null,
+          soldUnits: t.soldUnits ?? null,
+          soldRevenue: t.soldRevenue ?? null,
           createdAt: Date.now(),
-          closedAt: t.sell != null ? Date.now() : null,
+          closedAt: soldFull ? Date.now() : null,
         },
         ...prev,
       ]);
+    },
+    [synced, api],
+  );
+
+  const updateTrade = useCallback(
+    (id: string, patch: Partial<TradeInput>) => {
+      if (synced) {
+        api
+          .updateTrade(id, patch)
+          .then((upd) => setTrades((prev) => prev.map((t) => (t.id === id ? upd : t))))
+          .catch(() => {});
+        return;
+      }
+      setTrades((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
     },
     [synced, api],
   );
@@ -149,7 +172,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <JournalContext.Provider value={{ ready, synced, trades, addTrade, closeTrade, deleteTrade }}>
+    <JournalContext.Provider value={{ ready, synced, trades, addTrade, updateTrade, closeTrade, deleteTrade }}>
       {children}
     </JournalContext.Provider>
   );

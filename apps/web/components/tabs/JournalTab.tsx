@@ -1,126 +1,68 @@
 'use client';
 
 import { useMemo, useState, type ReactNode } from 'react';
-import { journalSummary, money, tradePnl, type Trade } from '@kupec/core';
+import { craftMetrics, isOpen, journalSummary, money, tradePnl, type Trade } from '@kupec/core';
 import { useJournal } from '../../lib/journal';
 import { useStore } from '../../lib/store';
-import { Badge, Card, DataTable, StatCard, type Column } from '../ui';
+import { Badge, Card, StatCard } from '../ui';
+
+type Kind = 'flip' | 'craft';
 
 export function JournalTab() {
-  const { trades, addTrade, closeTrade, deleteTrade } = useJournal();
+  const { trades, addTrade, updateTrade, closeTrade, deleteTrade } = useJournal();
   const { items, server } = useStore();
-  const [closing, setClosing] = useState<Trade | null>(null);
+  const [editing, setEditing] = useState<Trade | null>(null);
 
   const summary = useMemo(() => journalSummary(trades), [trades]);
-
-  // По умолчанию: открытые позиции сверху, затем свежие.
   const ordered = useMemo(
-    () =>
-      [...trades].sort((a, b) => {
-        const oa = tradePnl(a).open ? 0 : 1;
-        const ob = tradePnl(b).open ? 0 : 1;
-        return oa - ob || b.createdAt - a.createdAt;
-      }),
+    () => [...trades].sort((a, b) => Number(isOpen(a) ? 0 : 1) - Number(isOpen(b) ? 0 : 1) || b.createdAt - a.createdAt),
     [trades],
   );
-
-  const columns: Column<Trade>[] = [
-    {
-      key: 'item',
-      header: 'Товар',
-      sortVal: (t) => t.item,
-      render: (t) => (
-        <span className="flex items-center gap-2">
-          <span className="truncate">{t.item}</span>
-          {tradePnl(t).open ? <Badge tone="accent">открыта</Badge> : <Badge>закрыта</Badge>}
-        </span>
-      ),
-    },
-    { key: 'qty', header: 'Кол-во', align: 'right', sortVal: (t) => t.qty, render: (t) => t.qty },
-    { key: 'buy', header: 'Покупка', align: 'right', sortVal: (t) => t.buy, render: (t) => money(t.buy) },
-    {
-      key: 'sell',
-      header: 'Продажа',
-      align: 'right',
-      sortVal: (t) => t.sell ?? -1,
-      render: (t) => (t.sell == null ? '—' : money(t.sell)),
-    },
-    {
-      key: 'pnl',
-      header: 'P&L',
-      align: 'right',
-      sortVal: (t) => tradePnl(t).pnl ?? -Infinity,
-      render: (t) => {
-        const p = tradePnl(t);
-        if (p.pnl == null) return <span className="text-muted">в рынке</span>;
-        return (
-          <span className={`font-semibold ${p.pnl >= 0 ? 'text-green' : 'text-red'}`}>
-            {money(p.pnl)}
-            <span className="ml-1 text-xs text-muted">{p.roi!.toFixed(0)}%</span>
-          </span>
-        );
-      },
-    },
-    {
-      key: 'actions',
-      header: '',
-      render: (t) => (
-        <span className="flex justify-end gap-1.5">
-          {tradePnl(t).open && (
-            <button
-              onClick={() => setClosing(t)}
-              className="rounded-md bg-green/15 px-2 py-1 text-xs font-medium text-green hover:bg-green/25"
-            >
-              Продать
-            </button>
-          )}
-          <button
-            onClick={() => deleteTrade(t.id)}
-            className="rounded-md px-2 py-1 text-xs text-muted hover:bg-red/15 hover:text-red"
-          >
-            Удалить
-          </button>
-        </span>
-      ),
-    },
-  ];
+  const itemNames = useMemo(
+    () => Array.from(new Set(items.map((i) => i.name).filter(Boolean))),
+    [items],
+  );
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="Открыто позиций" value={summary.open} hint={money(summary.invested)} />
-        <StatCard label="Закрыто сделок" value={summary.closed} />
+        <StatCard label="Закрыто" value={summary.closed} />
         <StatCard
           label="Реализовано"
           value={money(summary.realized)}
           tone={summary.realized >= 0 ? 'green' : 'red'}
         />
-        <StatCard label="ROI по закрытым" value={`${summary.roi.toFixed(0)}%`} tone="accent" />
+        <StatCard label="ROI" value={`${summary.roi.toFixed(0)}%`} tone="accent" />
       </div>
 
-      <AddTradeForm
-        onAdd={addTrade}
-        items={Array.from(new Set(items.map((i) => i.name).filter(Boolean)))}
-        server={server}
-      />
+      <AddTradeForm onAdd={addTrade} items={itemNames} server={server} />
 
-      <Card>
-        <DataTable
-          columns={columns}
-          data={ordered}
-          defaultSort={{ key: 'actions', dir: 1 }}
-          rowKey={(t) => t.id}
-          empty="Журнал пуст. Добавь первую сделку выше."
-        />
-      </Card>
+      {ordered.length === 0 ? (
+        <Card className="p-8 text-center text-sm text-muted">Журнал пуст. Добавь сделку выше.</Card>
+      ) : (
+        <div className="grid gap-3 lg:grid-cols-2">
+          {ordered.map((t) =>
+            t.kind === 'craft' ? (
+              <CraftCard key={t.id} t={t} onEdit={() => setEditing(t)} onDelete={() => deleteTrade(t.id)} />
+            ) : (
+              <FlipCard key={t.id} t={t} onSell={() => setEditing(t)} onDelete={() => deleteTrade(t.id)} />
+            ),
+          )}
+        </div>
+      )}
 
-      {closing && (
-        <CloseDialog
-          trade={closing}
-          onClose={() => setClosing(null)}
-          onConfirm={(sell) => {
-            closeTrade(closing.id, sell);
-            setClosing(null);
+      {editing && (
+        <EditModal
+          trade={editing}
+          onClose={() => setEditing(null)}
+          onCraft={(patch) => {
+            updateTrade(editing.id, patch);
+            setEditing(null);
+          }}
+          onFlip={(sell) => {
+            closeTrade(editing.id, sell);
+            setEditing(null);
           }}
         />
       )}
@@ -128,118 +70,301 @@ export function JournalTab() {
   );
 }
 
+/* ---------------- карточки ---------------- */
+
+function CraftCard({ t, onEdit, onDelete }: { t: Trade; onEdit: () => void; onDelete: () => void }) {
+  const m = craftMetrics(t);
+  const date = new Date(t.createdAt).toLocaleDateString('ru-RU');
+  return (
+    <Card className={`p-4 ${m.open ? '' : 'opacity-90'}`}>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="truncate font-semibold">{t.item}</span>
+            <Badge tone="amber">🔨 крафт</Badge>
+            {m.open && <Badge tone="accent">открыта</Badge>}
+          </div>
+          <div className="mt-0.5 text-xs text-muted">{date}</div>
+        </div>
+        <div className="text-right">
+          <div className={`text-lg font-bold tabular-nums ${m.realized >= 0 ? 'text-green' : 'text-red'}`}>
+            {money(m.realized)}
+          </div>
+          {m.roi != null && <div className="text-xs text-muted">+{m.roi.toFixed(0)}%</div>}
+        </div>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+        <Row label="материалы" value={money(m.materials)} />
+        <Row label="скрафчено" value={`${m.crafted} шт`} />
+        <Row label="себест/шт" value={money(m.costPerUnit)} />
+        <Row label="продано" value={`${m.soldUnits}/${m.crafted} шт`} />
+        <Row label="выставл/шт" value={m.listPrice != null ? money(m.listPrice) : '—'} />
+        <Row label="выручка" value={money(m.soldRevenue)} />
+      </div>
+
+      <div className="mt-3 flex gap-2 border-t border-line/50 pt-3">
+        <button onClick={onEdit} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
+          {m.open ? 'Продать / правка' : 'Правка'}
+        </button>
+        <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
+          Удалить
+        </button>
+      </div>
+    </Card>
+  );
+}
+
+function FlipCard({ t, onSell, onDelete }: { t: Trade; onSell: () => void; onDelete: () => void }) {
+  const p = tradePnl(t);
+  return (
+    <Card className="p-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="truncate font-semibold">{t.item}</span>
+            <Badge>💱 перекуп</Badge>
+            {p.open && <Badge tone="accent">открыта</Badge>}
+          </div>
+          <div className="mt-1 text-xs text-muted">
+            {t.qty} шт · купил {money(t.buy)}
+            {t.sell != null && <> → продал {money(t.sell)}</>}
+          </div>
+        </div>
+        <div className="text-right">
+          {p.pnl == null ? (
+            <div className="text-sm text-muted">в рынке</div>
+          ) : (
+            <>
+              <div className={`text-lg font-bold tabular-nums ${p.pnl >= 0 ? 'text-green' : 'text-red'}`}>
+                {money(p.pnl)}
+              </div>
+              <div className="text-xs text-muted">{p.roi!.toFixed(0)}%</div>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="mt-3 flex gap-2 border-t border-line/50 pt-3">
+        {p.open && (
+          <button onClick={onSell} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
+            Продать
+          </button>
+        )}
+        <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
+          Удалить
+        </button>
+      </div>
+    </Card>
+  );
+}
+
+function Row({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="flex justify-between gap-2">
+      <span className="text-muted">{label}</span>
+      <span className="tabular-nums">{value}</span>
+    </div>
+  );
+}
+
+/* ---------------- форма добавления ---------------- */
+
 function AddTradeForm({
   onAdd,
   items,
   server,
 }: {
-  onAdd: (t: { item: string; qty: number; buy: number; sell?: number | null; server?: string }) => void;
+  onAdd: (t: import('../../lib/api').TradeInput) => void;
   items: string[];
   server: string;
 }) {
+  const [kind, setKind] = useState<Kind>('flip');
   const [item, setItem] = useState('');
-  const [qty, setQty] = useState('1');
+  const [qty, setQty] = useState('');
   const [buy, setBuy] = useState('');
+  const [materials, setMaterials] = useState('');
+  const [listPrice, setListPrice] = useState('');
+  const [sold, setSold] = useState('');
+
+  const reset = () => {
+    setItem('');
+    setQty('');
+    setBuy('');
+    setMaterials('');
+    setListPrice('');
+    setSold('');
+  };
 
   const submit = () => {
     const q = Number(qty) || 0;
-    const b = Number(buy) || 0;
-    if (!item.trim() || q <= 0 || b <= 0) return;
-    onAdd({ item: item.trim(), qty: q, buy: b, server });
-    setItem('');
-    setQty('1');
-    setBuy('');
+    if (!item.trim() || q <= 0) return;
+    if (kind === 'flip') {
+      const b = Number(buy) || 0;
+      if (b <= 0) return;
+      onAdd({ item: item.trim(), qty: q, buy: b, server });
+    } else {
+      const mat = Number(materials) || 0;
+      if (mat <= 0) return;
+      const lp = Number(listPrice) || 0;
+      const su = Math.min(Number(sold) || 0, q);
+      onAdd({
+        item: item.trim(),
+        qty: q,
+        buy: mat / q,
+        kind: 'craft',
+        materials: mat,
+        listPrice: lp || null,
+        soldUnits: su || null,
+        soldRevenue: lp && su ? lp * su : null,
+        server,
+      });
+    }
+    reset();
   };
 
   return (
-    <Card className="flex flex-wrap items-end gap-3 p-4">
-      <Field label="Товар" className="min-w-48 flex-1">
-        <input
-          list="journal-items"
-          value={item}
-          onChange={(e) => setItem(e.target.value)}
-          placeholder="Название…"
-          className="w-full rounded-lg border border-line bg-bg px-3 py-1.5 text-sm outline-none focus:border-accent"
-        />
-        <datalist id="journal-items">
-          {items.slice(0, 500).map((n) => (
-            <option key={n} value={n} />
-          ))}
-        </datalist>
-      </Field>
-      <Field label="Кол-во">
-        <input
-          type="number"
-          value={qty}
-          onChange={(e) => setQty(e.target.value)}
-          className="w-24 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm outline-none focus:border-accent"
-        />
-      </Field>
-      <Field label="Цена покупки">
-        <input
-          type="number"
-          value={buy}
-          onChange={(e) => setBuy(e.target.value)}
-          placeholder="за шт."
-          className="w-32 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm outline-none focus:border-accent"
-        />
-      </Field>
-      <button
-        onClick={submit}
-        className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-      >
-        + Добавить
-      </button>
+    <Card className="p-4">
+      <div className="mb-3 flex w-fit rounded-lg bg-bg p-1 text-sm">
+        <button
+          onClick={() => setKind('flip')}
+          className={`rounded-md px-3 py-1 ${kind === 'flip' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
+        >
+          💱 Перекуп
+        </button>
+        <button
+          onClick={() => setKind('craft')}
+          className={`rounded-md px-3 py-1 ${kind === 'craft' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
+        >
+          🔨 Крафт
+        </button>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3">
+        <Field label="Товар" className="min-w-44 flex-1">
+          <input
+            list="journal-items"
+            value={item}
+            onChange={(e) => setItem(e.target.value)}
+            placeholder="Название…"
+            className={inputCls}
+          />
+          <datalist id="journal-items">
+            {items.slice(0, 500).map((n) => (
+              <option key={n} value={n} />
+            ))}
+          </datalist>
+        </Field>
+
+        {kind === 'flip' ? (
+          <>
+            <Field label="Кол-во">
+              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={`${inputCls} w-24`} />
+            </Field>
+            <Field label="Цена покупки">
+              <input type="number" value={buy} onChange={(e) => setBuy(e.target.value)} placeholder="за шт." className={`${inputCls} w-32`} />
+            </Field>
+          </>
+        ) : (
+          <>
+            <Field label="Скрафчено">
+              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={`${inputCls} w-24`} />
+            </Field>
+            <Field label="Материалы (всего)">
+              <input type="number" value={materials} onChange={(e) => setMaterials(e.target.value)} className={`${inputCls} w-36`} />
+            </Field>
+            <Field label="Выставл/шт">
+              <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={`${inputCls} w-28`} />
+            </Field>
+            <Field label="Продано">
+              <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} placeholder="0" className={`${inputCls} w-20`} />
+            </Field>
+          </>
+        )}
+
+        <button onClick={submit} className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
+          + Добавить
+        </button>
+      </div>
     </Card>
   );
 }
 
-function CloseDialog({
+/* ---------------- диалог продажи/правки ---------------- */
+
+function EditModal({
   trade,
   onClose,
-  onConfirm,
+  onCraft,
+  onFlip,
 }: {
   trade: Trade;
   onClose: () => void;
-  onConfirm: (sell: number) => void;
+  onCraft: (patch: import('../../lib/api').TradeInput) => void;
+  onFlip: (sell: number) => void;
 }) {
+  const isCraft = trade.kind === 'craft';
+  const m = isCraft ? craftMetrics(trade) : null;
   const [sell, setSell] = useState('');
+  const [sold, setSold] = useState(m ? String(m.soldUnits) : '');
+  const [revenue, setRevenue] = useState(m && m.soldRevenue ? String(m.soldRevenue) : '');
+  const [listPrice, setListPrice] = useState(m && m.listPrice != null ? String(m.listPrice) : '');
+
+  const confirm = () => {
+    if (isCraft) {
+      const su = Math.min(Number(sold) || 0, trade.qty);
+      const lp = Number(listPrice) || 0;
+      const rev = Number(revenue) || (lp ? lp * su : 0);
+      onCraft({
+        item: trade.item,
+        qty: trade.qty,
+        buy: trade.buy,
+        kind: 'craft',
+        soldUnits: su,
+        soldRevenue: rev || null,
+        listPrice: lp || null,
+      });
+    } else {
+      const s = Number(sell) || 0;
+      if (s > 0) onFlip(s);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div
-        className="w-full max-w-sm rounded-[var(--radius-xl)] border border-line bg-surface p-5"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 className="mb-1 text-lg font-semibold">Продать: {trade.item}</h2>
-        <p className="mb-3 text-sm text-muted">
-          {trade.qty} шт · куплено по {money(trade.buy)}
-        </p>
-        <input
-          type="number"
-          value={sell}
-          onChange={(e) => setSell(e.target.value)}
-          placeholder="Цена продажи за шт."
-          autoFocus
-          className="w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm outline-none focus:border-accent"
-        />
+      <div className="w-full max-w-sm rounded-[var(--radius-xl)] border border-line bg-surface p-5" onClick={(e) => e.stopPropagation()}>
+        <h2 className="mb-3 text-lg font-semibold">
+          {isCraft ? 'Крафт: продажа / правка' : 'Продать'} — {trade.item}
+        </h2>
+        {isCraft ? (
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-muted">Продано штук (всего, из {trade.qty})</label>
+            <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} className={inputCls} autoFocus />
+            <label className="text-xs text-muted">Цена выставления за шт.</label>
+            <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={inputCls} />
+            <label className="text-xs text-muted">Выручка (всего, необязательно)</label>
+            <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="иначе = выставл × продано" className={inputCls} />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-muted">Цена продажи за шт. ({trade.qty} шт)</label>
+            <input type="number" value={sell} onChange={(e) => setSell(e.target.value)} className={inputCls} autoFocus />
+          </div>
+        )}
         <div className="mt-4 flex justify-end gap-2">
           <button onClick={onClose} className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-surface-2">
             Отмена
           </button>
-          <button
-            onClick={() => {
-              const s = Number(sell) || 0;
-              if (s > 0) onConfirm(s);
-            }}
-            className="rounded-lg bg-green px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-          >
-            Закрыть сделку
+          <button onClick={confirm} className="rounded-lg bg-green px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
+            Сохранить
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+const inputCls =
+  'rounded-lg border border-line bg-bg px-3 py-1.5 text-sm outline-none focus:border-accent';
 
 function Field({ label, children, className = '' }: { label: string; children: ReactNode; className?: string }) {
   return (

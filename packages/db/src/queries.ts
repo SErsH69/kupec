@@ -130,20 +130,49 @@ export interface TradeRow {
   note: string | null;
   created_at: Date;
   closed_at: Date | null;
+  kind: string;
+  materials: number | null;
+  list_price: number | null;
+  sold_units: number | null;
+  sold_revenue: number | null;
+}
+
+const TRADE_COLS = sqlCols();
+function sqlCols() {
+  return `id, item, qty, buy, sell, server, note, created_at, closed_at,
+          kind, materials, list_price, sold_units, sold_revenue`;
 }
 
 export async function listTrades(sql: Sql, userId: string): Promise<TradeRow[]> {
   return sql<TradeRow[]>`
-    select id, item, qty, buy, sell, server, note, created_at, closed_at
+    select ${sql.unsafe(TRADE_COLS)}
     from trades where user_id = ${userId} order by created_at desc
   `;
 }
 
-export async function addTrade(
-  sql: Sql,
-  userId: string,
-  t: { item: string; qty: number; buy: number; sell?: number | null; server?: string | null; note?: string | null },
-): Promise<TradeRow> {
+export interface AddTradeInput {
+  item: string;
+  qty: number;
+  buy: number;
+  sell?: number | null;
+  server?: string | null;
+  note?: string | null;
+  kind?: string | null;
+  materials?: number | null;
+  listPrice?: number | null;
+  soldUnits?: number | null;
+  soldRevenue?: number | null;
+}
+
+export async function addTrade(sql: Sql, userId: string, t: AddTradeInput): Promise<TradeRow> {
+  const isCraft = t.kind === 'craft';
+  const closed = isCraft
+    ? (t.soldUnits ?? 0) >= t.qty && (t.soldUnits ?? 0) > 0
+      ? new Date()
+      : null
+    : t.sell != null
+      ? new Date()
+      : null;
   const [row] = await sql<TradeRow[]>`
     insert into trades ${sql({
       user_id: userId,
@@ -153,15 +182,71 @@ export async function addTrade(
       sell: t.sell ?? null,
       server: t.server ?? null,
       note: t.note ?? null,
-      closed_at: t.sell != null ? new Date() : null,
+      kind: t.kind ?? 'flip',
+      materials: t.materials ?? null,
+      list_price: t.listPrice ?? null,
+      sold_units: t.soldUnits ?? null,
+      sold_revenue: t.soldRevenue ?? null,
+      closed_at: closed,
     })}
-    returning id, item, qty, buy, sell, server, note, created_at, closed_at
+    returning ${sql.unsafe(TRADE_COLS)}
   `;
   return row!;
 }
 
 export async function closeTrade(sql: Sql, userId: string, id: string, sell: number): Promise<void> {
   await sql`update trades set sell = ${sell}, closed_at = now() where id = ${id} and user_id = ${userId}`;
+}
+
+const PATCH_COLS: Record<string, string> = {
+  item: 'item',
+  qty: 'qty',
+  buy: 'buy',
+  sell: 'sell',
+  note: 'note',
+  kind: 'kind',
+  materials: 'materials',
+  listPrice: 'list_price',
+  soldUnits: 'sold_units',
+  soldRevenue: 'sold_revenue',
+};
+
+/** Частичное обновление сделки (правка крафта/продажа). Пересчитывает closed_at. */
+export async function updateTrade(
+  sql: Sql,
+  userId: string,
+  id: string,
+  patch: Partial<AddTradeInput>,
+): Promise<TradeRow | undefined> {
+  const [cur] = await sql<TradeRow[]>`
+    select ${sql.unsafe(TRADE_COLS)} from trades where id = ${id} and user_id = ${userId}
+  `;
+  if (!cur) return undefined;
+
+  const set: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(patch)) {
+    const col = PATCH_COLS[k];
+    if (col) set[col] = v ?? null;
+  }
+
+  const kind = patch.kind ?? cur.kind;
+  const qty = patch.qty ?? cur.qty;
+  const sell = patch.sell ?? cur.sell;
+  const soldUnits = patch.soldUnits ?? cur.sold_units ?? 0;
+  set['closed_at'] =
+    kind === 'craft'
+      ? soldUnits >= qty && soldUnits > 0
+        ? new Date()
+        : null
+      : sell != null
+        ? new Date()
+        : null;
+
+  const [row] = await sql<TradeRow[]>`
+    update trades set ${sql(set)} where id = ${id} and user_id = ${userId}
+    returning ${sql.unsafe(TRADE_COLS)}
+  `;
+  return row;
 }
 
 export async function deleteTrade(sql: Sql, userId: string, id: string): Promise<void> {
