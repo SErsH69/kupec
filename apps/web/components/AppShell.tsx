@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SERVERS } from '@kupec/core';
 import { useStore } from '../lib/store';
 import { useAuth } from '../lib/auth';
@@ -17,6 +17,12 @@ export function AppShell() {
   const { user, logout, api } = useAuth();
   const [active, setActive] = useState('overview');
   const [importOpen, setImportOpen] = useState(false);
+
+  // Запоминаем активную вкладку между перезагрузками.
+  useEffect(() => {
+    const saved = localStorage.getItem('kupec.tab');
+    if (saved && TABS.some((t) => t.key === saved)) setActive(saved);
+  }, []);
   const [authOpen, setAuthOpen] = useState(false);
   const [loadingSrv, setLoadingSrv] = useState(false);
 
@@ -41,6 +47,11 @@ export function AppShell() {
 
   const selectTab = (key: string) => {
     setActive(key);
+    try {
+      localStorage.setItem('kupec.tab', key);
+    } catch {
+      /* ignore */
+    }
     track('tab_view', { tab: key });
   };
 
