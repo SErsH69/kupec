@@ -169,10 +169,14 @@ export function DataTable<T>({
                       key={c.key}
                       className={`px-3 py-2 tabular-nums ${c.align === 'right' ? 'text-right' : ''}`}
                     >
-                      {renderExpanded && ci === 0 && (
-                        <span className="mr-1 inline-block w-3 text-muted">{isOpen ? '▾' : '▸'}</span>
+                      {renderExpanded && ci === 0 ? (
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-3 shrink-0 text-muted">{isOpen ? '▾' : '▸'}</span>
+                          {c.render(row)}
+                        </span>
+                      ) : (
+                        c.render(row)
                       )}
-                      {c.render(row)}
                     </td>
                   ))}
                 </tr>

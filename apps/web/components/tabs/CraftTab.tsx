@@ -15,6 +15,16 @@ export function CraftTab() {
     [items, useChance, selfCraft],
   );
 
+  // Топ-5 рецептов по недельному профиту (с учётом спроса) — как в прототипе.
+  const picks = useMemo(
+    () =>
+      data
+        .filter((r) => (r.weekly ?? 0) > 0 && (!useChance || r.ch[1] >= 30))
+        .sort((a, b) => (b.weekly ?? 0) - (a.weekly ?? 0))
+        .slice(0, 5),
+    [data, useChance],
+  );
+
   const columns: Column<CraftResult>[] = [
     {
       key: 'out',
@@ -76,6 +86,20 @@ export function CraftTab() {
         <Toggle checked={useChance} onChange={setUseChance} label="Учитывать шанс крафта" />
         <Toggle checked={selfCraft} onChange={setSelfCraft} label="Крафтить ингредиенты самому" />
       </div>
+
+      {picks.length > 0 && (
+        <div>
+          <div className="mb-2 text-sm font-semibold">
+            🔥 Крафтить на этой неделе <span className="font-normal text-muted">(по недельному профиту с учётом спроса)</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {picks.map((r, i) => (
+              <PickCard key={r.out} n={i + 1} r={r} />
+            ))}
+          </div>
+        </div>
+      )}
+
       <Card>
         <DataTable
           columns={columns}
@@ -87,6 +111,44 @@ export function CraftTab() {
         />
       </Card>
     </div>
+  );
+}
+
+function PickCard({ n, r }: { n: number; r: CraftResult }) {
+  return (
+    <Card className="p-3">
+      <div className="flex items-center gap-1.5">
+        <span className="text-sm font-semibold">
+          {n}. {r.out}
+        </span>
+        <Badge>ур.{r.lvl}</Badge>
+        <span className="ml-auto text-[11px] text-muted">
+          шанс {r.ch[0]}–{r.ch[1]}%
+        </span>
+      </div>
+      <div className="mt-2 text-xs leading-relaxed">
+        <div className="flex justify-between">
+          <span className="text-muted">профит/нед</span>
+          <span className="font-bold text-green">{money(r.weekly)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">профит/крафт</span>
+          <span className="tabular-nums">{money(r.profit)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">спрос</span>
+          <span className="tabular-nums">{r.outSold == null ? '—' : `${r.outSold} шт/нед`}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">себест.</span>
+          <span className="tabular-nums">{money(r.cost)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">лимит</span>
+          <Badge tone={r.bottleneck === 'спрос' ? 'amber' : 'default'}>{r.bottleneck}</Badge>
+        </div>
+      </div>
+    </Card>
   );
 }
 
