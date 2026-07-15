@@ -55,16 +55,73 @@ const columns: Column<KitchenResult>[] = [
 export function KitchenTab() {
   const { items } = useStore();
   const data = useMemo(() => computeKitchen(items), [items]);
+
+  // Топ-5 блюд по профиту/час — как в прототипе.
+  const picks = useMemo(
+    () =>
+      data
+        .filter((r) => r.perHour != null && r.perHour > 0)
+        .sort((a, b) => (b.perHour ?? 0) - (a.perHour ?? 0))
+        .slice(0, 5),
+    [data],
+  );
+
   return (
-    <Card>
-      <DataTable
-        columns={columns}
-        data={data}
-        defaultSort={{ key: 'perHour', dir: -1 }}
-        rowKey={(r) => String(r.id)}
-        empty="Импортируй раздел «Предметы» — появятся расчёты кухни."
-        renderExpanded={(r) => <DishBreakdown dish={r} />}
-      />
+    <div className="flex flex-col gap-4">
+      {picks.length > 0 && (
+        <div>
+          <div className="mb-2 text-sm font-semibold">
+            🍳 Готовить выгоднее всего <span className="font-normal text-muted">(по профиту в час)</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {picks.map((r, i) => (
+              <PickCard key={r.id} n={i + 1} r={r} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <Card>
+        <DataTable
+          columns={columns}
+          data={data}
+          defaultSort={{ key: 'perHour', dir: -1 }}
+          rowKey={(r) => String(r.id)}
+          empty="Импортируй раздел «Предметы» — появятся расчёты кухни."
+          renderExpanded={(r) => <DishBreakdown dish={r} />}
+        />
+      </Card>
+    </div>
+  );
+}
+
+function PickCard({ n, r }: { n: number; r: KitchenResult }) {
+  return (
+    <Card className="p-3">
+      <div className="flex items-center gap-1.5">
+        <span className="text-sm font-semibold">
+          {n}. {r.name}
+        </span>
+        <Badge>ур.{r.lvl}</Badge>
+      </div>
+      <div className="mt-2 text-xs leading-relaxed">
+        <div className="flex justify-between">
+          <span className="text-muted">профит/час</span>
+          <span className="font-bold text-green">{money(r.perHour)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">профит (×10)</span>
+          <span className="tabular-nums">{money(r.profit)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">спрос/д</span>
+          <span className="tabular-nums">{r.perDay != null ? r.perDay.toFixed(1) : '—'}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">ингр.</span>
+          <span className="tabular-nums">{money(r.ingCost)}</span>
+        </div>
+      </div>
     </Card>
   );
 }
