@@ -99,6 +99,11 @@ export function createApi(baseUrl: string, getToken: () => string | null) {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       }),
+    changePassword: (currentPassword: string, newPassword: string) =>
+      req<{ ok: true }>('/v1/auth/password', {
+        method: 'POST',
+        body: JSON.stringify({ currentPassword, newPassword }),
+      }),
     getMarket: (server: string) => req<{ rows: MarketRow[] }>(`/v1/market/${server}`),
     /** Опросить сервер вживую (сервер → БД) и вернуть свежие строки. */
     refresh: (server: string) => req<{ rows: MarketRow[] }>(`/v1/refresh/${server}`, { method: 'POST' }),

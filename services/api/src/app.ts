@@ -7,8 +7,10 @@ import {
   createUser,
   deleteTrade,
   findUserByEmail,
+  findUserById,
   latestRows,
   listTrades,
+  updatePasswordHash,
   updateTrade,
   type Sql,
 } from '@kupec/db';
@@ -86,6 +88,17 @@ export function createApp(sql: Sql) {
     await next();
     return;
   };
+
+  // Смена пароля (нужен текущий).
+  app.post('/v1/auth/password', auth, async (c) => {
+    const { currentPassword, newPassword } = await c.req.json().catch(() => ({}));
+    if (!validPassword(newPassword)) return c.json({ error: 'новый пароль — минимум 6 символов' }, 400);
+    const user = await findUserById(sql, c.get('userId'));
+    if (!user || !(await verifyPassword(currentPassword, user.password_hash)))
+      return c.json({ error: 'текущий пароль неверный' }, 401);
+    await updatePasswordHash(sql, user.id, await hashPassword(newPassword));
+    return c.json({ ok: true });
+  });
 
   app.get('/v1/trades', auth, async (c) => c.json({ trades: await listTrades(sql, c.get('userId')) }));
 

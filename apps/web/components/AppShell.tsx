@@ -9,6 +9,7 @@ import { PATH_LABEL } from '../lib/labels';
 import { track } from '../lib/analytics';
 import { ImportDialog } from './ImportDialog';
 import { AuthDialog } from './AuthDialog';
+import { ProfileDialog } from './ProfileDialog';
 import { NotifyBell } from './NotifyBell';
 import { Logo } from './Logo';
 
@@ -24,6 +25,7 @@ export function AppShell() {
     if (saved && TABS.some((t) => t.key === saved)) setActive(saved);
   }, []);
   const [authOpen, setAuthOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [loadingSrv, setLoadingSrv] = useState(false);
 
   const loadFromServer = async () => {
@@ -92,21 +94,19 @@ export function AppShell() {
         </nav>
         <div className="mt-auto flex flex-col gap-2 pt-4">
           {user ? (
-            <div className="flex items-center gap-2 rounded-lg border border-line bg-surface-2/40 px-2.5 py-2">
+            <button
+              onClick={() => setProfileOpen(true)}
+              title="Профиль и настройки"
+              className="flex items-center gap-2 rounded-lg border border-line bg-surface-2/40 px-2.5 py-2 text-left hover:bg-surface-2"
+            >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-sm font-bold text-accent">
                 {user.email[0]?.toUpperCase()}
               </div>
               <span className="min-w-0 flex-1 truncate text-sm" title={user.email}>
                 {user.email}
               </span>
-              <button
-                onClick={logout}
-                title="Выйти"
-                className="shrink-0 rounded-md px-2 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt"
-              >
-                Выйти
-              </button>
-            </div>
+              <span className="shrink-0 text-muted">⚙</span>
+            </button>
           ) : (
             <button
               onClick={() => setAuthOpen(true)}
@@ -200,6 +200,7 @@ export function AppShell() {
 
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
       <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
+      <ProfileDialog open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   );
 }

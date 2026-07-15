@@ -118,6 +118,17 @@ export async function findUserByEmail(sql: Sql, email: string): Promise<UserRow 
   return row;
 }
 
+export async function findUserById(sql: Sql, id: string): Promise<UserRow | undefined> {
+  const [row] = await sql<UserRow[]>`
+    select id, email, password_hash from users where id = ${id}
+  `;
+  return row;
+}
+
+export async function updatePasswordHash(sql: Sql, id: string, passwordHash: string): Promise<void> {
+  await sql`update users set password_hash = ${passwordHash} where id = ${id}`;
+}
+
 /* ---------------- сделки (журнал) ---------------- */
 
 export interface TradeRow {

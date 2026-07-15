@@ -27,6 +27,7 @@ interface AuthContextValue {
   api: Api;
   register: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  changePassword: (current: string, next: string) => Promise<{ ok: boolean; error?: string }>;
   logout: () => void;
 }
 
@@ -88,6 +89,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     api,
     register: (email, password) => auth('register', email, password),
     login: (email, password) => auth('login', email, password),
+    changePassword: async (current, next) => {
+      try {
+        await api.changePassword(current, next);
+        track('password_change');
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, error: e instanceof Error ? e.message : 'Ошибка' };
+      }
+    },
     logout: () => {
       resetIdentity();
       track('sign_out');
