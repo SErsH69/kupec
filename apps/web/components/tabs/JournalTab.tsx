@@ -11,6 +11,7 @@ type Kind = 'flip' | 'craft';
 export function JournalTab() {
   const { trades, addTrade, updateTrade, closeTrade, deleteTrade } = useJournal();
   const { items, server } = useStore();
+  const [selling, setSelling] = useState<Trade | null>(null);
   const [editing, setEditing] = useState<Trade | null>(null);
   const [addOpen, setAddOpen] = useState(false);
 
@@ -75,26 +76,39 @@ export function JournalTab() {
         <Card className="p-8 text-center text-sm text-muted">Журнал пуст. Добавь сделку выше.</Card>
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
-          {ordered.map((t) =>
-            t.kind === 'craft' ? (
-              <CraftCard key={t.id} t={t} onEdit={() => setEditing(t)} onDelete={() => deleteTrade(t.id)} />
-            ) : (
-              <FlipCard key={t.id} t={t} onSell={() => setEditing(t)} onDelete={() => deleteTrade(t.id)} />
-            ),
-          )}
+          {ordered.map((t) => (
+            <TradeCard
+              key={t.id}
+              t={t}
+              onSell={() => setSelling(t)}
+              onEdit={() => setEditing(t)}
+              onDelete={() => deleteTrade(t.id)}
+            />
+          ))}
         </div>
       )}
 
-      {editing && (
-        <EditModal
-          trade={editing}
-          onClose={() => setEditing(null)}
+      {selling && (
+        <SellModal
+          trade={selling}
+          onClose={() => setSelling(null)}
           onCraft={(patch) => {
-            updateTrade(editing.id, patch);
-            setEditing(null);
+            updateTrade(selling.id, patch);
+            setSelling(null);
           }}
           onFlip={(sell) => {
-            closeTrade(editing.id, sell);
+            closeTrade(selling.id, sell);
+            setSelling(null);
+          }}
+        />
+      )}
+
+      {editing && (
+        <FullEditModal
+          trade={editing}
+          onClose={() => setEditing(null)}
+          onSave={(patch) => {
+            updateTrade(editing.id, patch);
             setEditing(null);
           }}
         />
@@ -103,9 +117,37 @@ export function JournalTab() {
   );
 }
 
+function TradeCard({
+  t,
+  onSell,
+  onEdit,
+  onDelete,
+}: {
+  t: Trade;
+  onSell: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return t.kind === 'craft' ? (
+    <CraftCard t={t} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
+  ) : (
+    <FlipCard t={t} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
+  );
+}
+
 /* ---------------- карточки ---------------- */
 
-function CraftCard({ t, onEdit, onDelete }: { t: Trade; onEdit: () => void; onDelete: () => void }) {
+function CraftCard({
+  t,
+  onSell,
+  onEdit,
+  onDelete,
+}: {
+  t: Trade;
+  onSell: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const m = craftMetrics(t);
   const date = new Date(t.createdAt).toLocaleDateString('ru-RU');
   return (
@@ -137,8 +179,13 @@ function CraftCard({ t, onEdit, onDelete }: { t: Trade; onEdit: () => void; onDe
       </div>
 
       <div className="mt-3 flex gap-2 border-t border-line/50 pt-3">
-        <button onClick={onEdit} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
-          {m.open ? 'Продать / правка' : 'Правка'}
+        {m.open && (
+          <button onClick={onSell} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
+            Продать
+          </button>
+        )}
+        <button onClick={onEdit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt">
+          ✏️ Правка
         </button>
         <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
           Удалить
@@ -148,7 +195,17 @@ function CraftCard({ t, onEdit, onDelete }: { t: Trade; onEdit: () => void; onDe
   );
 }
 
-function FlipCard({ t, onSell, onDelete }: { t: Trade; onSell: () => void; onDelete: () => void }) {
+function FlipCard({
+  t,
+  onSell,
+  onEdit,
+  onDelete,
+}: {
+  t: Trade;
+  onSell: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const p = tradePnl(t);
   return (
     <Card className="p-4">
@@ -183,6 +240,9 @@ function FlipCard({ t, onSell, onDelete }: { t: Trade; onSell: () => void; onDel
             Продать
           </button>
         )}
+        <button onClick={onEdit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt">
+          ✏️ Правка
+        </button>
         <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
           Удалить
         </button>
@@ -325,9 +385,9 @@ function AddTradeForm({
   );
 }
 
-/* ---------------- диалог продажи/правки ---------------- */
+/* ---------------- диалог продажи ---------------- */
 
-function EditModal({
+function SellModal({
   trade,
   onClose,
   onCraft,
@@ -368,9 +428,7 @@ function EditModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div className="w-full max-w-sm rounded-[var(--radius-xl)] border border-line bg-surface p-5" onClick={(e) => e.stopPropagation()}>
-        <h2 className="mb-3 text-lg font-semibold">
-          {isCraft ? 'Крафт: продажа / правка' : 'Продать'} — {trade.item}
-        </h2>
+        <h2 className="mb-3 text-lg font-semibold">Продать — {trade.item}</h2>
         {isCraft ? (
           <div className="flex flex-col gap-2">
             <label className="text-xs text-muted">Продано штук (всего, из {trade.qty})</label>
@@ -396,6 +454,108 @@ function EditModal({
         </div>
       </div>
     </div>
+  );
+}
+
+/* ---------------- полное редактирование карточки ---------------- */
+
+function FullEditModal({
+  trade,
+  onClose,
+  onSave,
+}: {
+  trade: Trade;
+  onClose: () => void;
+  onSave: (patch: import('../../lib/api').TradeInput) => void;
+}) {
+  const isCraft = trade.kind === 'craft';
+  const m = isCraft ? craftMetrics(trade) : null;
+  const [item, setItem] = useState(trade.item);
+  const [qty, setQty] = useState(String(trade.qty));
+  const [buy, setBuy] = useState(String(trade.buy ?? ''));
+  const [materials, setMaterials] = useState(m ? String(m.materials) : '');
+  const [listPrice, setListPrice] = useState(m && m.listPrice != null ? String(m.listPrice) : '');
+  const [sold, setSold] = useState(m ? String(m.soldUnits) : '');
+  const [sell, setSell] = useState(trade.sell != null ? String(trade.sell) : '');
+  const [revenue, setRevenue] = useState(m && m.soldRevenue ? String(m.soldRevenue) : '');
+
+  const save = () => {
+    const q = Number(qty) || 0;
+    if (!item.trim() || q <= 0) return;
+    if (isCraft) {
+      const mat = Number(materials) || 0;
+      const lp = Number(listPrice) || 0;
+      const su = Math.min(Number(sold) || 0, q);
+      const rev = Number(revenue) || (lp ? lp * su : 0);
+      onSave({
+        item: item.trim(),
+        qty: q,
+        buy: mat / q,
+        kind: 'craft',
+        materials: mat,
+        listPrice: lp || null,
+        soldUnits: su,
+        soldRevenue: rev || null,
+      });
+    } else {
+      onSave({
+        item: item.trim(),
+        qty: q,
+        buy: Number(buy) || 0,
+        sell: sell === '' ? null : Number(sell) || 0,
+      });
+    }
+  };
+
+  return (
+    <Modal title={`Правка — ${trade.item}`} onClose={onClose}>
+      <div className="flex flex-col gap-3">
+        <Field label="Товар">
+          <input value={item} onChange={(e) => setItem(e.target.value)} className={inputCls} />
+        </Field>
+        {isCraft ? (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Скрафчено">
+                <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={inputCls} />
+              </Field>
+              <Field label="Материалы (всего)">
+                <input type="number" value={materials} onChange={(e) => setMaterials(e.target.value)} className={inputCls} />
+              </Field>
+              <Field label="Выставл/шт">
+                <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={inputCls} />
+              </Field>
+              <Field label="Продано">
+                <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} className={inputCls} />
+              </Field>
+            </div>
+            <Field label="Выручка (всего, необязательно)">
+              <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="иначе = выставл × продано" className={inputCls} />
+            </Field>
+          </>
+        ) : (
+          <div className="grid grid-cols-3 gap-3">
+            <Field label="Кол-во">
+              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={inputCls} />
+            </Field>
+            <Field label="Цена покупки">
+              <input type="number" value={buy} onChange={(e) => setBuy(e.target.value)} className={inputCls} />
+            </Field>
+            <Field label="Цена продажи">
+              <input type="number" value={sell} onChange={(e) => setSell(e.target.value)} placeholder="не продано" className={inputCls} />
+            </Field>
+          </div>
+        )}
+        <div className="mt-1 flex justify-end gap-2">
+          <button onClick={onClose} className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-surface-2">
+            Отмена
+          </button>
+          <button onClick={save} className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
+            Сохранить
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
