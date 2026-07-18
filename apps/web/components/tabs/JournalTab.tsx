@@ -62,14 +62,12 @@ export function JournalTab() {
       </div>
 
       {addOpen && (
-        <Modal onClose={() => setAddOpen(false)} title="Новая сделка" wide>
-          <AddTradeForm
-            onAdd={addTrade}
-            items={itemNames}
-            server={server}
-            onDone={() => setAddOpen(false)}
-          />
-        </Modal>
+        <AddTradeModal
+          onAdd={addTrade}
+          items={itemNames}
+          server={server}
+          onClose={() => setAddOpen(false)}
+        />
       )}
 
       {ordered.length === 0 ? (
@@ -262,33 +260,25 @@ function Row({ label, value }: { label: string; value: ReactNode }) {
 
 /* ---------------- форма добавления ---------------- */
 
-function AddTradeForm({
+function AddTradeModal({
   onAdd,
   items,
   server,
-  onDone,
+  onClose,
 }: {
   onAdd: (t: import('../../lib/api').TradeInput) => void;
   items: string[];
   server: string;
-  onDone?: () => void;
+  onClose: () => void;
 }) {
-  const [kind, setKind] = useState<Kind>('flip');
+  // По умолчанию — крафт: основной сценарий (дом/производство).
+  const [kind, setKind] = useState<Kind>('craft');
   const [item, setItem] = useState('');
   const [qty, setQty] = useState('');
   const [buy, setBuy] = useState('');
   const [materials, setMaterials] = useState('');
   const [listPrice, setListPrice] = useState('');
   const [sold, setSold] = useState('');
-
-  const reset = () => {
-    setItem('');
-    setQty('');
-    setBuy('');
-    setMaterials('');
-    setListPrice('');
-    setSold('');
-  };
 
   const submit = () => {
     const q = Number(qty) || 0;
@@ -314,35 +304,27 @@ function AddTradeForm({
         server,
       });
     }
-    reset();
-    onDone?.();
+    onClose();
   };
 
   return (
-    <div>
-      <div className="mb-3 flex w-fit rounded-lg bg-bg p-1 text-sm">
-        <button
-          onClick={() => setKind('flip')}
-          className={`rounded-md px-3 py-1 ${kind === 'flip' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
-        >
-          💱 Перекуп
-        </button>
-        <button
-          onClick={() => setKind('craft')}
-          className={`rounded-md px-3 py-1 ${kind === 'craft' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
-        >
-          🔨 Крафт
-        </button>
-      </div>
+    <Modal
+      title="Новая сделка"
+      subtitle={kind === 'craft' ? 'Скрафтил и выставил на продажу' : 'Купил дешевле — продам дороже'}
+      onClose={onClose}
+      footer={<ModalActions onCancel={onClose} onSubmit={submit} submitLabel="Добавить" />}
+    >
+      <KindSwitch kind={kind} onChange={setKind} />
 
-      <div className="flex flex-wrap items-end gap-3">
-        <Field label="Товар" className="min-w-44 flex-1">
+      <div className="mt-5 flex flex-col gap-4">
+        <Field label="Товар">
           <input
             list="journal-items"
             value={item}
             onChange={(e) => setItem(e.target.value)}
-            placeholder="Название…"
+            placeholder="Начни вводить название…"
             className={inputCls}
+            autoFocus
           />
           <datalist id="journal-items">
             {items.map((n) => (
@@ -352,35 +334,49 @@ function AddTradeForm({
         </Field>
 
         {kind === 'flip' ? (
-          <>
+          <div className="grid grid-cols-2 gap-4">
             <Field label="Кол-во">
-              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={`${inputCls} w-24`} />
+              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} placeholder="шт" className={inputCls} />
             </Field>
-            <Field label="Цена покупки">
-              <input type="number" value={buy} onChange={(e) => setBuy(e.target.value)} placeholder="за шт." className={`${inputCls} w-32`} />
+            <Field label="Цена покупки" hint="за штуку">
+              <input type="number" value={buy} onChange={(e) => setBuy(e.target.value)} placeholder="0" className={inputCls} />
             </Field>
-          </>
+          </div>
         ) : (
-          <>
-            <Field label="Скрафчено">
-              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={`${inputCls} w-24`} />
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Скрафчено" hint="сколько штук вышло">
+              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} placeholder="шт" className={inputCls} />
             </Field>
-            <Field label="Материалы (всего)">
-              <input type="number" value={materials} onChange={(e) => setMaterials(e.target.value)} className={`${inputCls} w-36`} />
+            <Field label="Материалы" hint="суммарно потрачено">
+              <input type="number" value={materials} onChange={(e) => setMaterials(e.target.value)} placeholder="0" className={inputCls} />
             </Field>
-            <Field label="Выставл/шт">
-              <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={`${inputCls} w-28`} />
+            <Field label="Выставл/шт" hint="цена на маркете">
+              <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} placeholder="0" className={inputCls} />
             </Field>
-            <Field label="Продано">
-              <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} placeholder="0" className={`${inputCls} w-20`} />
+            <Field label="Продано" hint="уже ушло, можно 0">
+              <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} placeholder="0" className={inputCls} />
             </Field>
-          </>
+          </div>
         )}
-
-        <button onClick={submit} className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
-          + Добавить
-        </button>
       </div>
+    </Modal>
+  );
+}
+
+/** Переключатель типа сделки. */
+function KindSwitch({ kind, onChange }: { kind: Kind; onChange: (k: Kind) => void }) {
+  const cls = (k: Kind) =>
+    `flex-1 rounded-lg px-4 py-2.5 text-sm transition ${
+      kind === k ? 'bg-surface-2 font-semibold text-txt shadow-sm' : 'text-muted hover:text-txt'
+    }`;
+  return (
+    <div className="flex gap-1 rounded-xl bg-bg p-1">
+      <button onClick={() => onChange('craft')} className={cls('craft')}>
+        🔨 Крафт
+      </button>
+      <button onClick={() => onChange('flip')} className={cls('flip')}>
+        💱 Перекуп
+      </button>
     </div>
   );
 }
@@ -426,34 +422,32 @@ function SellModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div className="w-full max-w-sm rounded-[var(--radius-xl)] border border-line bg-surface p-5" onClick={(e) => e.stopPropagation()}>
-        <h2 className="mb-3 text-lg font-semibold">Продать — {trade.item}</h2>
-        {isCraft ? (
-          <div className="flex flex-col gap-2">
-            <label className="text-xs text-muted">Продано штук (всего, из {trade.qty})</label>
-            <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} className={inputCls} autoFocus />
-            <label className="text-xs text-muted">Цена выставления за шт.</label>
-            <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={inputCls} />
-            <label className="text-xs text-muted">Выручка (всего, необязательно)</label>
-            <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="иначе = выставл × продано" className={inputCls} />
+    <Modal
+      title={`Продать — ${trade.item}`}
+      subtitle={isCraft ? `Скрафчено ${trade.qty} шт` : `${trade.qty} шт · куплено по ${money(trade.buy)}`}
+      onClose={onClose}
+      footer={<ModalActions onCancel={onClose} onSubmit={confirm} tone="green" />}
+    >
+      {isCraft ? (
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Продано штук" hint={`всего, из ${trade.qty}`}>
+              <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} className={inputCls} autoFocus />
+            </Field>
+            <Field label="Цена выставления" hint="за штуку">
+              <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={inputCls} />
+            </Field>
           </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            <label className="text-xs text-muted">Цена продажи за шт. ({trade.qty} шт)</label>
-            <input type="number" value={sell} onChange={(e) => setSell(e.target.value)} className={inputCls} autoFocus />
-          </div>
-        )}
-        <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-surface-2">
-            Отмена
-          </button>
-          <button onClick={confirm} className="rounded-lg bg-green px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
-            Сохранить
-          </button>
+          <Field label="Выручка" hint="необязательно — иначе выставл × продано">
+            <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="0" className={inputCls} />
+          </Field>
         </div>
-      </div>
-    </div>
+      ) : (
+        <Field label="Цена продажи" hint={`за штуку, ${trade.qty} шт`}>
+          <input type="number" value={sell} onChange={(e) => setSell(e.target.value)} className={inputCls} autoFocus />
+        </Field>
+      )}
+    </Modal>
   );
 }
 
@@ -508,33 +502,38 @@ function FullEditModal({
   };
 
   return (
-    <Modal title={`Правка — ${trade.item}`} onClose={onClose}>
-      <div className="flex flex-col gap-3">
+    <Modal
+      title={`Правка — ${trade.item}`}
+      subtitle={isCraft ? '🔨 крафт' : '💱 перекуп'}
+      onClose={onClose}
+      footer={<ModalActions onCancel={onClose} onSubmit={save} />}
+    >
+      <div className="flex flex-col gap-4">
         <Field label="Товар">
           <input value={item} onChange={(e) => setItem(e.target.value)} className={inputCls} />
         </Field>
         {isCraft ? (
           <>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Скрафчено">
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Скрафчено" hint="штук всего">
                 <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={inputCls} />
               </Field>
-              <Field label="Материалы (всего)">
+              <Field label="Материалы" hint="суммарно потрачено">
                 <input type="number" value={materials} onChange={(e) => setMaterials(e.target.value)} className={inputCls} />
               </Field>
-              <Field label="Выставл/шт">
+              <Field label="Выставл/шт" hint="цена на маркете">
                 <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={inputCls} />
               </Field>
-              <Field label="Продано">
+              <Field label="Продано" hint="штук ушло">
                 <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} className={inputCls} />
               </Field>
             </div>
-            <Field label="Выручка (всего, необязательно)">
-              <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="иначе = выставл × продано" className={inputCls} />
+            <Field label="Выручка" hint="необязательно — иначе выставл × продано">
+              <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="0" className={inputCls} />
             </Field>
           </>
         ) : (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4">
             <Field label="Кол-во">
               <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} className={inputCls} />
             </Field>
@@ -546,14 +545,6 @@ function FullEditModal({
             </Field>
           </div>
         )}
-        <div className="mt-1 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-lg border border-line px-4 py-2 text-sm hover:bg-surface-2">
-            Отмена
-          </button>
-          <button onClick={save} className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
-            Сохранить
-          </button>
-        </div>
       </div>
     </Modal>
   );
@@ -561,41 +552,100 @@ function FullEditModal({
 
 function Modal({
   title,
+  subtitle,
   onClose,
   children,
-  wide,
+  footer,
+  size = 'md',
 }: {
   title: string;
+  subtitle?: ReactNode;
   onClose: () => void;
   children: ReactNode;
-  wide?: boolean;
+  footer?: ReactNode;
+  size?: 'md' | 'lg';
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <div
-        className={`w-full ${wide ? 'max-w-2xl' : 'max-w-sm'} rounded-[var(--radius-xl)] border border-line bg-surface p-5`}
+        className={`w-full ${size === 'lg' ? 'max-w-3xl' : 'max-w-xl'} overflow-hidden rounded-[var(--radius-xl)] border border-line bg-surface shadow-2xl shadow-black/50`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <button onClick={onClose} className="text-muted hover:text-txt">
+        <div className="flex items-start justify-between gap-4 border-b border-line px-7 py-5">
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold">{title}</h2>
+            {subtitle != null && <div className="mt-0.5 text-sm text-muted">{subtitle}</div>}
+          </div>
+          <button
+            onClick={onClose}
+            className="-mr-1 -mt-1 shrink-0 rounded-lg p-1.5 text-lg leading-none text-muted hover:bg-surface-2 hover:text-txt"
+          >
             ✕
           </button>
         </div>
-        {children}
+        <div className="px-7 py-6">{children}</div>
+        {footer != null && (
+          <div className="flex justify-end gap-2 border-t border-line bg-bg/40 px-7 py-4">{footer}</div>
+        )}
       </div>
     </div>
   );
 }
 
-const inputCls =
-  'rounded-lg border border-line bg-bg px-3 py-1.5 text-sm outline-none focus:border-accent';
-
-function Field({ label, children, className = '' }: { label: string; children: ReactNode; className?: string }) {
+/** Кнопки подвала диалога. */
+function ModalActions({
+  onCancel,
+  onSubmit,
+  submitLabel = 'Сохранить',
+  tone = 'accent',
+}: {
+  onCancel: () => void;
+  onSubmit: () => void;
+  submitLabel?: string;
+  tone?: 'accent' | 'green';
+}) {
   return (
-    <label className={`flex flex-col gap-1 ${className}`}>
-      <span className="text-xs uppercase tracking-wide text-muted">{label}</span>
+    <>
+      <button
+        onClick={onCancel}
+        className="rounded-lg border border-line px-5 py-2.5 text-sm font-medium hover:bg-surface-2"
+      >
+        Отмена
+      </button>
+      <button
+        onClick={onSubmit}
+        className={`rounded-lg px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 ${
+          tone === 'green' ? 'bg-green' : 'bg-accent'
+        }`}
+      >
+        {submitLabel}
+      </button>
+    </>
+  );
+}
+
+const inputCls =
+  'w-full rounded-lg border border-line bg-bg px-3.5 py-2.5 text-[15px] tabular-nums outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20';
+
+function Field({
+  label,
+  hint,
+  children,
+  className = '',
+}: {
+  label: string;
+  hint?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <label className={`flex flex-col gap-1.5 ${className}`}>
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted">{label}</span>
       {children}
+      {hint && <span className="text-[11px] text-muted">{hint}</span>}
     </label>
   );
 }
