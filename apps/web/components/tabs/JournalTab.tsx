@@ -20,7 +20,10 @@ export function JournalTab() {
     [trades],
   );
   const itemNames = useMemo(
-    () => Array.from(new Set(items.map((i) => i.name).filter(Boolean))),
+    () =>
+      Array.from(new Set(items.map((i) => i.name).filter(Boolean))).sort((a, b) =>
+        a.localeCompare(b, 'ru'),
+      ),
     [items],
   );
 
@@ -282,7 +285,7 @@ function AddTradeForm({
             className={inputCls}
           />
           <datalist id="journal-items">
-            {items.slice(0, 500).map((n) => (
+            {items.map((n) => (
               <option key={n} value={n} />
             ))}
           </datalist>
