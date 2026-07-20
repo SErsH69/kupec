@@ -9,7 +9,6 @@ import { FarmTab } from '../components/tabs/FarmTab';
 import { RLTab } from '../components/tabs/RLTab';
 import { GovTab } from '../components/tabs/GovTab';
 import { JournalTab } from '../components/tabs/JournalTab';
-import { HousingTab } from '../components/tabs/HousingTab';
 
 export { PATH_LABEL } from './labels';
 
@@ -32,7 +31,6 @@ export const TABS: TabDef[] = [
   { key: 'kitchen', label: 'Кухня', icon: '🍳', Component: KitchenTab, needsData: true },
   { key: 'farm', label: 'Что фармить', icon: '🌾', Component: FarmTab, needsData: true },
   { key: 'movers', label: 'Движения', icon: '📈', Component: MoversTab, needsData: true },
-  { key: 'housing', label: 'Дома', icon: '🏠', Component: HousingTab, needsData: true },
   { key: 'journal', label: 'Журнал сделок', icon: '📒', Component: JournalTab, needsAuth: true },
   { key: 'rlcars', label: 'RL авто', icon: '🏎️', Component: RLTab, needsData: true },
   { key: 'gov', label: 'Гос-цены', icon: '🏛️', Component: GovTab },
