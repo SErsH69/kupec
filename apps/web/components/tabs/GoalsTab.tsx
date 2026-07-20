@@ -7,6 +7,7 @@ import {
   maxLevel,
   mergePlans,
   money,
+  REALTIES,
   upgradePlan,
   UPGRADE_LABEL,
   type GoalItemResult,
@@ -304,6 +305,112 @@ function NumInput({ value, onChange }: { value: number; onChange: (v: number) =>
 const KINDS: UpgradeKind[] = ['workshop', 'kitchen', 'pantry', 'garage'];
 
 /**
+ * Подбор объекта по каталогу: главное — фильтр «без роялти» и сортировка
+ * по гос-цене, чтобы найти максимальный дом, за который не просят коины.
+ */
+function HousePicker({
+  type,
+  onPick,
+}: {
+  type: 'house' | 'apartment';
+  onPick: (num: number) => void;
+}) {
+  const [noRoyalty, setNoRoyalty] = useState(true);
+  const [budget, setBudget] = useState('');
+  const [desc, setDesc] = useState(true);
+
+  const list = useMemo(() => {
+    const cap = Number(budget) || Infinity;
+    return REALTIES.filter(
+      (r) => r.type === type && (!noRoyalty || r.royaltyCoins === 0) && r.gosPrice <= cap,
+    )
+      .sort((a, b) => (desc ? b.gosPrice - a.gosPrice : a.gosPrice - b.gosPrice))
+      .slice(0, 60);
+  }, [type, noRoyalty, budget, desc]);
+
+  return (
+    <div className="rounded-lg border border-line bg-bg/40 p-4">
+      <div className="flex flex-wrap items-end gap-4">
+        <label className="flex cursor-pointer items-center gap-2 text-sm select-none">
+          <input
+            type="checkbox"
+            checked={noRoyalty}
+            onChange={(e) => setNoRoyalty(e.target.checked)}
+            className="accent-[var(--color-accent)]"
+          />
+          <span>Только без роялти</span>
+        </label>
+        <Field label="Бюджет">
+          <input
+            type="number"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            placeholder="любой"
+            className={`${inputCls} w-36`}
+          />
+        </Field>
+        <button
+          onClick={() => setDesc((v) => !v)}
+          className="rounded-lg border border-line px-3 py-2.5 text-sm text-muted hover:bg-surface-2 hover:text-txt"
+        >
+          Гос-цена {desc ? '↓' : '↑'}
+        </button>
+        <span className="ml-auto text-xs text-muted">
+          найдено {list.length === 60 ? '60+' : list.length}
+        </span>
+      </div>
+
+      <div className="mt-3 max-h-64 overflow-auto rounded-lg border border-line">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="sticky top-0 border-b border-line bg-surface text-left text-xs uppercase tracking-wide text-muted">
+              <th className="px-3 py-2 font-medium">№</th>
+              <th className="px-3 py-2 text-right font-medium">Гос-цена</th>
+              <th className="px-3 py-2 text-right font-medium">За день</th>
+              <th className="px-3 py-2 text-right font-medium">Роялти</th>
+              <th className="px-3 py-2 text-right font-medium">Гараж</th>
+              <th className="px-3 py-2 text-right font-medium">Кладовка</th>
+              <th className="px-3 py-2 text-right font-medium">Подселение</th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((r) => (
+              <tr
+                key={`${r.type}-${r.num}`}
+                onClick={() => onPick(r.num)}
+                className="cursor-pointer border-b border-line/50 last:border-0 hover:bg-surface-2/60"
+              >
+                <td className="px-3 py-2 font-medium">#{r.num}</td>
+                <td className="px-3 py-2 text-right font-semibold tabular-nums">{money(r.gosPrice)}</td>
+                <td className="px-3 py-2 text-right tabular-nums text-muted">{money(r.rentPerDay)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">
+                  {r.royaltyCoins > 0 ? (
+                    <span className="text-amber">{r.royaltyCoins}</span>
+                  ) : (
+                    <span className="text-green">нет</span>
+                  )}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums">{r.garageSlots}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{r.storageKg} кг</td>
+                <td className="px-3 py-2 text-right tabular-nums">{r.maxPpl}</td>
+              </tr>
+            ))}
+            {list.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-3 py-6 text-center text-muted">
+                  Ничего не нашлось под фильтр.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-2 text-xs text-muted">Клик по строке подставит номер выше.</div>
+    </div>
+  );
+}
+
+/**
  * Мастер: номер дома → характеристики из каталога → текущие и целевые уровни
  * разделов → таблица «что купить» и создание проекта одной кнопкой.
  */
@@ -316,6 +423,7 @@ function HouseUpgradeModal({
 }) {
   const [type, setType] = useState<'house' | 'apartment'>('house');
   const [num, setNum] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [from, setFrom] = useState<Record<UpgradeKind, number>>({ workshop: 0, kitchen: 1, pantry: 1, garage: 1 });
   const [to, setTo] = useState<Record<UpgradeKind, number>>({ workshop: 0, kitchen: 1, pantry: 1, garage: 1 });
 
@@ -373,7 +481,23 @@ function HouseUpgradeModal({
               autoFocus
             />
           </Field>
+          <button
+            onClick={() => setPickerOpen((v) => !v)}
+            className="rounded-lg border border-line px-3.5 py-2.5 text-sm text-muted hover:bg-surface-2 hover:text-txt"
+          >
+            {pickerOpen ? 'Скрыть подбор' : '🔎 Подобрать дом'}
+          </button>
         </div>
+
+        {pickerOpen && (
+          <HousePicker
+            type={type}
+            onPick={(n) => {
+              setNum(String(n));
+              setPickerOpen(false);
+            }}
+          />
+        )}
 
         {num && !realty && (
           <div className="rounded-lg border border-amber/30 bg-amber/5 px-4 py-2.5 text-sm text-amber">
