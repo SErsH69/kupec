@@ -477,14 +477,16 @@ function HouseUpgradeModal({
   const create = () => {
     if (!total.materials.length) return;
     const label = realty ? `${type === 'house' ? 'Дом' : 'Квартира'} #${realty.num}` : 'Прокачка';
-    // Материалы храним по разделам — так видно, что именно нужно на кухню, а что на гараж.
+    // Позиции по каждому уровню отдельно: видно, что нужно на 1-й, что на 2-й.
     const items = plans.flatMap((p) =>
-      p.materials.map((m) => ({
-        name: m.name,
-        need: m.qty,
-        have: 0,
-        section: `${UPGRADE_LABEL[p.kind]} → ур. ${p.to}`,
-      })),
+      p.steps.flatMap((st) =>
+        st.req.map(([name, qty]) => ({
+          name,
+          need: qty,
+          have: 0,
+          section: `${UPGRADE_LABEL[p.kind]} · ур. ${st.lvl}`,
+        })),
+      ),
     );
     onCreate(`${label} — прокачка`, items);
   };
@@ -586,15 +588,29 @@ function HouseUpgradeModal({
                 <b className="text-txt">{total.hours} ч</b>
               </span>
             </div>
-            <div className="max-h-64 overflow-auto rounded-lg border border-line">
+            <div className="max-h-72 overflow-auto rounded-lg border border-line">
               <table className="w-full border-collapse text-sm">
                 <tbody>
-                  {total.materials.map((m) => (
-                    <tr key={m.name} className="border-b border-line/50 last:border-0">
-                      <td className="px-3 py-2">{m.name}</td>
-                      <td className="px-3 py-2 text-right font-semibold tabular-nums">{m.qty} шт</td>
-                    </tr>
-                  ))}
+                  {plans.map((p) =>
+                    p.steps.map((st) => (
+                      <Fragment key={`${p.kind}-${st.lvl}`}>
+                        <tr className="border-b border-line bg-surface-2/40">
+                          <td className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-accent-2">
+                            {UPGRADE_LABEL[p.kind]} · ур. {st.lvl}
+                          </td>
+                          <td className="px-3 py-1.5 text-right text-xs text-muted">
+                            {money(st.money)} · {st.hours} ч
+                          </td>
+                        </tr>
+                        {st.req.map(([name, qty]) => (
+                          <tr key={`${p.kind}-${st.lvl}-${name}`} className="border-b border-line/50">
+                            <td className="px-3 py-2 pl-6">{name}</td>
+                            <td className="px-3 py-2 text-right font-semibold tabular-nums">{qty} шт</td>
+                          </tr>
+                        ))}
+                      </Fragment>
+                    )),
+                  )}
                 </tbody>
               </table>
             </div>

@@ -270,14 +270,16 @@ function HouseUpgradeModal({
   const create = () => {
     if (!total.materials.length) return;
     const label = realty ? `${type === 'house' ? 'Дом' : 'Квартира'} #${realty.num}` : 'Прокачка';
-    // Материалы по разделам — видно, что нужно на кухню, а что на гараж.
+    // Позиции по каждому уровню отдельно: видно, что нужно на 1-й, что на 2-й.
     const items = plans.flatMap((p) =>
-      p.materials.map((m) => ({
-        name: m.name,
-        need: m.qty,
-        have: 0,
-        section: `${UPGRADE_LABEL[p.kind]} → ур. ${p.to}`,
-      })),
+      p.steps.flatMap((st) =>
+        st.req.map(([name, qty]) => ({
+          name,
+          need: qty,
+          have: 0,
+          section: `${UPGRADE_LABEL[p.kind]} · ур. ${st.lvl}`,
+        })),
+      ),
     );
     onCreate(`${label} — прокачка`, items);
   };
@@ -378,14 +380,28 @@ function HouseUpgradeModal({
                 <Text style={styles.name}>
                   Нужно: {money(total.money)} · {total.hours} ч
                 </Text>
-                {total.materials.map((m) => (
-                  <View key={m.name} style={styles.matRow}>
-                    <Text style={[styles.sub, { flex: 1 }]} numberOfLines={1}>
-                      {m.name}
-                    </Text>
-                    <Text style={styles.lineCost}>{m.qty} шт</Text>
-                  </View>
-                ))}
+                {plans.map((p) =>
+                  p.steps.map((st) => (
+                    <View key={`${p.kind}-${st.lvl}`}>
+                      <View style={styles.stepHead}>
+                        <Text style={styles.secTitle}>
+                          {UPGRADE_LABEL[p.kind]} · ур. {st.lvl}
+                        </Text>
+                        <Text style={styles.sub}>
+                          {money(st.money)} · {st.hours} ч
+                        </Text>
+                      </View>
+                      {st.req.map(([name, qty]) => (
+                        <View key={name} style={styles.matRow}>
+                          <Text style={[styles.sub, { flex: 1 }]} numberOfLines={1}>
+                            {name}
+                          </Text>
+                          <Text style={styles.lineCost}>{qty} шт</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )),
+                )}
               </View>
             )}
           </ScrollView>
@@ -608,6 +624,13 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   secTitle: { color: theme.accent2, fontSize: 12, fontWeight: '700', textTransform: 'uppercase' },
+  stepHead: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 2,
+  },
   secSum: { color: theme.txt, fontSize: 13, fontWeight: '700' },
   warn: { color: theme.amber, fontSize: 12, marginTop: 8 },
   info: { marginTop: 10, gap: 2 },
