@@ -8,7 +8,14 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { targetHit, type Goal, type GoalItem, type MarketRow, type PriceTarget } from '@kupec/core';
+import {
+  targetHit,
+  type Goal,
+  type GoalFee,
+  type GoalItem,
+  type MarketRow,
+  type PriceTarget,
+} from '@kupec/core';
 import { useAuth } from './auth';
 
 /** Ключ позиции проекта: одинаковый материал в разных разделах — разные строки. */
@@ -40,7 +47,7 @@ interface MarketContextValue {
   goals: Goal[];
   addGoal: (name: string) => void;
   /** Создать проект сразу со списком материалов (из плана прокачки дома). */
-  addGoalWithItems: (name: string, items: GoalItem[]) => void;
+  addGoalWithItems: (name: string, items: GoalItem[], fees?: GoalFee[]) => void;
   removeGoal: (id: string) => void;
   setGoalItem: (id: string, item: GoalItem) => void;
   removeGoalItem: (id: string, name: string, section?: string) => void;
@@ -118,13 +125,14 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     ]);
   }, []);
 
-  const addGoalWithItems = useCallback((name: string, items: GoalItem[]) => {
+  const addGoalWithItems = useCallback((name: string, items: GoalItem[], fees?: GoalFee[]) => {
     setGoals((prev) => [
       ...prev,
       {
         id: `${Date.now()}-${Math.round(Math.random() * 1e6)}`,
         name: name.trim() || 'Проект',
         items,
+        fees,
         createdAt: Date.now(),
       },
     ]);

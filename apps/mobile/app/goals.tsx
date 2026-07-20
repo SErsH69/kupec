@@ -74,8 +74,13 @@ export default function Goals() {
         <>
           <View style={styles.stats}>
             <Stat label="Готово" value={`${Math.round(result.progress * 100)}%`} sub={`${result.totalHave}/${result.totalNeed} шт`} />
-            <Stat label="Осталось" value={shortMoney(result.remainingCost)} color={theme.accent2} />
-            <Stat label="Целиком" value={shortMoney(result.totalCost)} />
+            <Stat
+              label="Осталось"
+              value={shortMoney(result.remainingWithFees)}
+              sub={result.feesTotal > 0 ? `взносы ${shortMoney(result.feesTotal)}` : undefined}
+              color={theme.accent2}
+            />
+            <Stat label="Целиком" value={shortMoney(result.totalCost + result.feesTotal)} />
           </View>
 
           <View style={styles.barBg}>
@@ -97,13 +102,20 @@ export default function Goals() {
           </View>
 
           <FlatList
-            data={withSectionHeaders(result.items)}
+            data={withSectionHeaders(result.items, result.feeBySection)}
             keyExtractor={(r) => (r.kind === 'head' ? 'h:' + r.section : `i:${r.item.section ?? ''}|${r.item.name}`)}
             contentContainerStyle={{ paddingBottom: 40 }}
             renderItem={({ item: r }) =>
               r.kind === 'head' ? (
                 <View style={styles.secHead}>
-                  <Text style={styles.secTitle}>{r.section}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.secTitle}>{r.section}</Text>
+                    {r.fee > 0 && (
+                      <Text style={styles.sub}>
+                        взнос {money(r.fee)} · {r.hours} ч
+                      </Text>
+                    )}
+                  </View>
                   <Text style={styles.secSum}>{money(r.sum)}</Text>
                 </View>
               ) : (
@@ -135,8 +147,8 @@ export default function Goals() {
       <HouseUpgradeModal
         visible={houseOpen}
         onClose={() => setHouseOpen(false)}
-        onCreate={(name, items) => {
-          addGoalWithItems(name, items);
+        onCreate={(name, items, fees) => {
+          addGoalWithItems(name, items, fees);
           setHouseOpen(false);
         }}
       />
@@ -206,10 +218,10 @@ function shortMoney(v: number): string {
 
 /** Плоский список с заголовками разделов и суммой по каждому. */
 type Row =
-  | { kind: 'head'; section: string; sum: number }
+  | { kind: 'head'; section: string; sum: number; fee: number; hours: number }
   | { kind: 'item'; item: GoalItemResult };
 
-function withSectionHeaders(items: GoalItemResult[]): Row[] {
+function withSectionHeaders(items: GoalItemResult[], fees: Record<string, { money: number; hours: number }>): Row[] {
   const map = new Map<string, GoalItemResult[]>();
   for (const it of items) {
     const key = it.section ?? '';
@@ -219,7 +231,14 @@ function withSectionHeaders(items: GoalItemResult[]): Row[] {
   const out: Row[] = [];
   for (const [section, list] of map) {
     if (section) {
-      out.push({ kind: 'head', section, sum: list.reduce((s, r) => s + (r.lineCost ?? 0), 0) });
+      const fee = fees[section];
+      out.push({
+        kind: 'head',
+        section,
+        sum: list.reduce((s, r) => s + (r.lineCost ?? 0), 0) + (fee?.money ?? 0),
+        fee: fee?.money ?? 0,
+        hours: fee?.hours ?? 0,
+      });
     }
     for (const item of list) out.push({ kind: 'item', item });
   }
@@ -238,7 +257,11 @@ function HouseUpgradeModal({
 }: {
   visible: boolean;
   onClose: () => void;
-  onCreate: (name: string, items: { name: string; need: number; have: number }[]) => void;
+  onCreate: (
+    name: string,
+    items: { name: string; need: number; have: number; section?: string }[],
+    fees: { section: string; money: number; hours: number }[],
+  ) => void;
 }) {
   const [type, setType] = useState<'house' | 'apartment'>('house');
   const [num, setNum] = useState('');
@@ -281,7 +304,14 @@ function HouseUpgradeModal({
         })),
       ),
     );
-    onCreate(`${label} — прокачка`, items);
+    const fees = plans.flatMap((p) =>
+      p.steps.map((st) => ({
+        section: `${UPGRADE_LABEL[p.kind]} · ур. ${st.lvl}`,
+        money: st.money,
+        hours: st.hours,
+      })),
+    );
+    onCreate(`${label} — прокачка`, items, fees);
   };
 
   return (

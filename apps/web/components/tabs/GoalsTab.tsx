@@ -99,8 +99,12 @@ export function GoalsTab() {
             />
             <StatCard
               label="Осталось вложить"
-              value={money(result.remainingCost)}
-              hint="по текущим ценам"
+              value={money(result.remainingWithFees)}
+              hint={
+                result.feesTotal > 0
+                  ? `материалы ${money(result.remainingCost)} + взносы ${money(result.feesTotal)}`
+                  : 'по текущим ценам'
+              }
               tone="accent"
             />
             <StatCard
@@ -109,7 +113,11 @@ export function GoalsTab() {
               hint="справочно — дно это разовые сделки"
               tone="green"
             />
-            <StatCard label="Проект целиком" value={money(result.totalCost)} hint="всё количество" />
+            <StatCard
+              label="Проект целиком"
+              value={money(result.totalCost + result.feesTotal)}
+              hint={result.feeHours > 0 ? `${result.feeHours} ч на все улучшения` : 'всё количество'}
+            />
           </div>
 
           <Card className="p-4">
@@ -179,11 +187,22 @@ export function GoalsTab() {
                       <Fragment key={section}>
                         {section && (
                           <tr className="border-b border-line bg-surface-2/40">
-                            <td className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-accent-2" colSpan={6}>
+                            <td className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-accent-2" colSpan={4}>
                               {section}
                             </td>
+                            <td className="px-3 py-2 text-xs text-muted" colSpan={2}>
+                              {result.feeBySection[section] && (
+                                <>
+                                  взнос {money(result.feeBySection[section]!.money)} ·{' '}
+                                  {result.feeBySection[section]!.hours} ч
+                                </>
+                              )}
+                            </td>
                             <td className="px-3 py-2 text-right text-xs font-semibold tabular-nums">
-                              {money(rows.reduce((sum, r) => sum + (r.lineCost ?? 0), 0))}
+                              {money(
+                                rows.reduce((sum, r) => sum + (r.lineCost ?? 0), 0) +
+                                  (result.feeBySection[section]?.money ?? 0),
+                              )}
                             </td>
                             <td colSpan={2} />
                           </tr>
@@ -226,8 +245,8 @@ export function GoalsTab() {
       {houseOpen && (
         <HouseUpgradeModal
           onClose={() => setHouseOpen(false)}
-          onCreate={(name, goalItems) => {
-            addGoalWithItems(name, goalItems);
+          onCreate={(name, goalItems, fees) => {
+            addGoalWithItems(name, goalItems, fees);
             setHouseOpen(false);
           }}
         />
@@ -449,7 +468,11 @@ function HouseUpgradeModal({
   onCreate,
 }: {
   onClose: () => void;
-  onCreate: (name: string, items: { name: string; need: number; have: number }[]) => void;
+  onCreate: (
+    name: string,
+    items: { name: string; need: number; have: number; section?: string }[],
+    fees: { section: string; money: number; hours: number }[],
+  ) => void;
 }) {
   const [type, setType] = useState<'house' | 'apartment'>('house');
   const [num, setNum] = useState('');
@@ -488,7 +511,14 @@ function HouseUpgradeModal({
         })),
       ),
     );
-    onCreate(`${label} — прокачка`, items);
+    const fees = plans.flatMap((p) =>
+      p.steps.map((st) => ({
+        section: `${UPGRADE_LABEL[p.kind]} · ур. ${st.lvl}`,
+        money: st.money,
+        hours: st.hours,
+      })),
+    );
+    onCreate(`${label} — прокачка`, items, fees);
   };
 
   return (

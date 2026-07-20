@@ -91,3 +91,28 @@ describe('computeGoal', () => {
     expect(r.items[0]!.daysToBuy).toBe(2.5);
   });
 });
+
+describe('взносы за улучшения', () => {
+  it('считаются отдельно от материалов и попадают в общий остаток', () => {
+    const rows = [row('Доска', 100)];
+    const g: Goal = {
+      id: 'g',
+      name: 'Дом',
+      createdAt: 0,
+      items: [{ name: 'Доска', need: 10, have: 4, section: 'Мастерская · ур. 1' }],
+      fees: [{ section: 'Мастерская · ур. 1', money: 150_000, hours: 6 }],
+    };
+    const r = computeGoal(g, rows, []);
+    expect(r.remainingCost).toBe(600); // только материалы
+    expect(r.feesTotal).toBe(150_000);
+    expect(r.feeHours).toBe(6);
+    expect(r.remainingWithFees).toBe(150_600);
+    expect(r.feeBySection['Мастерская · ур. 1']!.money).toBe(150_000);
+  });
+
+  it('без взносов ведёт себя как раньше', () => {
+    const r = computeGoal(goal([{ name: 'Доска', need: 1, have: 0 }]), [row('Доска', 100)], []);
+    expect(r.feesTotal).toBe(0);
+    expect(r.remainingWithFees).toBe(r.remainingCost);
+  });
+});

@@ -15,6 +15,7 @@ import {
   snapshotPrices,
   targetHit,
   type Goal,
+  type GoalFee,
   type GoalItem,
   type MarketPath,
   type MarketRow,
@@ -86,7 +87,7 @@ interface StoreContextValue {
   goals: Goal[];
   addGoal: (name: string) => void;
   /** Создать проект сразу со списком материалов (напр. из плана прокачки дома). */
-  addGoalWithItems: (name: string, items: GoalItem[]) => void;
+  addGoalWithItems: (name: string, items: GoalItem[], fees?: GoalFee[]) => void;
   renameGoal: (id: string, name: string) => void;
   removeGoal: (id: string) => void;
   /** Добавить/обновить позицию проекта (по имени материала). */
@@ -220,11 +221,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     track('goal_add', {});
   }, []);
 
-  const addGoalWithItems = useCallback((name: string, items: GoalItem[]) => {
+  const addGoalWithItems = useCallback((name: string, items: GoalItem[], fees?: GoalFee[]) => {
     const goal: Goal = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       name: name.trim() || 'Проект',
       items,
+      fees,
       createdAt: Date.now(),
     };
     setState((p) => ({ ...p, goals: [...p.goals, goal] }));

@@ -11,6 +11,14 @@ export interface GoalItem {
   section?: string;
 }
 
+/** Взнос за уровень: платится в игре деньгами, материалами не покупается. */
+export interface GoalFee {
+  /** Тот же ярлык, что у позиций раздела («Мастерская · ур. 2»). */
+  section: string;
+  money: number;
+  hours: number;
+}
+
 /** Цель («прокачать дом», «собрать на тачку») — список нужных материалов. */
 export interface Goal {
   id: string;
@@ -18,6 +26,8 @@ export interface Goal {
   items: GoalItem[];
   createdAt: number;
   note?: string;
+  /** Взносы за улучшения — отдельная статья расходов помимо материалов. */
+  fees?: GoalFee[];
 }
 
 /** Откуда выгоднее взять недостающее. */
@@ -65,6 +75,14 @@ export interface GoalResult {
   /** Позиции, для которых нет ни цены, ни рецепта. */
   unpriced: number;
   done: boolean;
+  /** Сумма взносов за улучшения (не материалы — платятся в игре). */
+  feesTotal: number;
+  /** Часы на все улучшения. */
+  feeHours: number;
+  /** Взносы по разделам — для подписи в заголовке раздела. */
+  feeBySection: Record<string, GoalFee>;
+  /** Сколько всего осталось найти денег: остаток материалов + взносы. */
+  remainingWithFees: number;
 }
 
 /**
@@ -151,6 +169,12 @@ export function computeGoal(goal: Goal, rows: MarketRow[], recipes: Recipe[] = R
   const progress =
     costKnown > 0 ? costDone / costKnown : totalNeed > 0 ? totalHave / totalNeed : 0;
 
+  const fees = goal.fees ?? [];
+  const feesTotal = fees.reduce((s, f) => s + f.money, 0);
+  const feeHours = fees.reduce((s, f) => s + f.hours, 0);
+  const feeBySection: Record<string, GoalFee> = {};
+  for (const f of fees) feeBySection[f.section] = f;
+
   return {
     goal,
     items,
@@ -162,5 +186,9 @@ export function computeGoal(goal: Goal, rows: MarketRow[], recipes: Recipe[] = R
     totalCost,
     unpriced,
     done: totalNeed > 0 && items.every((i) => i.left === 0),
+    feesTotal,
+    feeHours,
+    feeBySection,
+    remainingWithFees: remainingCost + feesTotal,
   };
 }
