@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { targetHit, type MarketRow, type PriceTarget } from '@kupec/core';
+import { targetHit, type Goal, type GoalItem, type MarketRow, type PriceTarget } from '@kupec/core';
 import { useAuth } from './auth';
 
 /** Стабильный ключ товара для избранного/целей. */
@@ -31,6 +31,12 @@ interface MarketContextValue {
   getTarget: (key: string) => PriceTarget | undefined;
   setTarget: (key: string, target: PriceTarget | null) => void;
   alertCount: number;
+  // проекты прокачки («Цели»)
+  goals: Goal[];
+  addGoal: (name: string) => void;
+  removeGoal: (id: string) => void;
+  setGoalItem: (id: string, item: GoalItem) => void;
+  removeGoalItem: (id: string, name: string) => void;
 }
 
 const MarketContext = createContext<MarketContextValue | null>(null);
@@ -38,6 +44,7 @@ const MarketContext = createContext<MarketContextValue | null>(null);
 const SERVER = 'RU17';
 const MARKET_KEY = 'kupec.market.v1';
 const FAV_KEY = 'kupec.favorites.v1';
+const GOALS_KEY = 'kupec.goals.v1';
 
 export function MarketProvider({ children }: { children: ReactNode }) {
   const { api } = useAuth();
@@ -48,6 +55,8 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [targets, setTargets] = useState<Record<string, PriceTarget>>({});
   const [favReady, setFavReady] = useState(false);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [goalsReady, setGoalsReady] = useState(false);
 
   // Гидрация рынка и избранного из AsyncStorage.
   useEffect(() => {
@@ -72,6 +81,10 @@ export function MarketProvider({ children }: { children: ReactNode }) {
       })
       .catch(() => {})
       .finally(() => setFavReady(true));
+    AsyncStorage.getItem(GOALS_KEY)
+      .then((raw) => raw && setGoals(JSON.parse(raw)))
+      .catch(() => {})
+      .finally(() => setGoalsReady(true));
   }, []);
 
   // Персист избранного/целей.
@@ -79,6 +92,53 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     if (!favReady) return;
     AsyncStorage.setItem(FAV_KEY, JSON.stringify({ favorites, targets })).catch(() => {});
   }, [favorites, targets, favReady]);
+
+  // Персист проектов.
+  useEffect(() => {
+    if (!goalsReady) return;
+    AsyncStorage.setItem(GOALS_KEY, JSON.stringify(goals)).catch(() => {});
+  }, [goals, goalsReady]);
+
+  const addGoal = useCallback((name: string) => {
+    setGoals((prev) => [
+      ...prev,
+      {
+        id: `${Date.now()}-${Math.round(Math.random() * 1e6)}`,
+        name: name.trim() || 'Проект',
+        items: [],
+        createdAt: Date.now(),
+      },
+    ]);
+  }, []);
+
+  const removeGoal = useCallback((id: string) => {
+    setGoals((prev) => prev.filter((g) => g.id !== id));
+  }, []);
+
+  const setGoalItem = useCallback((id: string, item: GoalItem) => {
+    setGoals((prev) =>
+      prev.map((g) => {
+        if (g.id !== id) return g;
+        const key = item.name.trim().toLowerCase();
+        const has = g.items.some((i) => i.name.trim().toLowerCase() === key);
+        return {
+          ...g,
+          items: has
+            ? g.items.map((i) => (i.name.trim().toLowerCase() === key ? { ...i, ...item } : i))
+            : [...g.items, item],
+        };
+      }),
+    );
+  }, []);
+
+  const removeGoalItem = useCallback((id: string, name: string) => {
+    const key = name.trim().toLowerCase();
+    setGoals((prev) =>
+      prev.map((g) =>
+        g.id === id ? { ...g, items: g.items.filter((i) => i.name.trim().toLowerCase() !== key) } : g,
+      ),
+    );
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -135,6 +195,11 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         getTarget,
         setTarget,
         alertCount,
+        goals,
+        addGoal,
+        removeGoal,
+        setGoalItem,
+        removeGoalItem,
       }}
     >
       {children}

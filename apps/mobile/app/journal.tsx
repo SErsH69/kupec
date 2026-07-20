@@ -5,7 +5,8 @@ import { useJournal } from '../lib/journal';
 import { theme } from '../lib/theme';
 
 export default function Journal() {
-  const { trades, synced, addTrade, closeTrade, deleteTrade } = useJournal();
+  const { trades, synced, addTrade, closeTrade, deleteTrade, scope, setScope, group } = useJournal();
+  const [groupOpen, setGroupOpen] = useState(false);
   const [item, setItem] = useState('');
   const [qty, setQty] = useState('');
   const [buy, setBuy] = useState('');
@@ -73,6 +74,32 @@ export default function Journal() {
       </View>
       {!synced && <Text style={styles.localHint}>Локально. Войди в «Аккаунт» — синхронизируется.</Text>}
 
+      {synced && (
+        <View style={styles.scopeRow}>
+          {group && (
+            <View style={styles.scopeSwitch}>
+              <Pressable
+                style={[styles.scopeBtn, scope === 'mine' && styles.scopeBtnOn]}
+                onPress={() => setScope('mine')}
+              >
+                <Text style={[styles.scopeText, scope === 'mine' && styles.scopeTextOn]}>Мой</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.scopeBtn, scope === 'group' && styles.scopeBtnOn]}
+                onPress={() => setScope('group')}
+              >
+                <Text style={[styles.scopeText, scope === 'group' && styles.scopeTextOn]} numberOfLines={1}>
+                  👥 {group.name}
+                </Text>
+              </Pressable>
+            </View>
+          )}
+          <Pressable onPress={() => setGroupOpen(true)}>
+            <Text style={styles.groupLink}>{group ? '👥 Группа' : '👥 Создать группу'}</Text>
+          </Pressable>
+        </View>
+      )}
+
       <FlatList
         data={trades}
         keyExtractor={(t) => t.id}
@@ -89,6 +116,7 @@ export default function Journal() {
                   {t.qty} шт · {money(t.buy)}
                   {t.sell != null ? ` → ${money(t.sell)}` : ''}
                 </Text>
+                {t.author && <Text style={styles.author}>{t.author}</Text>}
               </View>
               <View style={{ alignItems: 'flex-end', gap: 4 }}>
                 {p.pnl == null ? (
@@ -115,6 +143,8 @@ export default function Journal() {
         ListEmptyComponent={<Text style={styles.empty}>Журнал пуст. Добавь сделку выше.</Text>}
       />
 
+      <GroupModal visible={groupOpen} onClose={() => setGroupOpen(false)} />
+
       <Modal visible={!!closing} transparent animationType="fade" onRequestClose={() => setClosing(null)}>
         <View style={styles.modalBg}>
           <View style={styles.modal}>
@@ -140,6 +170,85 @@ export default function Journal() {
         </View>
       </Modal>
     </View>
+  );
+}
+
+/** Создание/вступление в группу и список участников. */
+function GroupModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { group, members, createGroup, joinGroup, leaveGroup } = useJournal();
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const run = (fn: () => Promise<void>) => {
+    setError(null);
+    fn().catch((e) => setError(e instanceof Error ? e.message : 'Не вышло'));
+  };
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={styles.modalBg}>
+        <View style={styles.modal}>
+          <Text style={styles.modalTitle}>{group ? `Группа «${group.name}»` : 'Общий журнал'}</Text>
+
+          {group ? (
+            <View style={{ gap: 10 }}>
+              <Text style={styles.statLabel}>Код приглашения</Text>
+              <Text style={styles.code}>{group.inviteCode}</Text>
+              <Text style={styles.statLabel}>Участники ({members.length})</Text>
+              {members.map((m) => (
+                <Text key={m.id} style={styles.member}>
+                  {m.email}
+                  {m.id === group.ownerId ? '  · владелец' : ''}
+                </Text>
+              ))}
+              <Pressable onPress={() => run(async () => { await leaveGroup(); onClose(); })}>
+                <Text style={styles.del}>Выйти из группы</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View style={{ gap: 10 }}>
+              <Text style={styles.sub}>
+                Один журнал на нескольких игроков: видно, кто что скрафтил и продал.
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Название своей группы"
+                placeholderTextColor={theme.muted}
+                value={name}
+                onChangeText={setName}
+              />
+              <Pressable
+                style={[styles.modalBtn, { backgroundColor: theme.accent }]}
+                onPress={() => name.trim() && run(async () => { await createGroup(name); })}
+              >
+                <Text style={styles.addBtnText}>Создать</Text>
+              </Pressable>
+              <TextInput
+                style={styles.input}
+                placeholder="Или код приглашения"
+                placeholderTextColor={theme.muted}
+                autoCapitalize="characters"
+                value={code}
+                onChangeText={setCode}
+              />
+              <Pressable
+                style={[styles.modalBtn, styles.modalGhost]}
+                onPress={() => code.trim() && run(async () => { await joinGroup(code); })}
+              >
+                <Text style={styles.btnGhostText}>Вступить</Text>
+              </Pressable>
+            </View>
+          )}
+
+          {error && <Text style={[styles.del, { color: theme.red, marginTop: 8 }]}>{error}</Text>}
+
+          <Pressable style={[styles.modalBtn, styles.modalGhost, { marginTop: 12 }]} onPress={onClose}>
+            <Text style={styles.btnGhostText}>Закрыть</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -173,6 +282,16 @@ const styles = StyleSheet.create({
   addBtn: { backgroundColor: theme.accent, borderRadius: 10, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   addBtnText: { color: '#fff', fontWeight: '700', fontSize: 18 },
   localHint: { color: theme.muted, fontSize: 11 },
+  scopeRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  scopeSwitch: { flexDirection: 'row', backgroundColor: theme.surface, borderRadius: 10, padding: 2, flex: 1 },
+  scopeBtn: { flex: 1, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 8, alignItems: 'center' },
+  scopeBtnOn: { backgroundColor: theme.line },
+  scopeText: { color: theme.muted, fontSize: 12 },
+  scopeTextOn: { color: theme.txt, fontWeight: '700' },
+  groupLink: { color: theme.accent2, fontSize: 12 },
+  author: { color: theme.muted, fontSize: 11, marginTop: 2 },
+  code: { color: theme.txt, fontSize: 22, fontWeight: '700', letterSpacing: 4 },
+  member: { color: theme.txt, fontSize: 13 },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',

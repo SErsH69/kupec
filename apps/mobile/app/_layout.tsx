@@ -49,6 +49,10 @@ export default function RootLayout() {
                 options={{ title: 'Мастерская', tabBarLabel: 'Крафт', tabBarIcon: tabIcon('🔧') }}
               />
               <Tabs.Screen
+                name="goals"
+                options={{ title: 'Цели', tabBarLabel: 'Цели', tabBarIcon: tabIcon('🎯') }}
+              />
+              <Tabs.Screen
                 name="journal"
                 options={{ title: 'Журнал сделок', tabBarLabel: 'Журнал', tabBarIcon: tabIcon('📒') }}
               />
