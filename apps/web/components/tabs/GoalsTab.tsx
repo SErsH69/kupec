@@ -1,7 +1,17 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { computeGoal, money, type GoalItemResult } from '@kupec/core';
+import {
+  computeGoal,
+  findRealty,
+  maxLevel,
+  mergePlans,
+  money,
+  upgradePlan,
+  UPGRADE_LABEL,
+  type GoalItemResult,
+  type UpgradeKind,
+} from '@kupec/core';
 import { useStore } from '../../lib/store';
 import { Badge, Card, StatCard } from '../ui';
 
@@ -10,11 +20,12 @@ import { Badge, Card, StatCard } from '../ui';
  * где брать дешевле (рынок или крафт) и сколько осталось вложить.
  */
 export function GoalsTab() {
-  const { goals, rows, items, addGoal, renameGoal, removeGoal, setGoalItem, removeGoalItem } =
+  const { goals, rows, items, addGoal, addGoalWithItems, renameGoal, removeGoal, setGoalItem, removeGoalItem } =
     useStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [addItemOpen, setAddItemOpen] = useState(false);
+  const [houseOpen, setHouseOpen] = useState(false);
 
   // Держим выбранным существующий проект (после удаления — первый из оставшихся).
   useEffect(() => {
@@ -47,10 +58,16 @@ export function GoalsTab() {
           </button>
         ))}
         <button
-          onClick={() => setNewOpen(true)}
+          onClick={() => setHouseOpen(true)}
           className="rounded-lg bg-accent px-3.5 py-2 text-sm font-semibold text-white hover:opacity-90"
         >
-          + Новый проект
+          🏠 Прокачка дома
+        </button>
+        <button
+          onClick={() => setNewOpen(true)}
+          className="rounded-lg border border-line px-3.5 py-2 text-sm text-muted hover:bg-surface-2 hover:text-txt"
+        >
+          + Пустой проект
         </button>
       </div>
 
@@ -64,10 +81,10 @@ export function GoalsTab() {
             или крафтом — и сколько ещё вложить.
           </p>
           <button
-            onClick={() => setNewOpen(true)}
+            onClick={() => setHouseOpen(true)}
             className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
           >
-            Создать проект
+            🏠 Посчитать прокачку дома
           </button>
         </Card>
       ) : (
@@ -186,6 +203,16 @@ export function GoalsTab() {
         />
       )}
 
+      {houseOpen && (
+        <HouseUpgradeModal
+          onClose={() => setHouseOpen(false)}
+          onCreate={(name, goalItems) => {
+            addGoalWithItems(name, goalItems);
+            setHouseOpen(false);
+          }}
+        />
+      )}
+
       {addItemOpen && goal && (
         <AddItemModal
           items={itemNames}
@@ -269,6 +296,200 @@ function NumInput({ value, onChange }: { value: number; onChange: (v: number) =>
       onChange={(e) => onChange(Math.max(0, Number(e.target.value) || 0))}
       className="w-20 rounded-md border border-line bg-bg px-2 py-1 text-right text-sm tabular-nums outline-none focus:border-accent"
     />
+  );
+}
+
+/* ---------------- прокачка дома ---------------- */
+
+const KINDS: UpgradeKind[] = ['workshop', 'kitchen', 'pantry', 'garage'];
+
+/**
+ * Мастер: номер дома → характеристики из каталога → текущие и целевые уровни
+ * разделов → таблица «что купить» и создание проекта одной кнопкой.
+ */
+function HouseUpgradeModal({
+  onClose,
+  onCreate,
+}: {
+  onClose: () => void;
+  onCreate: (name: string, items: { name: string; need: number; have: number }[]) => void;
+}) {
+  const [type, setType] = useState<'house' | 'apartment'>('house');
+  const [num, setNum] = useState('');
+  const [from, setFrom] = useState<Record<UpgradeKind, number>>({ workshop: 0, kitchen: 1, pantry: 1, garage: 1 });
+  const [to, setTo] = useState<Record<UpgradeKind, number>>({ workshop: 0, kitchen: 1, pantry: 1, garage: 1 });
+
+  const realty = useMemo(() => {
+    const n = Number(num);
+    return n > 0 ? findRealty(n, type) : undefined;
+  }, [num, type]);
+
+  // Квартира — только кухня и кладовка (гараж и мастерская только в доме).
+  const kinds = type === 'apartment' ? (['kitchen', 'pantry'] as UpgradeKind[]) : KINDS;
+
+  const plans = useMemo(
+    () =>
+      kinds
+        .map((k) => upgradePlan(k, from[k], to[k], realty?.garageSlots))
+        .filter((p) => p.steps.length > 0),
+    [kinds, from, to, realty],
+  );
+  const total = useMemo(() => mergePlans(plans), [plans]);
+
+  const create = () => {
+    if (!total.materials.length) return;
+    const label = realty ? `${type === 'house' ? 'Дом' : 'Квартира'} #${realty.num}` : 'Прокачка';
+    onCreate(
+      `${label} — прокачка`,
+      total.materials.map((m) => ({ name: m.name, need: m.qty, have: 0 })),
+    );
+  };
+
+  return (
+    <Shell title="Прокачка дома" onClose={onClose} onSubmit={create} wide>
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex gap-1 rounded-xl bg-bg p-1">
+            <button
+              onClick={() => setType('house')}
+              className={`rounded-lg px-4 py-2 text-sm ${type === 'house' ? 'bg-surface-2 font-semibold' : 'text-muted'}`}
+            >
+              🏠 Дом
+            </button>
+            <button
+              onClick={() => setType('apartment')}
+              className={`rounded-lg px-4 py-2 text-sm ${type === 'apartment' ? 'bg-surface-2 font-semibold' : 'text-muted'}`}
+            >
+              🏢 Квартира
+            </button>
+          </div>
+          <Field label="Номер">
+            <input
+              type="number"
+              value={num}
+              onChange={(e) => setNum(e.target.value)}
+              placeholder="напр. 352"
+              className={`${inputCls} w-32`}
+              autoFocus
+            />
+          </Field>
+        </div>
+
+        {num && !realty && (
+          <div className="rounded-lg border border-amber/30 bg-amber/5 px-4 py-2.5 text-sm text-amber">
+            Такого номера нет в каталоге.
+          </div>
+        )}
+
+        {realty && (
+          <div className="grid grid-cols-2 gap-2 rounded-lg border border-line bg-bg/40 p-4 text-sm sm:grid-cols-4">
+            <Info label="Гос-цена" value={money(realty.gosPrice)} />
+            <Info label="Оплата за день" value={money(realty.rentPerDay)} />
+            <Info
+              label="Роялти"
+              value={realty.royaltyCoins > 0 ? `${realty.royaltyCoins} коинов` : 'нет'}
+              tone={realty.royaltyCoins > 0 ? 'amber' : 'green'}
+            />
+            <Info label="Гараж / кладовка" value={`${realty.garageSlots} мест · ${realty.storageKg} кг`} />
+          </div>
+        )}
+
+        {realty && (
+          <div className="flex flex-col gap-2">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+              Уровни: с какого на какой
+            </div>
+            {kinds.map((k) => {
+              const max = maxLevel(k, realty.garageSlots);
+              const min = k === 'workshop' ? 0 : 1;
+              return (
+                <div key={k} className="flex items-center gap-3 rounded-lg border border-line bg-bg/40 px-4 py-2.5">
+                  <span className="w-28 shrink-0 text-sm">{UPGRADE_LABEL[k]}</span>
+                  <LevelPick label="сейчас" min={min} max={max} value={from[k]} onChange={(v) => {
+                    setFrom((p) => ({ ...p, [k]: v }));
+                    setTo((p) => ({ ...p, [k]: Math.max(p[k], v) }));
+                  }} />
+                  <span className="text-muted">→</span>
+                  <LevelPick label="цель" min={from[k]} max={max} value={to[k]} onChange={(v) => setTo((p) => ({ ...p, [k]: v }))} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {plans.length > 0 && (
+          <div>
+            <div className="mb-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <span className="text-sm font-semibold">Что нужно купить</span>
+              <span className="text-sm text-muted">
+                деньгами <b className="text-txt">{money(total.money)}</b> · время{' '}
+                <b className="text-txt">{total.hours} ч</b>
+              </span>
+            </div>
+            <div className="max-h-64 overflow-auto rounded-lg border border-line">
+              <table className="w-full border-collapse text-sm">
+                <tbody>
+                  {total.materials.map((m) => (
+                    <tr key={m.name} className="border-b border-line/50 last:border-0">
+                      <td className="px-3 py-2">{m.name}</td>
+                      <td className="px-3 py-2 text-right font-semibold tabular-nums">{m.qty} шт</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-2 text-xs text-muted">
+              Создам проект с этими материалами — в таблице будет видно, что дешевле купить, а что
+              скрафтить, и сколько всего осталось вложить.
+            </div>
+          </div>
+        )}
+      </div>
+    </Shell>
+  );
+}
+
+function Info({ label, value, tone }: { label: string; value: string; tone?: 'amber' | 'green' }) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wide text-muted">{label}</div>
+      <div className={`font-semibold tabular-nums ${tone === 'amber' ? 'text-amber' : tone === 'green' ? 'text-green' : ''}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function LevelPick({
+  label,
+  min,
+  max,
+  value,
+  onChange,
+}: {
+  label: string;
+  min: number;
+  max: number;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const opts = [];
+  for (let i = min; i <= max; i++) opts.push(i);
+  return (
+    <label className="flex items-center gap-1.5 text-xs text-muted">
+      {label}
+      <select
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="rounded-md border border-line bg-bg px-2 py-1 text-sm text-txt outline-none focus:border-accent"
+      >
+        {opts.map((i) => (
+          <option key={i} value={i}>
+            {i === 0 ? 'нет' : i}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
 
@@ -356,11 +577,13 @@ function Shell({
   onClose,
   onSubmit,
   children,
+  wide,
 }: {
   title: string;
   onClose: () => void;
   onSubmit: () => void;
   children: ReactNode;
+  wide?: boolean;
 }) {
   return (
     <div
@@ -368,7 +591,7 @@ function Shell({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl overflow-hidden rounded-[var(--radius-xl)] border border-line bg-surface shadow-2xl shadow-black/50"
+        className={`w-full ${wide ? 'max-w-3xl' : 'max-w-xl'} overflow-hidden rounded-[var(--radius-xl)] border border-line bg-surface shadow-2xl shadow-black/50`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-4 border-b border-line px-7 py-5">

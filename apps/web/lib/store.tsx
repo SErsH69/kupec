@@ -80,6 +80,8 @@ interface StoreContextValue {
   /** Проекты прокачки. */
   goals: Goal[];
   addGoal: (name: string) => void;
+  /** Создать проект сразу со списком материалов (напр. из плана прокачки дома). */
+  addGoalWithItems: (name: string, items: GoalItem[]) => void;
   renameGoal: (id: string, name: string) => void;
   removeGoal: (id: string) => void;
   /** Добавить/обновить позицию проекта (по имени материала). */
@@ -213,6 +215,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     track('goal_add', {});
   }, []);
 
+  const addGoalWithItems = useCallback((name: string, items: GoalItem[]) => {
+    const goal: Goal = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: name.trim() || 'Проект',
+      items,
+      createdAt: Date.now(),
+    };
+    setState((p) => ({ ...p, goals: [...p.goals, goal] }));
+    track('goal_add', { from: 'house_upgrade', items: items.length });
+  }, []);
+
   const renameGoal = useCallback((id: string, name: string) => {
     setState((p) => ({
       ...p,
@@ -302,6 +315,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     alertCount,
     goals: state.goals,
     addGoal,
+    addGoalWithItems,
     renameGoal,
     removeGoal,
     setGoalItem,

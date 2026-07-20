@@ -9,6 +9,8 @@ import govJson from './gov.json';
 import jobsJson from './jobs.json';
 import vehiclesJson from './vehicles.json';
 import classifiersJson from './classifiers.json';
+import upgradesJson from './house-upgrades.json';
+import realtiesJson from './realties.json';
 
 /** Рецепт мастерской. */
 export interface Recipe {
@@ -102,3 +104,65 @@ export const GOV_PRICES = govJson as GovPrice[];
 export const JOBS = jobsJson as Job[];
 export const VEHICLES = vehiclesJson as Vehicles;
 export const CLASSIFIERS = classifiersJson as Classifiers;
+
+/* ---------------- недвижимость и прокачка дома ---------------- */
+
+/** Один шаг улучшения: до какого уровня, сколько часов, денег и материалов. */
+export interface UpgradeStep {
+  lvl: number;
+  hours: number;
+  money: number;
+  /** [название материала, количество] */
+  req: [string, number][];
+}
+
+export interface HouseUpgrades {
+  workshop: UpgradeStep[];
+  kitchen: UpgradeStep[];
+  pantry: UpgradeStep[];
+  /** Гараж — по числу мест в доме (у каждого размера свои требования). */
+  garage: Record<string, UpgradeStep[]>;
+}
+
+export const HOUSE_UPGRADES = upgradesJson as unknown as HouseUpgrades;
+
+/** Объект недвижимости из каталога. */
+export interface Realty {
+  num: number;
+  type: 'house' | 'apartment';
+  gosPrice: number;
+  rentPerDay: number;
+  /** Роялти в игровой валюте проекта (0 — нет). */
+  royaltyCoins: number;
+  garageSlots: number;
+  maxPpl: number;
+  storageKg: number;
+}
+
+/** Развернуть упакованный каталог (тип,цены|номера с диапазонами) в список. */
+function unpackRealties(lines: string[]): Realty[] {
+  const out: Realty[] = [];
+  for (const line of lines) {
+    const [tuple, nums] = line.split('|');
+    if (!tuple || !nums) continue;
+    const [type, gos, rent, royalty, garage, ppl, kg] = tuple.split(',');
+    for (const part of nums.trim().split(/\s+/)) {
+      const [a, b] = part.split('-').map(Number);
+      for (let n = a!; n <= (b ?? a!); n++) {
+        out.push({
+          num: n,
+          type: type as Realty['type'],
+          gosPrice: Number(gos),
+          rentPerDay: Number(rent),
+          royaltyCoins: Number(royalty),
+          garageSlots: Number(garage),
+          maxPpl: Number(ppl),
+          storageKg: Number(kg),
+        });
+      }
+    }
+  }
+  return out;
+}
+
+export const REALTIES: Realty[] = unpackRealties((realtiesJson as { packed: string[] }).packed);
