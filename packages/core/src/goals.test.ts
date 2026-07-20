@@ -36,7 +36,7 @@ describe('computeGoal', () => {
     // Доска: рынок 100, крафт из 2 брёвен по 10 + 0 денег → 20 за 1 шт (выход 1).
     const rows = [row('Доска', 100), row('Бревно', 10)];
     const recipes: Recipe[] = [
-      { out: 'Доска', ing: [['Бревно', 2]], money: 0, qmin: 1, qmax: 1, lvl: 1, ch: [100, 100], time: 1 } as Recipe,
+      { out: 'Доска', ing: [['Бревно', 2]], money: 0, qmin: 1, qmax: 1, lvl: 1, ch: [100, 100], sec: 60 },
     ];
     const r = computeGoal(goal([{ name: 'Доска', need: 5, have: 0 }]), rows, recipes);
     const it = r.items[0]!;

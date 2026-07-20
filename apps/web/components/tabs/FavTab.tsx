@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { money, sellAdvice, targetHit, trendFor, trendMap, type MarketRow, type TargetType } from '@kupec/core';
 import { rowKey, useStore } from '../../lib/store';
 import { Badge, Card } from '../ui';
+import { PriceHistory } from '../PriceHistory';
 import { PATH_LABEL } from '../../lib/labels';
 
 export function FavTab() {
@@ -48,6 +49,7 @@ function FavCard({ row, trend }: { row: MarketRow; trend: number | null }) {
 
   // Тип цели — локальный стейт, чтобы выбор «купить/продать» не терялся до ввода цены.
   const [type, setType] = useState<TargetType>(target?.type ?? 'buy');
+  const [chart, setChart] = useState(false);
   const setPrice = (price: number) => setTarget(key, price > 0 ? { price, type } : null);
   const pickType = (t: TargetType) => {
     setType(t);
@@ -108,7 +110,16 @@ function FavCard({ row, trend }: { row: MarketRow; trend: number | null }) {
         ) : target ? (
           <span className="text-xs text-muted">ждём…</span>
         ) : null}
+        <button
+          onClick={() => setChart((v) => !v)}
+          title="История цены по нашим снимкам"
+          className="ml-auto text-xs text-muted hover:text-txt"
+        >
+          📈 {chart ? 'скрыть' : 'история'}
+        </button>
       </div>
+
+      {chart && <PriceHistory row={row} />}
     </Card>
   );
 }

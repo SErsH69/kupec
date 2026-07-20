@@ -8,6 +8,7 @@ import {
   deleteTrade,
   findUserByEmail,
   findUserById,
+  itemHistory,
   latestRows,
   listTrades,
   updatePasswordHash,
@@ -44,6 +45,17 @@ export function createApp(sql: Sql) {
   app.get('/v1/market/:server/:path', async (c) => {
     const rows = (await latestRows(sql, c.req.param('server'), c.req.param('path') as MarketPath)).map(enrich);
     return c.json({ server: c.req.param('server'), path: c.req.param('path'), rows });
+  });
+
+  // История цены предмета из наших снимков — окна 30 дней публичного API тут нет.
+  app.get('/v1/history/:server/:path/:id', async (c) => {
+    const points = await itemHistory(
+      sql,
+      c.req.param('server'),
+      c.req.param('path'),
+      c.req.param('id'),
+    );
+    return c.json({ points });
   });
 
   // Опросить сервер вживую (публичный API Majestic → БД), вернуть свежие строки.

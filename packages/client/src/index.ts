@@ -12,6 +12,15 @@ export interface AuthUser {
 
 export type TradeKind = 'flip' | 'craft';
 
+/** Точка истории цены (даты приходят строкой из JSON). */
+export interface HistoryPoint {
+  at: string;
+  avg: number | null;
+  min: number | null;
+  max: number | null;
+  sold: number | null;
+}
+
 export interface TradeInput {
   item: string;
   qty: number;
@@ -107,6 +116,9 @@ export function createApi(baseUrl: string, getToken: () => string | null) {
     getMarket: (server: string) => req<{ rows: MarketRow[] }>(`/v1/market/${server}`),
     /** Опросить сервер вживую (сервер → БД) и вернуть свежие строки. */
     refresh: (server: string) => req<{ rows: MarketRow[] }>(`/v1/refresh/${server}`, { method: 'POST' }),
+    /** История цены предмета из наших снимков (глубже 30-дневного окна API). */
+    getHistory: (server: string, path: string, id: string) =>
+      req<{ points: HistoryPoint[] }>(`/v1/history/${server}/${path}/${id}`),
     listTrades: async () => (await req<{ trades: ServerTrade[] }>('/v1/trades')).trades.map(toTrade),
     addTrade: async (t: TradeInput) =>
       toTrade((await req<{ trade: ServerTrade }>('/v1/trades', { method: 'POST', body: JSON.stringify(t) })).trade),

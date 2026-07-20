@@ -72,6 +72,38 @@ export async function latestRows(sql: Sql, serverId: string, path?: string): Pro
   }));
 }
 
+/** Точка истории цены: когда опросили и почём был предмет. */
+export interface HistoryPoint {
+  at: Date;
+  avg: number | null;
+  min: number | null;
+  max: number | null;
+  sold: number | null;
+}
+
+/**
+ * История цены предмета — то, чего нет в публичном API (там окно 30 дней).
+ * Копится нашими снимками: чем дольше работает поллер, тем длиннее ряд.
+ */
+export async function itemHistory(
+  sql: Sql,
+  serverId: string,
+  path: string,
+  itemId: string,
+  limit = 500,
+): Promise<HistoryPoint[]> {
+  const rows = await sql<{ polled_at: Date; avg: number | null; min: number | null; max: number | null; sold: number | null }[]>`
+    select polled_at, avg, min, max, sold
+    from market_snapshots
+    where server_id = ${serverId} and path = ${path} and item_id = ${itemId}
+    order by polled_at desc
+    limit ${limit}
+  `;
+  return rows
+    .map((r) => ({ at: r.polled_at, avg: r.avg, min: r.min, max: r.max, sold: r.sold }))
+    .reverse();
+}
+
 export interface PollRun {
   serverId: string;
   path: string;
