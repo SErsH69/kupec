@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { computeGoal, money, type GoalItemResult } from '@kupec/core';
+import {
+  computeGoal,
+  findRealty,
+  maxLevel,
+  mergePlans,
+  money,
+  REALTIES,
+  upgradePlan,
+  UPGRADE_LABEL,
+  type GoalItemResult,
+  type UpgradeKind,
+} from '@kupec/core';
 import { useMarket } from '../lib/market';
 import { theme } from '../lib/theme';
 
@@ -9,10 +20,11 @@ import { theme } from '../lib/theme';
  * (рынок или крафт) и сколько осталось вложить. Всё поверх core/computeGoal.
  */
 export default function Goals() {
-  const { goals, rows, addGoal, removeGoal, setGoalItem, removeGoalItem } = useMarket();
+  const { goals, rows, addGoal, addGoalWithItems, removeGoal, setGoalItem, removeGoalItem } = useMarket();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [itemOpen, setItemOpen] = useState(false);
+  const [houseOpen, setHouseOpen] = useState(false);
 
   useEffect(() => {
     if (goals.length === 0) setActiveId(null);
@@ -39,8 +51,11 @@ export default function Goals() {
             <Text style={[styles.tabText, g.id === activeId && styles.tabTextOn]}>{g.name}</Text>
           </Pressable>
         ))}
-        <Pressable style={[styles.tab, styles.tabAdd]} onPress={() => setNewOpen(true)}>
-          <Text style={styles.addBtnText}>+ Проект</Text>
+        <Pressable style={[styles.tab, styles.tabAdd]} onPress={() => setHouseOpen(true)}>
+          <Text style={styles.addBtnText}>🏠 Прокачка дома</Text>
+        </Pressable>
+        <Pressable style={styles.tab} onPress={() => setNewOpen(true)}>
+          <Text style={styles.tabText}>+ Пустой</Text>
         </Pressable>
       </ScrollView>
 
@@ -51,8 +66,8 @@ export default function Goals() {
             Проект — список материалов под задачу: прокачать дом, собрать на машину. Посчитаем, чего
             не хватает, где дешевле — рынок или крафт — и сколько ещё вложить.
           </Text>
-          <Pressable style={styles.primaryBtn} onPress={() => setNewOpen(true)}>
-            <Text style={styles.addBtnText}>Создать проект</Text>
+          <Pressable style={styles.primaryBtn} onPress={() => setHouseOpen(true)}>
+            <Text style={styles.addBtnText}>🏠 Посчитать прокачку дома</Text>
           </Pressable>
         </View>
       ) : (
@@ -108,6 +123,15 @@ export default function Goals() {
         }}
       />
 
+      <HouseUpgradeModal
+        visible={houseOpen}
+        onClose={() => setHouseOpen(false)}
+        onCreate={(name, items) => {
+          addGoalWithItems(name, items);
+          setHouseOpen(false);
+        }}
+      />
+
       {goal && (
         <ItemModal
           visible={itemOpen}
@@ -158,6 +182,200 @@ function ItemRow({
           </Pressable>
         </View>
       </View>
+    </View>
+  );
+}
+
+/* ---------------- прокачка дома ---------------- */
+
+const KINDS: UpgradeKind[] = ['workshop', 'kitchen', 'pantry', 'garage'];
+
+/** Мастер прокачки: номер дома → уровни → материалы → проект. */
+function HouseUpgradeModal({
+  visible,
+  onClose,
+  onCreate,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onCreate: (name: string, items: { name: string; need: number; have: number }[]) => void;
+}) {
+  const [type, setType] = useState<'house' | 'apartment'>('house');
+  const [num, setNum] = useState('');
+  const [picker, setPicker] = useState(false);
+  const [from, setFrom] = useState<Record<UpgradeKind, number>>({ workshop: 0, kitchen: 1, pantry: 1, garage: 1 });
+  const [to, setTo] = useState<Record<UpgradeKind, number>>({ workshop: 0, kitchen: 1, pantry: 1, garage: 1 });
+
+  const realty = useMemo(() => {
+    const n = Number(num);
+    return n > 0 ? findRealty(n, type) : undefined;
+  }, [num, type]);
+
+  const kinds = type === 'apartment' ? (['kitchen', 'pantry'] as UpgradeKind[]) : KINDS;
+  const plans = useMemo(
+    () => kinds.map((k) => upgradePlan(k, from[k], to[k], realty?.garageSlots)).filter((p) => p.steps.length > 0),
+    [kinds, from, to, realty],
+  );
+  const total = useMemo(() => mergePlans(plans), [plans]);
+
+  // Дома без роялти, дороже — выше.
+  const noRoyalty = useMemo(
+    () =>
+      REALTIES.filter((r) => r.type === type && r.royaltyCoins === 0)
+        .sort((a, b) => b.gosPrice - a.gosPrice)
+        .slice(0, 30),
+    [type],
+  );
+
+  const create = () => {
+    if (!total.materials.length) return;
+    const label = realty ? `${type === 'house' ? 'Дом' : 'Квартира'} #${realty.num}` : 'Прокачка';
+    onCreate(`${label} — прокачка`, total.materials.map((m) => ({ name: m.name, need: m.qty, have: 0 })));
+  };
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={styles.modalBg}>
+        <View style={[styles.modal, { maxHeight: '90%' }]}>
+          <Text style={styles.modalTitle}>Прокачка дома</Text>
+
+          <ScrollView style={{ maxHeight: 460 }}>
+            <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+              <Pressable
+                style={[styles.tab, type === 'house' && styles.tabOn]}
+                onPress={() => setType('house')}
+              >
+                <Text style={[styles.tabText, type === 'house' && styles.tabTextOn]}>🏠 Дом</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.tab, type === 'apartment' && styles.tabOn]}
+                onPress={() => setType('apartment')}
+              >
+                <Text style={[styles.tabText, type === 'apartment' && styles.tabTextOn]}>🏢 Кв.</Text>
+              </Pressable>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Номер"
+                placeholderTextColor={theme.muted}
+                keyboardType="numeric"
+                value={num}
+                onChangeText={setNum}
+              />
+            </View>
+
+            <Pressable onPress={() => setPicker((v) => !v)} style={{ marginTop: 8 }}>
+              <Text style={styles.link}>{picker ? 'Скрыть подбор' : '🔎 Подобрать дом без роялти'}</Text>
+            </Pressable>
+
+            {picker && (
+              <View style={styles.picker}>
+                {noRoyalty.map((r) => (
+                  <Pressable
+                    key={r.num}
+                    style={styles.pickRow}
+                    onPress={() => {
+                      setNum(String(r.num));
+                      setPicker(false);
+                    }}
+                  >
+                    <Text style={styles.name}>#{r.num}</Text>
+                    <Text style={styles.sub}>
+                      {money(r.gosPrice)} · {r.garageSlots} гар · {r.storageKg} кг
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+
+            {num !== '' && !realty && <Text style={styles.warn}>Такого номера нет в каталоге.</Text>}
+
+            {realty && (
+              <View style={styles.info}>
+                <Text style={styles.sub}>Гос-цена {money(realty.gosPrice)} · за день {money(realty.rentPerDay)}</Text>
+                <Text style={styles.sub}>
+                  Роялти{' '}
+                  <Text style={{ color: realty.royaltyCoins > 0 ? theme.amber : theme.green }}>
+                    {realty.royaltyCoins > 0 ? `${realty.royaltyCoins} коинов` : 'нет'}
+                  </Text>
+                  {'  '}· гараж {realty.garageSlots} · кладовка {realty.storageKg} кг
+                </Text>
+              </View>
+            )}
+
+            {realty &&
+              kinds.map((k) => {
+                const max = maxLevel(k, realty.garageSlots);
+                const min = k === 'workshop' ? 0 : 1;
+                return (
+                  <View key={k} style={styles.lvlRow}>
+                    <Text style={[styles.name, { width: 96 }]}>{UPGRADE_LABEL[k]}</Text>
+                    <LevelPick
+                      min={min}
+                      max={max}
+                      value={from[k]}
+                      onChange={(v) => {
+                        setFrom((p) => ({ ...p, [k]: v }));
+                        setTo((p) => ({ ...p, [k]: Math.max(p[k], v) }));
+                      }}
+                    />
+                    <Text style={styles.sub}>→</Text>
+                    <LevelPick min={from[k]} max={max} value={to[k]} onChange={(v) => setTo((p) => ({ ...p, [k]: v }))} />
+                  </View>
+                );
+              })}
+
+            {plans.length > 0 && (
+              <View style={{ marginTop: 12 }}>
+                <Text style={styles.name}>
+                  Нужно: {money(total.money)} · {total.hours} ч
+                </Text>
+                {total.materials.map((m) => (
+                  <View key={m.name} style={styles.matRow}>
+                    <Text style={[styles.sub, { flex: 1 }]} numberOfLines={1}>
+                      {m.name}
+                    </Text>
+                    <Text style={styles.lineCost}>{m.qty} шт</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </ScrollView>
+
+          <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+            <Pressable style={[styles.modalBtn, styles.modalGhost]} onPress={onClose}>
+              <Text style={styles.btnGhostText}>Отмена</Text>
+            </Pressable>
+            <Pressable style={[styles.modalBtn, { backgroundColor: theme.accent }]} onPress={create}>
+              <Text style={styles.addBtnText}>Создать проект</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+/** Выбор уровня стрелками — компактнее селекта на мобильном. */
+function LevelPick({
+  min,
+  max,
+  value,
+  onChange,
+}: {
+  min: number;
+  max: number;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <View style={styles.stepper}>
+      <Pressable onPress={() => onChange(Math.max(min, value - 1))} hitSlop={8}>
+        <Text style={styles.stepBtn}>−</Text>
+      </Pressable>
+      <Text style={styles.stepVal}>{value === 0 ? 'нет' : value}</Text>
+      <Pressable onPress={() => onChange(Math.min(max, value + 1))} hitSlop={8}>
+        <Text style={styles.stepBtn}>+</Text>
+      </Pressable>
     </View>
   );
 }
@@ -327,6 +545,16 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   del: { color: theme.muted, fontSize: 12 },
+  link: { color: theme.accent2, fontSize: 13 },
+  warn: { color: theme.amber, fontSize: 12, marginTop: 8 },
+  info: { marginTop: 10, gap: 2 },
+  picker: { marginTop: 8, borderWidth: 1, borderColor: theme.line, borderRadius: 10, overflow: 'hidden' },
+  pickRow: { paddingHorizontal: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: theme.line },
+  lvlRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8 },
+  matRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 5 },
+  stepper: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: theme.bg, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 },
+  stepBtn: { color: theme.accent2, fontSize: 17, fontWeight: '700' },
+  stepVal: { color: theme.txt, fontSize: 14, minWidth: 30, textAlign: 'center' },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, paddingHorizontal: 24 },
   emptyTitle: { color: theme.txt, fontSize: 17, fontWeight: '700' },
   emptyList: { color: theme.muted, textAlign: 'center', marginTop: 32 },

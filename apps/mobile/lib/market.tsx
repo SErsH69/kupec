@@ -34,6 +34,8 @@ interface MarketContextValue {
   // проекты прокачки («Цели»)
   goals: Goal[];
   addGoal: (name: string) => void;
+  /** Создать проект сразу со списком материалов (из плана прокачки дома). */
+  addGoalWithItems: (name: string, items: GoalItem[]) => void;
   removeGoal: (id: string) => void;
   setGoalItem: (id: string, item: GoalItem) => void;
   removeGoalItem: (id: string, name: string) => void;
@@ -106,6 +108,18 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         id: `${Date.now()}-${Math.round(Math.random() * 1e6)}`,
         name: name.trim() || 'Проект',
         items: [],
+        createdAt: Date.now(),
+      },
+    ]);
+  }, []);
+
+  const addGoalWithItems = useCallback((name: string, items: GoalItem[]) => {
+    setGoals((prev) => [
+      ...prev,
+      {
+        id: `${Date.now()}-${Math.round(Math.random() * 1e6)}`,
+        name: name.trim() || 'Проект',
+        items,
         createdAt: Date.now(),
       },
     ]);
@@ -197,6 +211,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         alertCount,
         goals,
         addGoal,
+        addGoalWithItems,
         removeGoal,
         setGoalItem,
         removeGoalItem,
