@@ -14,6 +14,8 @@ import {
   recordSnapshot,
   snapshotPrices,
   targetHit,
+  type Goal,
+  type GoalItem,
   type MarketPath,
   type MarketRow,
   type PriceTarget,
@@ -31,10 +33,19 @@ interface StoreState {
   favorites: string[];
   /** Ценовые цели по ключу товара. */
   targets: Record<string, PriceTarget>;
+  /** Проекты («прокачать дом») — списки нужных материалов. */
+  goals: Goal[];
 }
 
 const LS_KEY = 'kupec.store.v1';
-const EMPTY: StoreState = { server: 'RU17', data: {}, history: {}, favorites: [], targets: {} };
+const EMPTY: StoreState = {
+  server: 'RU17',
+  data: {},
+  history: {},
+  favorites: [],
+  targets: {},
+  goals: [],
+};
 
 /** Стабильный ключ строки рынка для избранного. */
 export function rowKey(r: Pick<MarketRow, 'id' | '_path'>): string {
@@ -66,6 +77,14 @@ interface StoreContextValue {
   setTarget: (key: string, target: PriceTarget | null) => void;
   /** Сколько избранных достигли цели сейчас. */
   alertCount: number;
+  /** Проекты прокачки. */
+  goals: Goal[];
+  addGoal: (name: string) => void;
+  renameGoal: (id: string, name: string) => void;
+  removeGoal: (id: string) => void;
+  /** Добавить/обновить позицию проекта (по имени материала). */
+  setGoalItem: (id: string, item: GoalItem) => void;
+  removeGoalItem: (id: string, name: string) => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -183,6 +202,55 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const addGoal = useCallback((name: string) => {
+    const goal: Goal = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: name.trim() || 'Проект',
+      items: [],
+      createdAt: Date.now(),
+    };
+    setState((p) => ({ ...p, goals: [...p.goals, goal] }));
+    track('goal_add', {});
+  }, []);
+
+  const renameGoal = useCallback((id: string, name: string) => {
+    setState((p) => ({
+      ...p,
+      goals: p.goals.map((g) => (g.id === id ? { ...g, name: name.trim() || g.name } : g)),
+    }));
+  }, []);
+
+  const removeGoal = useCallback((id: string) => {
+    setState((p) => ({ ...p, goals: p.goals.filter((g) => g.id !== id) }));
+  }, []);
+
+  const setGoalItem = useCallback((id: string, item: GoalItem) => {
+    setState((p) => ({
+      ...p,
+      goals: p.goals.map((g) => {
+        if (g.id !== id) return g;
+        const key = item.name.trim().toLowerCase();
+        const has = g.items.some((i) => i.name.trim().toLowerCase() === key);
+        return {
+          ...g,
+          items: has
+            ? g.items.map((i) => (i.name.trim().toLowerCase() === key ? { ...i, ...item } : i))
+            : [...g.items, item],
+        };
+      }),
+    }));
+  }, []);
+
+  const removeGoalItem = useCallback((id: string, name: string) => {
+    const key = name.trim().toLowerCase();
+    setState((p) => ({
+      ...p,
+      goals: p.goals.map((g) =>
+        g.id === id ? { ...g, items: g.items.filter((i) => i.name.trim().toLowerCase() !== key) } : g,
+      ),
+    }));
+  }, []);
+
   const clear = useCallback(
     () =>
       setState((p) => ({
@@ -232,6 +300,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     getTarget,
     setTarget,
     alertCount,
+    goals: state.goals,
+    addGoal,
+    renameGoal,
+    removeGoal,
+    setGoalItem,
+    removeGoalItem,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
