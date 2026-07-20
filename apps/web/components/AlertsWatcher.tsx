@@ -5,6 +5,7 @@ import { targetHit } from '@kupec/core';
 import { useAuth } from '../lib/auth';
 import { rowKey, useStore } from '../lib/store';
 import { track } from './../lib/analytics';
+import { loadWebhook, sendWebhookQuiet } from '../lib/webhook';
 
 /** Как часто подтягивать свежий рынок с сервера (мс). */
 const REFRESH_MS = 3 * 60 * 1000;
@@ -50,10 +51,10 @@ export function AlertsWatcher() {
       const k = rowKey(r);
       if (nowHit.has(k) && !prevHit.current.has(k)) {
         const t = getTarget(k)!;
-        notify(
-          `🎯 ${r.name}`,
-          t.type === 'buy' ? `Можно купить ≤ ${t.price}` : `Можно продать ≥ ${t.price}`,
-        );
+        const body =
+          t.type === 'buy' ? `Можно купить ≤ ${t.price}` : `Можно продать ≥ ${t.price}`;
+        notify(`🎯 ${r.name}`, body);
+        sendWebhookQuiet(loadWebhook(), `🎯 ${r.name} — ${body}`);
         track('alert_fired', { type: t.type });
       }
     }
