@@ -8,11 +8,16 @@ import { Badge, Card, StatCard } from '../ui';
 
 type Kind = 'flip' | 'craft';
 
+/** Сделка в журнале: в общем журнале приходит с автором. */
+type JTrade = Trade & { author?: string };
+
 export function JournalTab() {
-  const { trades, addTrade, updateTrade, closeTrade, deleteTrade } = useJournal();
+  const { trades, addTrade, updateTrade, closeTrade, deleteTrade, scope, setScope, group } =
+    useJournal();
   const { items, server } = useStore();
-  const [selling, setSelling] = useState<Trade | null>(null);
-  const [editing, setEditing] = useState<Trade | null>(null);
+  const [groupOpen, setGroupOpen] = useState(false);
+  const [selling, setSelling] = useState<JTrade | null>(null);
+  const [editing, setEditing] = useState<JTrade | null>(null);
   const [addOpen, setAddOpen] = useState(false);
 
   const summary = useMemo(() => journalSummary(trades), [trades]);
@@ -52,14 +57,35 @@ export function JournalTab() {
         <StatCard label="Всего сделок" value={summary.open + summary.closed} />
       </div>
 
-      <div>
+      <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={() => setAddOpen(true)}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
         >
           + Добавить сделку
         </button>
+
+        {group && (
+          <div className="flex gap-1 rounded-xl bg-bg p-1">
+            <ScopeBtn active={scope === 'mine'} onClick={() => setScope('mine')} label="Мой журнал" />
+            <ScopeBtn active={scope === 'group'} onClick={() => setScope('group')} label={`👥 ${group.name}`} />
+          </div>
+        )}
+
+        <button
+          onClick={() => setGroupOpen(true)}
+          className="ml-auto rounded-lg border border-line px-3.5 py-2 text-sm text-muted hover:bg-surface-2 hover:text-txt"
+        >
+          {group ? '👥 Группа' : '👥 Создать группу'}
+        </button>
       </div>
+
+      {scope === 'group' && group && (
+        <div className="rounded-lg border border-accent/30 bg-accent/5 px-4 py-2.5 text-xs text-muted">
+          Общий журнал группы «{group.name}» — сюда видят все участники. Править и удалять можно
+          только свои сделки.
+        </div>
+      )}
 
       {addOpen && (
         <AddTradeModal
@@ -101,6 +127,8 @@ export function JournalTab() {
         />
       )}
 
+      {groupOpen && <GroupModal onClose={() => setGroupOpen(false)} />}
+
       {editing && (
         <FullEditModal
           trade={editing}
@@ -121,7 +149,7 @@ function TradeCard({
   onEdit,
   onDelete,
 }: {
-  t: Trade;
+  t: JTrade;
   onSell: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -133,6 +161,129 @@ function TradeCard({
   );
 }
 
+function ScopeBtn({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-lg px-3.5 py-1.5 text-sm transition ${
+        active ? 'bg-surface-2 font-semibold text-txt' : 'text-muted hover:text-txt'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+/** Создание/вступление в группу и список участников. */
+function GroupModal({ onClose }: { onClose: () => void }) {
+  const { group, members, createGroup, joinGroup, leaveGroup } = useJournal();
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const run = async (fn: () => Promise<void>) => {
+    setBusy(true);
+    setError(null);
+    try {
+      await fn();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Не вышло');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      title={group ? `Группа «${group.name}»` : 'Общий журнал'}
+      subtitle={
+        group
+          ? 'Общий журнал для семьи или банды'
+          : 'Один журнал на нескольких игроков: видно, кто что скрафтил и продал'
+      }
+      onClose={onClose}
+    >
+      {group ? (
+        <div className="flex flex-col gap-4">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+              Код приглашения
+            </div>
+            <div className="mt-1 flex items-center gap-3">
+              <code className="rounded-lg border border-line bg-bg px-4 py-2.5 text-xl font-bold tracking-widest">
+                {group.inviteCode}
+              </code>
+              <span className="text-xs text-muted">Дай его тем, кого хочешь позвать</span>
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+              Участники ({members.length})
+            </div>
+            <div className="mt-2 flex flex-col gap-1">
+              {members.map((m) => (
+                <div key={m.id} className="rounded-lg border border-line bg-bg/40 px-3 py-2 text-sm">
+                  {m.email}
+                  {m.id === group.ownerId && <span className="ml-2 text-xs text-muted">владелец</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+          {error && <div className="text-sm text-red">{error}</div>}
+          <button
+            onClick={() => run(async () => { await leaveGroup(); onClose(); })}
+            disabled={busy}
+            className="self-start rounded-lg px-4 py-2 text-sm text-muted hover:bg-red/15 hover:text-red disabled:opacity-40"
+          >
+            Выйти из группы
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <Field label="Создать свою">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Напр. Семья Ивановых"
+                className={inputCls}
+              />
+            </Field>
+            <button
+              onClick={() => name.trim() && run(async () => { await createGroup(name); })}
+              disabled={busy || !name.trim()}
+              className="self-start rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+            >
+              Создать
+            </button>
+          </div>
+
+          <div className="border-t border-line pt-5">
+            <Field label="Или вступить по коду">
+              <input
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="ABC123"
+                className={`${inputCls} tracking-widest`}
+              />
+            </Field>
+            <button
+              onClick={() => code.trim() && run(async () => { await joinGroup(code); })}
+              disabled={busy || !code.trim()}
+              className="mt-2 self-start rounded-lg border border-line px-4 py-2 text-sm hover:bg-surface-2 disabled:opacity-40"
+            >
+              Вступить
+            </button>
+          </div>
+
+          {error && <div className="text-sm text-red">{error}</div>}
+        </div>
+      )}
+    </Modal>
+  );
+}
+
 /* ---------------- карточки ---------------- */
 
 function CraftCard({
@@ -141,7 +292,7 @@ function CraftCard({
   onEdit,
   onDelete,
 }: {
-  t: Trade;
+  t: JTrade;
   onSell: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -156,6 +307,7 @@ function CraftCard({
             <span className="truncate font-semibold">{t.item}</span>
             <Badge tone="amber">🔨 крафт</Badge>
             {m.open && <Badge tone="accent">открыта</Badge>}
+            {t.author && <Badge>{t.author}</Badge>}
           </div>
           <div className="mt-0.5 text-xs text-muted">{date}</div>
         </div>
@@ -199,7 +351,7 @@ function FlipCard({
   onEdit,
   onDelete,
 }: {
-  t: Trade;
+  t: JTrade;
   onSell: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -213,6 +365,7 @@ function FlipCard({
             <span className="truncate font-semibold">{t.item}</span>
             <Badge>💱 перекуп</Badge>
             {p.open && <Badge tone="accent">открыта</Badge>}
+            {t.author && <Badge>{t.author}</Badge>}
           </div>
           <div className="mt-1 text-xs text-muted">
             {t.qty} шт · купил {money(t.buy)}

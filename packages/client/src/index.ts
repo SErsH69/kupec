@@ -12,6 +12,21 @@ export interface AuthUser {
 
 export type TradeKind = 'flip' | 'craft';
 
+export interface Group {
+  id: string;
+  name: string;
+  inviteCode: string;
+  ownerId: string;
+}
+
+export interface GroupInfo {
+  group: Group | null;
+  members: { id: string; email: string }[];
+}
+
+/** Сделка группы — с автором. */
+export type GroupTrade = Trade & { author?: string };
+
 /** Точка истории цены (даты приходят строкой из JSON). */
 export interface HistoryPoint {
   at: string;
@@ -130,6 +145,23 @@ export function createApi(baseUrl: string, getToken: () => string | null) {
     closeTrade: (id: string, sell: number) =>
       req<{ ok: true }>(`/v1/trades/${id}/close`, { method: 'POST', body: JSON.stringify({ sell }) }),
     deleteTrade: (id: string) => req<{ ok: true }>(`/v1/trades/${id}`, { method: 'DELETE' }),
+
+    /** Группа (общий журнал семьи/банды). */
+    getGroup: () => req<GroupInfo>('/v1/group'),
+    createGroup: (name: string) =>
+      req<GroupInfo>('/v1/group', { method: 'POST', body: JSON.stringify({ name }) }),
+    joinGroup: (code: string) =>
+      req<GroupInfo>('/v1/group/join', { method: 'POST', body: JSON.stringify({ code }) }),
+    leaveGroup: () => req<{ ok: true }>('/v1/group/leave', { method: 'POST' }),
+    listGroupTrades: async () =>
+      (await req<{ trades: (ServerTrade & { author: string | null })[] }>('/v1/group/trades')).trades.map(
+        (t) => ({ ...toTrade(t), author: t.author ?? undefined }),
+      ),
+    addGroupTrade: async (t: TradeInput) =>
+      toTrade(
+        (await req<{ trade: ServerTrade }>('/v1/group/trades', { method: 'POST', body: JSON.stringify(t) }))
+          .trade,
+      ),
   };
 }
 

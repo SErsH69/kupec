@@ -161,6 +161,79 @@ export async function updatePasswordHash(sql: Sql, id: string, passwordHash: str
   await sql`update users set password_hash = ${passwordHash} where id = ${id}`;
 }
 
+/* ---------------- группы (общий журнал) ---------------- */
+
+export interface GroupRow {
+  id: string;
+  name: string;
+  invite_code: string;
+  owner_id: string;
+}
+
+/** Код приглашения: короткий, без похожих символов (0/O, 1/I). */
+function inviteCode(): string {
+  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for (let i = 0; i < 6; i++) s += abc[Math.floor(Math.random() * abc.length)];
+  return s;
+}
+
+export async function createGroup(sql: Sql, userId: string, name: string): Promise<GroupRow> {
+  const [group] = await sql<GroupRow[]>`
+    insert into groups ${sql({ name, invite_code: inviteCode(), owner_id: userId })}
+    returning id, name, invite_code, owner_id
+  `;
+  await sql`insert into group_members ${sql({ group_id: group!.id, user_id: userId })}`;
+  return group!;
+}
+
+/** Группа пользователя (по первому членству) — одна группа на игрока. */
+export async function myGroup(sql: Sql, userId: string): Promise<GroupRow | undefined> {
+  const [row] = await sql<GroupRow[]>`
+    select g.id, g.name, g.invite_code, g.owner_id
+    from groups g join group_members m on m.group_id = g.id
+    where m.user_id = ${userId}
+    order by m.joined_at
+    limit 1
+  `;
+  return row;
+}
+
+/** Вступить по коду. undefined — кода нет. */
+export async function joinGroup(sql: Sql, userId: string, code: string): Promise<GroupRow | undefined> {
+  const [group] = await sql<GroupRow[]>`
+    select id, name, invite_code, owner_id from groups where invite_code = ${code.trim().toUpperCase()}
+  `;
+  if (!group) return undefined;
+  await sql`
+    insert into group_members ${sql({ group_id: group.id, user_id: userId })}
+    on conflict do nothing
+  `;
+  return group;
+}
+
+export async function leaveGroup(sql: Sql, userId: string, groupId: string): Promise<void> {
+  await sql`delete from group_members where group_id = ${groupId} and user_id = ${userId}`;
+  // Личные сделки остаются, общие — отвязываются от автора, но остаются у группы.
+}
+
+export async function groupMembers(sql: Sql, groupId: string): Promise<{ id: string; email: string }[]> {
+  return sql<{ id: string; email: string }[]>`
+    select u.id, u.email
+    from users u join group_members m on m.user_id = u.id
+    where m.group_id = ${groupId}
+    order by m.joined_at
+  `;
+}
+
+/** Состоит ли пользователь в группе (проверка доступа). */
+export async function isMember(sql: Sql, userId: string, groupId: string): Promise<boolean> {
+  const [row] = await sql<{ one: number }[]>`
+    select 1 as one from group_members where group_id = ${groupId} and user_id = ${userId}
+  `;
+  return !!row;
+}
+
 /* ---------------- сделки (журнал) ---------------- */
 
 export interface TradeRow {
@@ -189,7 +262,20 @@ function sqlCols() {
 export async function listTrades(sql: Sql, userId: string): Promise<TradeRow[]> {
   return sql<TradeRow[]>`
     select ${sql.unsafe(TRADE_COLS)}
-    from trades where user_id = ${userId} order by created_at desc
+    from trades where user_id = ${userId} and group_id is null order by created_at desc
+  `;
+}
+
+export interface GroupTradeRow extends TradeRow {
+  author: string;
+}
+
+/** Общий журнал группы: сделки всех участников с автором. */
+export async function listGroupTrades(sql: Sql, groupId: string): Promise<GroupTradeRow[]> {
+  return sql<GroupTradeRow[]>`
+    select ${sql.unsafe(TRADE_COLS.split(',').map((c) => `t.${c.trim()}`).join(', '))}, u.email as author
+    from trades t left join users u on u.id = t.user_id
+    where t.group_id = ${groupId} order by t.created_at desc
   `;
 }
 
@@ -205,6 +291,8 @@ export interface AddTradeInput {
   listPrice?: number | null;
   soldUnits?: number | null;
   soldRevenue?: number | null;
+  /** Если задан — сделка общая, видна всей группе. */
+  groupId?: string | null;
 }
 
 export async function addTrade(sql: Sql, userId: string, t: AddTradeInput): Promise<TradeRow> {
@@ -230,6 +318,7 @@ export async function addTrade(sql: Sql, userId: string, t: AddTradeInput): Prom
       list_price: t.listPrice ?? null,
       sold_units: t.soldUnits ?? null,
       sold_revenue: t.soldRevenue ?? null,
+      group_id: t.groupId ?? null,
       closed_at: closed,
     })}
     returning ${sql.unsafe(TRADE_COLS)}

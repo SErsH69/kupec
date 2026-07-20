@@ -9,21 +9,33 @@ import {
   type ReactNode,
 } from 'react';
 import type { Trade } from '@kupec/core';
+import type { Group, GroupTrade } from '@kupec/client';
 import type { TradeInput } from './api';
 import { useAuth } from './auth';
 import { track } from './analytics';
 
 const LS_KEY = 'kupec.journal.v1';
 
+/** Чей журнал смотрим: свой или общий журнал группы. */
+export type JournalScope = 'mine' | 'group';
+
 interface JournalContextValue {
   ready: boolean;
   /** Синхронизируется с аккаунтом (иначе — только localStorage). */
   synced: boolean;
-  trades: Trade[];
+  trades: (Trade & { author?: string })[];
   addTrade: (t: TradeInput) => void;
   updateTrade: (id: string, patch: Partial<TradeInput>) => void;
   closeTrade: (id: string, sell: number) => void;
   deleteTrade: (id: string) => void;
+  /** Группа (общий журнал семьи/банды). */
+  scope: JournalScope;
+  setScope: (s: JournalScope) => void;
+  group: Group | null;
+  members: { id: string; email: string }[];
+  createGroup: (name: string) => Promise<void>;
+  joinGroup: (code: string) => Promise<void>;
+  leaveGroup: () => Promise<void>;
 }
 
 const JournalContext = createContext<JournalContextValue | null>(null);
@@ -50,6 +62,11 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [ready, setReady] = useState(false);
   const synced = !!token;
+
+  const [scope, setScope] = useState<JournalScope>('mine');
+  const [group, setGroup] = useState<Group | null>(null);
+  const [members, setMembers] = useState<{ id: string; email: string }[]>([]);
+  const [groupTrades, setGroupTrades] = useState<GroupTrade[]>([]);
 
   // Загрузка/синхронизация при смене статуса входа.
   useEffect(() => {
@@ -91,6 +108,62 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     };
   }, [authReady, token, api]);
 
+  // Группа и её журнал — только для вошедших.
+  useEffect(() => {
+    if (!token) {
+      setGroup(null);
+      setMembers([]);
+      setGroupTrades([]);
+      setScope('mine');
+      return;
+    }
+    let cancelled = false;
+    api
+      .getGroup()
+      .then((info) => {
+        if (cancelled) return;
+        setGroup(info.group);
+        setMembers(info.members);
+        if (info.group) return api.listGroupTrades().then((t) => !cancelled && setGroupTrades(t));
+        return;
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [token, api]);
+
+  const reloadGroup = useCallback(async () => {
+    const info = await api.getGroup();
+    setGroup(info.group);
+    setMembers(info.members);
+    setGroupTrades(info.group ? await api.listGroupTrades() : []);
+  }, [api]);
+
+  const createGroup = useCallback(
+    async (name: string) => {
+      await api.createGroup(name);
+      await reloadGroup();
+      track('group_create', {});
+    },
+    [api, reloadGroup],
+  );
+
+  const joinGroup = useCallback(
+    async (code: string) => {
+      await api.joinGroup(code);
+      await reloadGroup();
+      track('group_join', {});
+    },
+    [api, reloadGroup],
+  );
+
+  const leaveGroup = useCallback(async () => {
+    await api.leaveGroup();
+    setScope('mine');
+    await reloadGroup();
+  }, [api, reloadGroup]);
+
   // Персист в localStorage только в локальном режиме.
   useEffect(() => {
     if (!ready || synced) return;
@@ -103,7 +176,14 @@ export function JournalProvider({ children }: { children: ReactNode }) {
 
   const addTrade = useCallback<JournalContextValue['addTrade']>(
     (t) => {
-      track('trade_add', { synced });
+      track('trade_add', { synced, scope });
+      if (scope === 'group' && group) {
+        api
+          .addGroupTrade(t)
+          .then((created) => setGroupTrades((prev) => [created, ...prev]))
+          .catch(() => {});
+        return;
+      }
       if (synced) {
         api
           .addTrade(t)
@@ -133,15 +213,20 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         ...prev,
       ]);
     },
-    [synced, api],
+    [synced, api, scope, group],
   );
 
+  // Правки применяются к обоим спискам: в группе редактировать можно только свои
+  // сделки — сервер это и проверяет (user_id), чужие просто не изменятся.
   const updateTrade = useCallback(
     (id: string, patch: Partial<TradeInput>) => {
       if (synced) {
         api
           .updateTrade(id, patch)
-          .then((upd) => setTrades((prev) => prev.map((t) => (t.id === id ? upd : t))))
+          .then((upd) => {
+            setTrades((prev) => prev.map((t) => (t.id === id ? upd : t)));
+            setGroupTrades((prev) => prev.map((t) => (t.id === id ? { ...upd, author: t.author } : t)));
+          })
           .catch(() => {});
         return;
       }
@@ -156,7 +241,10 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       if (synced) {
         api.closeTrade(id, sell).catch(() => {});
       }
-      setTrades((prev) => prev.map((t) => (t.id === id ? { ...t, sell, closedAt: Date.now() } : t)));
+      const close = <T extends Trade>(t: T): T =>
+        t.id === id ? { ...t, sell, closedAt: Date.now() } : t;
+      setTrades((prev) => prev.map(close));
+      setGroupTrades((prev) => prev.map(close));
     },
     [synced, api],
   );
@@ -167,12 +255,32 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         api.deleteTrade(id).catch(() => {});
       }
       setTrades((prev) => prev.filter((t) => t.id !== id));
+      setGroupTrades((prev) => prev.filter((t) => t.id !== id));
     },
     [synced, api],
   );
 
+  const visible = scope === 'group' && group ? groupTrades : trades;
+
   return (
-    <JournalContext.Provider value={{ ready, synced, trades, addTrade, updateTrade, closeTrade, deleteTrade }}>
+    <JournalContext.Provider
+      value={{
+        ready,
+        synced,
+        trades: visible,
+        addTrade,
+        updateTrade,
+        closeTrade,
+        deleteTrade,
+        scope,
+        setScope,
+        group,
+        members,
+        createGroup,
+        joinGroup,
+        leaveGroup,
+      }}
+    >
       {children}
     </JournalContext.Provider>
   );

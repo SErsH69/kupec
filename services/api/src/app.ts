@@ -4,13 +4,20 @@ import { enrich, isServerId, SERVERS, type MarketPath } from '@kupec/core';
 import {
   addTrade,
   closeTrade,
+  createGroup,
   createUser,
   deleteTrade,
   findUserByEmail,
   findUserById,
+  groupMembers,
   itemHistory,
+  joinGroup,
   latestRows,
+  leaveGroup,
+  listGroupTrades,
   listTrades,
+  myGroup,
+  type GroupRow,
   updatePasswordHash,
   updateTrade,
   type Sql,
@@ -141,7 +148,59 @@ export function createApp(sql: Sql) {
     return c.json({ ok: true });
   });
 
+  // --- группа (общий журнал семьи/банды) ---
+
+  app.get('/v1/group', auth, async (c) => {
+    const group = await myGroup(sql, c.get('userId'));
+    if (!group) return c.json({ group: null, members: [] });
+    return c.json({ group: toGroup(group), members: await groupMembers(sql, group.id) });
+  });
+
+  app.post('/v1/group', auth, async (c) => {
+    const { name } = await c.req.json().catch(() => ({}));
+    if (typeof name !== 'string' || !name.trim()) return c.json({ error: 'название обязательно' }, 400);
+    if (await myGroup(sql, c.get('userId'))) return c.json({ error: 'ты уже в группе' }, 409);
+    const group = await createGroup(sql, c.get('userId'), name.trim());
+    return c.json({ group: toGroup(group), members: await groupMembers(sql, group.id) });
+  });
+
+  app.post('/v1/group/join', auth, async (c) => {
+    const { code } = await c.req.json().catch(() => ({}));
+    if (typeof code !== 'string' || !code.trim()) return c.json({ error: 'код обязателен' }, 400);
+    const group = await joinGroup(sql, c.get('userId'), code);
+    if (!group) return c.json({ error: 'группа с таким кодом не найдена' }, 404);
+    return c.json({ group: toGroup(group), members: await groupMembers(sql, group.id) });
+  });
+
+  app.post('/v1/group/leave', auth, async (c) => {
+    const group = await myGroup(sql, c.get('userId'));
+    if (group) await leaveGroup(sql, c.get('userId'), group.id);
+    return c.json({ ok: true });
+  });
+
+  // Общий журнал: сделки всех участников (правит каждый только свои).
+  app.get('/v1/group/trades', auth, async (c) => {
+    const group = await myGroup(sql, c.get('userId'));
+    if (!group) return c.json({ trades: [] });
+    return c.json({ trades: await listGroupTrades(sql, group.id) });
+  });
+
+  app.post('/v1/group/trades', auth, async (c) => {
+    const group = await myGroup(sql, c.get('userId'));
+    if (!group) return c.json({ error: 'ты не в группе' }, 400);
+    const b = await c.req.json().catch(() => ({}));
+    const okCost = b.kind === 'craft' ? b.materials > 0 || b.buy >= 0 : b.buy > 0;
+    if (!b.item || !(b.qty > 0) || !okCost) return c.json({ error: 'item, qty и стоимость обязательны' }, 400);
+    const trade = await addTrade(sql, c.get('userId'), { ...b, groupId: group.id });
+    return c.json({ trade });
+  });
+
   return app;
+}
+
+/** Группа наружу — camelCase, без owner_id в сыром виде. */
+function toGroup(g: GroupRow) {
+  return { id: g.id, name: g.name, inviteCode: g.invite_code, ownerId: g.owner_id };
 }
 
 function validEmail(v: unknown): v is string {
