@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   computeGoal,
   findRealty,
@@ -175,14 +175,33 @@ export function GoalsTab() {
                     </tr>
                   </thead>
                   <tbody>
-                    {result.items.map((it) => (
-                      <ItemRow
-                        key={it.name}
-                        it={it}
-                        onHave={(have) => setGoalItem(goal.id, { name: it.name, need: it.need, have })}
-                        onNeed={(need) => setGoalItem(goal.id, { name: it.name, need, have: it.have })}
-                        onRemove={() => removeGoalItem(goal.id, it.name)}
-                      />
+                    {groupBySection(result.items).map(([section, rows]) => (
+                      <Fragment key={section}>
+                        {section && (
+                          <tr className="border-b border-line bg-surface-2/40">
+                            <td className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-accent-2" colSpan={6}>
+                              {section}
+                            </td>
+                            <td className="px-3 py-2 text-right text-xs font-semibold tabular-nums">
+                              {money(rows.reduce((sum, r) => sum + (r.lineCost ?? 0), 0))}
+                            </td>
+                            <td colSpan={2} />
+                          </tr>
+                        )}
+                        {rows.map((it) => (
+                          <ItemRow
+                            key={`${section}|${it.name}`}
+                            it={it}
+                            onHave={(have) =>
+                              setGoalItem(goal.id, { name: it.name, need: it.need, have, section: it.section })
+                            }
+                            onNeed={(need) =>
+                              setGoalItem(goal.id, { name: it.name, need, have: it.have, section: it.section })
+                            }
+                            onRemove={() => removeGoalItem(goal.id, it.name, it.section)}
+                          />
+                        ))}
+                      </Fragment>
                     ))}
                   </tbody>
                 </table>
@@ -298,6 +317,17 @@ function NumInput({ value, onChange }: { value: number; onChange: (v: number) =>
       className="w-20 rounded-md border border-line bg-bg px-2 py-1 text-right text-sm tabular-nums outline-none focus:border-accent"
     />
   );
+}
+
+/** Сгруппировать позиции по разделу, сохраняя порядок появления. */
+function groupBySection(items: GoalItemResult[]): [string, GoalItemResult[]][] {
+  const map = new Map<string, GoalItemResult[]>();
+  for (const it of items) {
+    const key = it.section ?? '';
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(it);
+  }
+  return [...map];
 }
 
 /* ---------------- прокачка дома ---------------- */
@@ -447,10 +477,16 @@ function HouseUpgradeModal({
   const create = () => {
     if (!total.materials.length) return;
     const label = realty ? `${type === 'house' ? 'Дом' : 'Квартира'} #${realty.num}` : 'Прокачка';
-    onCreate(
-      `${label} — прокачка`,
-      total.materials.map((m) => ({ name: m.name, need: m.qty, have: 0 })),
+    // Материалы храним по разделам — так видно, что именно нужно на кухню, а что на гараж.
+    const items = plans.flatMap((p) =>
+      p.materials.map((m) => ({
+        name: m.name,
+        need: m.qty,
+        have: 0,
+        section: `${UPGRADE_LABEL[p.kind]} → ур. ${p.to}`,
+      })),
     );
+    onCreate(`${label} — прокачка`, items);
   };
 
   return (

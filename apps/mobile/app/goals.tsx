@@ -74,8 +74,8 @@ export default function Goals() {
         <>
           <View style={styles.stats}>
             <Stat label="Готово" value={`${Math.round(result.progress * 100)}%`} sub={`${result.totalHave}/${result.totalNeed} шт`} />
-            <Stat label="Осталось" value={money(result.remainingCost)} color={theme.accent2} />
-            <Stat label="Целиком" value={money(result.totalCost)} />
+            <Stat label="Осталось" value={shortMoney(result.remainingCost)} color={theme.accent2} />
+            <Stat label="Целиком" value={shortMoney(result.totalCost)} />
           </View>
 
           <View style={styles.barBg}>
@@ -97,16 +97,25 @@ export default function Goals() {
           </View>
 
           <FlatList
-            data={result.items}
-            keyExtractor={(i) => i.name}
+            data={withSectionHeaders(result.items)}
+            keyExtractor={(r) => (r.kind === 'head' ? 'h:' + r.section : `i:${r.item.section ?? ''}|${r.item.name}`)}
             contentContainerStyle={{ paddingBottom: 40 }}
-            renderItem={({ item }) => (
-              <ItemRow
-                it={item}
-                onHave={(have) => setGoalItem(goal.id, { name: item.name, need: item.need, have })}
-                onRemove={() => removeGoalItem(goal.id, item.name)}
-              />
-            )}
+            renderItem={({ item: r }) =>
+              r.kind === 'head' ? (
+                <View style={styles.secHead}>
+                  <Text style={styles.secTitle}>{r.section}</Text>
+                  <Text style={styles.secSum}>{money(r.sum)}</Text>
+                </View>
+              ) : (
+                <ItemRow
+                  it={r.item}
+                  onHave={(have) =>
+                    setGoalItem(goal.id, { name: r.item.name, need: r.item.need, have, section: r.item.section })
+                  }
+                  onRemove={() => removeGoalItem(goal.id, r.item.name, r.item.section)}
+                />
+              )
+            }
             ListEmptyComponent={<Text style={styles.emptyList}>Добавь материалы проекта.</Text>}
           />
         </>
@@ -186,6 +195,37 @@ function ItemRow({
   );
 }
 
+/** Компактные деньги для узких карточек: $4.92M / $175k. */
+function shortMoney(v: number): string {
+  if (!isFinite(v)) return '—';
+  const a = Math.abs(v);
+  if (a >= 1_000_000) return `$${(v / 1_000_000).toFixed(2)}M`;
+  if (a >= 10_000) return `$${Math.round(v / 1000)}k`;
+  return money(v);
+}
+
+/** Плоский список с заголовками разделов и суммой по каждому. */
+type Row =
+  | { kind: 'head'; section: string; sum: number }
+  | { kind: 'item'; item: GoalItemResult };
+
+function withSectionHeaders(items: GoalItemResult[]): Row[] {
+  const map = new Map<string, GoalItemResult[]>();
+  for (const it of items) {
+    const key = it.section ?? '';
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(it);
+  }
+  const out: Row[] = [];
+  for (const [section, list] of map) {
+    if (section) {
+      out.push({ kind: 'head', section, sum: list.reduce((s, r) => s + (r.lineCost ?? 0), 0) });
+    }
+    for (const item of list) out.push({ kind: 'item', item });
+  }
+  return out;
+}
+
 /* ---------------- прокачка дома ---------------- */
 
 const KINDS: UpgradeKind[] = ['workshop', 'kitchen', 'pantry', 'garage'];
@@ -230,7 +270,16 @@ function HouseUpgradeModal({
   const create = () => {
     if (!total.materials.length) return;
     const label = realty ? `${type === 'house' ? 'Дом' : 'Квартира'} #${realty.num}` : 'Прокачка';
-    onCreate(`${label} — прокачка`, total.materials.map((m) => ({ name: m.name, need: m.qty, have: 0 })));
+    // Материалы по разделам — видно, что нужно на кухню, а что на гараж.
+    const items = plans.flatMap((p) =>
+      p.materials.map((m) => ({
+        name: m.name,
+        need: m.qty,
+        have: 0,
+        section: `${UPGRADE_LABEL[p.kind]} → ур. ${p.to}`,
+      })),
+    );
+    onCreate(`${label} — прокачка`, items);
   };
 
   return (
@@ -384,7 +433,9 @@ function Stat({ label, value, sub, color }: { label: string; value: string; sub?
   return (
     <View style={styles.stat}>
       <Text style={styles.statLabel}>{label}</Text>
-      <Text style={[styles.statValue, color ? { color } : null]}>{value}</Text>
+      <Text style={[styles.statValue, color ? { color } : null]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+        {value}
+      </Text>
       {sub && <Text style={styles.statSub}>{sub}</Text>}
     </View>
   );
@@ -546,6 +597,18 @@ const styles = StyleSheet.create({
   },
   del: { color: theme.muted, fontSize: 12 },
   link: { color: theme.accent2, fontSize: 13 },
+  secHead: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.surface,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    marginTop: 12,
+  },
+  secTitle: { color: theme.accent2, fontSize: 12, fontWeight: '700', textTransform: 'uppercase' },
+  secSum: { color: theme.txt, fontSize: 13, fontWeight: '700' },
   warn: { color: theme.amber, fontSize: 12, marginTop: 8 },
   info: { marginTop: 10, gap: 2 },
   picker: { marginTop: 8, borderWidth: 1, borderColor: theme.line, borderRadius: 10, overflow: 'hidden' },

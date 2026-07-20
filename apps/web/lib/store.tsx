@@ -47,6 +47,11 @@ const EMPTY: StoreState = {
   goals: [],
 };
 
+/** Ключ позиции проекта: одинаковые материалы в разных разделах — разные строки. */
+export function itemKey(i: { name: string; section?: string }): string {
+  return `${(i.section ?? '').toLowerCase()}|${i.name.trim().toLowerCase()}`;
+}
+
 /** Стабильный ключ строки рынка для избранного. */
 export function rowKey(r: Pick<MarketRow, 'id' | '_path'>): string {
   return `${r._path ?? ''}:${r.id}`;
@@ -86,7 +91,7 @@ interface StoreContextValue {
   removeGoal: (id: string) => void;
   /** Добавить/обновить позицию проекта (по имени материала). */
   setGoalItem: (id: string, item: GoalItem) => void;
-  removeGoalItem: (id: string, name: string) => void;
+  removeGoalItem: (id: string, name: string, section?: string) => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -242,24 +247,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       ...p,
       goals: p.goals.map((g) => {
         if (g.id !== id) return g;
-        const key = item.name.trim().toLowerCase();
-        const has = g.items.some((i) => i.name.trim().toLowerCase() === key);
+        const key = itemKey(item);
+        const has = g.items.some((i) => itemKey(i) === key);
         return {
           ...g,
-          items: has
-            ? g.items.map((i) => (i.name.trim().toLowerCase() === key ? { ...i, ...item } : i))
-            : [...g.items, item],
+          items: has ? g.items.map((i) => (itemKey(i) === key ? { ...i, ...item } : i)) : [...g.items, item],
         };
       }),
     }));
   }, []);
 
-  const removeGoalItem = useCallback((id: string, name: string) => {
-    const key = name.trim().toLowerCase();
+  const removeGoalItem = useCallback((id: string, name: string, section?: string) => {
+    const key = itemKey({ name, section });
     setState((p) => ({
       ...p,
       goals: p.goals.map((g) =>
-        g.id === id ? { ...g, items: g.items.filter((i) => i.name.trim().toLowerCase() !== key) } : g,
+        g.id === id ? { ...g, items: g.items.filter((i) => itemKey(i) !== key) } : g,
       ),
     }));
   }, []);

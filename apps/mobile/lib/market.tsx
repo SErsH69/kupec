@@ -11,6 +11,11 @@ import {
 import { targetHit, type Goal, type GoalItem, type MarketRow, type PriceTarget } from '@kupec/core';
 import { useAuth } from './auth';
 
+/** Ключ позиции проекта: одинаковый материал в разных разделах — разные строки. */
+export function itemKey(i: { name: string; section?: string }): string {
+  return `${(i.section ?? '').toLowerCase()}|${i.name.trim().toLowerCase()}`;
+}
+
 /** Стабильный ключ товара для избранного/целей. */
 export function rowKey(r: Pick<MarketRow, 'id' | '_path'>): string {
   return `${r._path ?? ''}:${r.id}`;
@@ -38,7 +43,7 @@ interface MarketContextValue {
   addGoalWithItems: (name: string, items: GoalItem[]) => void;
   removeGoal: (id: string) => void;
   setGoalItem: (id: string, item: GoalItem) => void;
-  removeGoalItem: (id: string, name: string) => void;
+  removeGoalItem: (id: string, name: string, section?: string) => void;
 }
 
 const MarketContext = createContext<MarketContextValue | null>(null);
@@ -133,24 +138,20 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     setGoals((prev) =>
       prev.map((g) => {
         if (g.id !== id) return g;
-        const key = item.name.trim().toLowerCase();
-        const has = g.items.some((i) => i.name.trim().toLowerCase() === key);
+        const key = itemKey(item);
+        const has = g.items.some((i) => itemKey(i) === key);
         return {
           ...g,
-          items: has
-            ? g.items.map((i) => (i.name.trim().toLowerCase() === key ? { ...i, ...item } : i))
-            : [...g.items, item],
+          items: has ? g.items.map((i) => (itemKey(i) === key ? { ...i, ...item } : i)) : [...g.items, item],
         };
       }),
     );
   }, []);
 
-  const removeGoalItem = useCallback((id: string, name: string) => {
-    const key = name.trim().toLowerCase();
+  const removeGoalItem = useCallback((id: string, name: string, section?: string) => {
+    const key = itemKey({ name, section });
     setGoals((prev) =>
-      prev.map((g) =>
-        g.id === id ? { ...g, items: g.items.filter((i) => i.name.trim().toLowerCase() !== key) } : g,
-      ),
+      prev.map((g) => (g.id === id ? { ...g, items: g.items.filter((i) => itemKey(i) !== key) } : g)),
     );
   }, []);
 

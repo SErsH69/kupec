@@ -7,6 +7,8 @@ export interface GoalItem {
   name: string;
   need: number;
   have: number;
+  /** Раздел прокачки («Мастерская», «Кухня»…) — для группировки в таблице. */
+  section?: string;
 }
 
 /** Цель («прокачать дом», «собрать на тачку») — список нужных материалов. */
@@ -128,6 +130,7 @@ export function computeGoal(goal: Goal, rows: MarketRow[], recipes: Recipe[] = R
 
     return {
       name: it.name,
+      section: it.section,
       need,
       have,
       left,
