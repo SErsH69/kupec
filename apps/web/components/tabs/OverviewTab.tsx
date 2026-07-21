@@ -91,25 +91,34 @@ export function OverviewTab() {
     return ql ? rows.filter((r) => r.name.toLowerCase().includes(ql)) : rows;
   }, [rows, q]);
 
+  // Бюджет: не советовать Bugatti за $20M тому, у кого $50k. 0 = без ограничения.
+  const [budget, setBudget] = useState('');
+  const cap = Number(budget) || Infinity;
+
   // Лучшее действие в каждом способе заработка — из тех же движков, что и вкладки.
+  // Отбираем то, что по карману: перекуп по цене покупки, крафт/кухня по себестоимости.
   const flip = useMemo(
-    () => computeFlip(rows).sort((a, b) => b.score - a.score)[0],
-    [rows],
+    () =>
+      computeFlip(rows)
+        .filter((f) => f.deal <= cap)
+        .sort((a, b) => b.score - a.score)[0],
+    [rows, cap],
   );
   const craft = useMemo(
     () =>
       computeRecipes(items, { useChance: true, selfCraft: true })
-        .filter((r) => (r.weekly ?? 0) > 0 && r.ch[1] >= 30)
+        .filter((r) => (r.weekly ?? 0) > 0 && r.ch[1] >= 30 && r.cost <= cap)
         .sort((a, b) => (b.weekly ?? 0) - (a.weekly ?? 0))[0],
-    [items],
+    [items, cap],
   );
   const dish = useMemo(
     () =>
       computeKitchen(items)
-        .filter((r) => r.perHour != null && r.perHour > 0)
+        .filter((r) => r.perHour != null && r.perHour > 0 && r.ingCost <= cap)
         .sort((a, b) => (b.perHour ?? 0) - (a.perHour ?? 0))[0],
-    [items],
+    [items, cap],
   );
+  // Фарм — без вложений, бюджет не ограничивает.
   const farm = useMemo(() => computeFarm(rows)[0], [rows]);
 
   const searching = q.trim().length > 0;
@@ -125,8 +134,21 @@ export function OverviewTab() {
 
       {!searching && (flip || craft || dish || farm) && (
         <div>
-          <div className="mb-2 text-sm font-semibold">
-            💡 С чего начать зарабатывать <span className="font-normal text-muted">(лучшее прямо сейчас)</span>
+          <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <span className="text-sm font-semibold">💡 С чего начать зарабатывать</span>
+            <label className="flex items-center gap-1.5 text-xs text-muted">
+              мой бюджет
+              <input
+                type="number"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                placeholder="любой"
+                className="w-28 rounded-md border border-line bg-surface px-2 py-1 text-right text-xs tabular-nums outline-none focus:border-accent"
+              />
+            </label>
+            {cap !== Infinity && (
+              <span className="text-xs text-muted">— советуем то, что по карману</span>
+            )}
           </div>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {flip && (

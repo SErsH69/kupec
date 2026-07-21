@@ -12,11 +12,14 @@ export function MarketScreen<T>({
   keyFor,
   renderRow,
   emptyHint,
+  header,
 }: {
   rows: T[];
   keyFor: (row: T, i: number) => string;
   renderRow: (row: T) => ReactNode;
   emptyHint: string;
+  /** Блок над списком (напр. карточки «с чего начать»); скроллится вместе. */
+  header?: ReactNode;
 }) {
   const { server, loading, error, loaded, load } = useMarket();
 
@@ -33,6 +36,7 @@ export function MarketScreen<T>({
         data={rows}
         keyExtractor={keyFor}
         contentContainerStyle={{ paddingBottom: 40 }}
+        ListHeaderComponent={header ? <>{header}</> : null}
         renderItem={({ item }) => <View style={styles.row}>{renderRow(item)}</View>}
         ListEmptyComponent={
           !loading ? (
