@@ -29,6 +29,16 @@ export function AppShell() {
     const saved = localStorage.getItem('kupec.tab');
     if (saved && TABS.some((t) => t.key === saved)) setActive(saved);
   }, []);
+
+  // Навигация из карточек «с чего начать» и т.п.
+  useEffect(() => {
+    const h = (e: Event) => {
+      const key = (e as CustomEvent<string>).detail;
+      if (TABS.some((t) => t.key === key)) selectTab(key);
+    };
+    window.addEventListener('kupec:navtab', h);
+    return () => window.removeEventListener('kupec:navtab', h);
+  }, []);
   const [authOpen, setAuthOpen] = useState(false);
   const [legal, setLegal] = useState<LegalTab | null>(null);
   const [loadingSrv, setLoadingSrv] = useState(false);
