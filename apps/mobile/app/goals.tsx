@@ -180,9 +180,13 @@ function ItemRow({
 }) {
   return (
     <View style={[styles.row, it.done && { opacity: 0.6 }]}>
+      <Pressable onPress={() => onHave(it.done ? 0 : it.need)} hitSlop={8} style={{ paddingRight: 8 }}>
+        <Text style={{ color: it.done ? theme.green : theme.muted, fontSize: 18 }}>
+          {it.done ? '☑' : '☐'}
+        </Text>
+      </Pressable>
       <View style={{ flex: 1 }}>
-        <Text style={styles.name} numberOfLines={1}>
-          {it.done ? '✓ ' : ''}
+        <Text style={[styles.name, it.done && { textDecorationLine: 'line-through' }]} numberOfLines={1}>
           {it.name}
         </Text>
         <Text style={styles.sub}>
@@ -625,11 +629,12 @@ const styles = StyleSheet.create({
   primaryBtn: { backgroundColor: theme.accent, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9 },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: theme.line,
-    gap: 12,
+    gap: 8,
   },
   name: { color: theme.txt, fontSize: 15 },
   sub: { color: theme.muted, fontSize: 12, marginTop: 2 },

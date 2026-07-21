@@ -289,10 +289,16 @@ function ItemRow({
   return (
     <tr className={`border-b border-line/50 ${it.done ? 'opacity-60' : ''}`}>
       <td className="px-3 py-2">
-        <span className="flex items-center gap-2">
-          {it.done && <span className="text-green">✓</span>}
-          <span className="truncate">{it.name}</span>
-        </span>
+        <label className="flex cursor-pointer items-center gap-2 select-none">
+          <input
+            type="checkbox"
+            checked={it.done}
+            onChange={() => onHave(it.done ? 0 : it.need)}
+            title={it.done ? 'Снять — позиция ещё не собрана' : 'Отметить как полностью собрано'}
+            className="accent-[var(--color-accent)]"
+          />
+          <span className={`truncate ${it.done ? 'line-through' : ''}`}>{it.name}</span>
+        </label>
       </td>
       <td className="px-3 py-2 text-right">
         <NumInput value={it.need} onChange={onNeed} />
