@@ -384,3 +384,28 @@ export async function updateTrade(
 export async function deleteTrade(sql: Sql, userId: string, id: string): Promise<void> {
   await sql`delete from trades where id = ${id} and user_id = ${userId}`;
 }
+
+/* ---------------- настройки аккаунта ---------------- */
+
+/** Произвольные настройки пользователя (имя, дефолтный сервер и т.п.). */
+export async function getSettings(sql: Sql, userId: string): Promise<Record<string, unknown>> {
+  const [row] = await sql<{ data: Record<string, unknown> }[]>`
+    select data from settings where user_id = ${userId}
+  `;
+  return row?.data ?? {};
+}
+
+/** Слить патч в настройки (создаёт строку при первом сохранении). */
+export async function updateSettings(
+  sql: Sql,
+  userId: string,
+  patch: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  const json = sql.json(patch as never);
+  const [row] = await sql<{ data: Record<string, unknown> }[]>`
+    insert into settings (user_id, data) values (${userId}, ${json})
+    on conflict (user_id) do update set data = settings.data || ${json}
+    returning data
+  `;
+  return row!.data;
+}

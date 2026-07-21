@@ -9,6 +9,7 @@ import {
   deleteTrade,
   findUserByEmail,
   findUserById,
+  getSettings,
   groupMembers,
   itemHistory,
   joinGroup,
@@ -19,6 +20,7 @@ import {
   myGroup,
   type GroupRow,
   updatePasswordHash,
+  updateSettings,
   updateTrade,
   type Sql,
 } from '@kupec/db';
@@ -107,6 +109,14 @@ export function createApp(sql: Sql) {
     await next();
     return;
   };
+
+  // Настройки аккаунта (имя и т.п.).
+  app.get('/v1/settings', auth, async (c) => c.json({ settings: await getSettings(sql, c.get('userId')) }));
+  app.patch('/v1/settings', auth, async (c) => {
+    const patch = await c.req.json().catch(() => ({}));
+    if (patch == null || typeof patch !== 'object') return c.json({ error: 'ожидается объект' }, 400);
+    return c.json({ settings: await updateSettings(sql, c.get('userId'), patch) });
+  });
 
   // Смена пароля (нужен текущий).
   app.post('/v1/auth/password', auth, async (c) => {

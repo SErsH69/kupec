@@ -5,11 +5,13 @@ import { SERVERS } from '@kupec/core';
 import { useStore } from '../lib/store';
 import { useAuth } from '../lib/auth';
 import { TABS } from '../lib/tabs';
+
+/** Вкладки для списка навигации (без скрытых, напр. Кабинета). */
+const NAV_TABS = TABS.filter((t) => !t.hidden);
 import { PATH_LABEL } from '../lib/labels';
 import { track } from '../lib/analytics';
 import { ImportDialog } from './ImportDialog';
 import { AuthDialog } from './AuthDialog';
-import { ProfileDialog } from './ProfileDialog';
 import { NotifyBell } from './NotifyBell';
 import { Logo } from './Logo';
 
@@ -25,7 +27,6 @@ export function AppShell() {
     if (saved && TABS.some((t) => t.key === saved)) setActive(saved);
   }, []);
   const [authOpen, setAuthOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const [loadingSrv, setLoadingSrv] = useState(false);
 
   const loadFromServer = async () => {
@@ -74,9 +75,9 @@ export function AppShell() {
           </span>
         </div>
         <nav className="flex flex-col gap-0.5">
-          {TABS.map((t, i) => {
+          {NAV_TABS.map((t, i) => {
             // Разделитель перед первой личной вкладкой.
-            const firstPersonal = t.group === 'personal' && TABS[i - 1]?.group !== 'personal';
+            const firstPersonal = t.group === 'personal' && NAV_TABS[i - 1]?.group !== 'personal';
             return (
               <Fragment key={t.key}>
                 {firstPersonal && (
@@ -108,8 +109,8 @@ export function AppShell() {
         <div className="mt-auto flex flex-col gap-2 pt-4">
           {user ? (
             <button
-              onClick={() => setProfileOpen(true)}
-              title="Профиль и настройки"
+              onClick={() => selectTab('account')}
+              title="Личный кабинет"
               className="flex items-center gap-2 rounded-lg border border-line bg-surface-2/40 px-2.5 py-2 text-left hover:bg-surface-2"
             >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-sm font-bold text-accent">
@@ -213,7 +214,6 @@ export function AppShell() {
 
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
       <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
-      <ProfileDialog open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   );
 }

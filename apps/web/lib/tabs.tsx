@@ -10,6 +10,7 @@ import { RLTab } from '../components/tabs/RLTab';
 import { GovTab } from '../components/tabs/GovTab';
 import { JournalTab } from '../components/tabs/JournalTab';
 import { GoalsTab } from '../components/tabs/GoalsTab';
+import { AccountTab } from '../components/tabs/AccountTab';
 
 export { PATH_LABEL } from './labels';
 
@@ -27,6 +28,8 @@ export interface TabDef {
    * 'personal' — личные данные пользователя (накапливаются, будущий Pro).
    */
   group?: 'market' | 'personal';
+  /** Не показывать в списке навигации (доступ через отдельную кнопку). */
+  hidden?: boolean;
 }
 
 export const TABS: TabDef[] = [
@@ -42,4 +45,6 @@ export const TABS: TabDef[] = [
   // Личное — данные пользователя, отделены в меню.
   { key: 'goals', label: 'Цели', icon: '🎯', Component: GoalsTab, needsData: true, group: 'personal' },
   { key: 'journal', label: 'Журнал сделок', icon: '📒', Component: JournalTab, needsAuth: true, group: 'personal' },
+  // Кабинет — доступен через блок аккаунта внизу, не в списке навигации.
+  { key: 'account', label: 'Кабинет', icon: '⚙️', Component: AccountTab, needsAuth: true, group: 'personal', hidden: true },
 ];

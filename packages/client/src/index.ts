@@ -10,6 +10,12 @@ export interface AuthUser {
   email: string;
 }
 
+/** Настройки аккаунта (произвольный JSON; сейчас — имя). */
+export interface AccountSettings {
+  name?: string;
+  [k: string]: unknown;
+}
+
 export type TradeKind = 'flip' | 'craft';
 
 export interface Group {
@@ -123,6 +129,10 @@ export function createApi(baseUrl: string, getToken: () => string | null) {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       }),
+    getSettings: async () => (await req<{ settings: AccountSettings }>('/v1/settings')).settings,
+    updateSettings: async (patch: Partial<AccountSettings>) =>
+      (await req<{ settings: AccountSettings }>('/v1/settings', { method: 'PATCH', body: JSON.stringify(patch) }))
+        .settings,
     changePassword: (currentPassword: string, newPassword: string) =>
       req<{ ok: true }>('/v1/auth/password', {
         method: 'POST',
