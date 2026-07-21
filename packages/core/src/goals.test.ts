@@ -116,3 +116,24 @@ describe('взносы за улучшения', () => {
     expect(r.remainingWithFees).toBe(r.remainingCost);
   });
 });
+
+describe('оплаченные взносы', () => {
+  it('не считаются в остатке, но видны в разбивке', () => {
+    const rows = [row('Доска', 100)];
+    const g: Goal = {
+      id: 'g',
+      name: 'Дом',
+      createdAt: 0,
+      items: [{ name: 'Доска', need: 10, have: 0, section: 'Мастерская · ур. 1' }],
+      fees: [
+        { section: 'Мастерская · ур. 1', money: 150_000, hours: 6, paid: true },
+        { section: 'Мастерская · ур. 2', money: 450_000, hours: 12 },
+      ],
+    };
+    const r = computeGoal(g, rows, []);
+    expect(r.feesTotal).toBe(450_000); // оплаченный ур.1 исключён
+    expect(r.feeHours).toBe(12);
+    expect(r.remainingWithFees).toBe(1000 + 450_000);
+    expect(r.feeBySection['Мастерская · ур. 1']!.paid).toBe(true);
+  });
+});

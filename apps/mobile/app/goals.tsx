@@ -20,7 +20,7 @@ import { theme } from '../lib/theme';
  * (рынок или крафт) и сколько осталось вложить. Всё поверх core/computeGoal.
  */
 export default function Goals() {
-  const { goals, rows, addGoal, addGoalWithItems, removeGoal, setGoalItem, removeGoalItem } = useMarket();
+  const { goals, rows, addGoal, addGoalWithItems, removeGoal, setGoalItem, removeGoalItem, toggleGoalFee } = useMarket();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [itemOpen, setItemOpen] = useState(false);
@@ -111,9 +111,11 @@ export default function Goals() {
                   <View style={{ flex: 1 }}>
                     <Text style={styles.secTitle}>{r.section}</Text>
                     {r.fee > 0 && (
-                      <Text style={styles.sub}>
-                        взнос {money(r.fee)} · {r.hours} ч
-                      </Text>
+                      <Pressable onPress={() => toggleGoalFee(goal.id, r.section)} hitSlop={6}>
+                        <Text style={[styles.sub, r.paid && { color: theme.green, textDecorationLine: 'line-through' }]}>
+                          {r.paid ? '☑' : '☐'} взнос {money(r.fee)} · {r.hours} ч
+                        </Text>
+                      </Pressable>
                     )}
                   </View>
                   <Text style={styles.secSum}>{money(r.sum)}</Text>
@@ -218,10 +220,10 @@ function shortMoney(v: number): string {
 
 /** Плоский список с заголовками разделов и суммой по каждому. */
 type Row =
-  | { kind: 'head'; section: string; sum: number; fee: number; hours: number }
+  | { kind: 'head'; section: string; sum: number; fee: number; hours: number; paid: boolean }
   | { kind: 'item'; item: GoalItemResult };
 
-function withSectionHeaders(items: GoalItemResult[], fees: Record<string, { money: number; hours: number }>): Row[] {
+function withSectionHeaders(items: GoalItemResult[], fees: Record<string, { money: number; hours: number; paid?: boolean }>): Row[] {
   const map = new Map<string, GoalItemResult[]>();
   for (const it of items) {
     const key = it.section ?? '';
@@ -232,12 +234,14 @@ function withSectionHeaders(items: GoalItemResult[], fees: Record<string, { mone
   for (const [section, list] of map) {
     if (section) {
       const fee = fees[section];
+      const feeUnpaid = fee && !fee.paid ? fee.money : 0;
       out.push({
         kind: 'head',
         section,
-        sum: list.reduce((s, r) => s + (r.lineCost ?? 0), 0) + (fee?.money ?? 0),
+        sum: list.reduce((s, r) => s + (r.lineCost ?? 0), 0) + feeUnpaid,
         fee: fee?.money ?? 0,
         hours: fee?.hours ?? 0,
+        paid: !!fee?.paid,
       });
     }
     for (const item of list) out.push({ kind: 'item', item });

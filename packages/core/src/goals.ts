@@ -17,6 +17,8 @@ export interface GoalFee {
   section: string;
   money: number;
   hours: number;
+  /** Взнос уже внесён в игре — не считаем его в остатке. */
+  paid?: boolean;
 }
 
 /** Цель («прокачать дом», «собрать на тачку») — список нужных материалов. */
@@ -169,9 +171,10 @@ export function computeGoal(goal: Goal, rows: MarketRow[], recipes: Recipe[] = R
   const progress =
     costKnown > 0 ? costDone / costKnown : totalNeed > 0 ? totalHave / totalNeed : 0;
 
+  // Оплаченные взносы не входят в остаток, но остаются в feeBySection для подписи.
   const fees = goal.fees ?? [];
-  const feesTotal = fees.reduce((s, f) => s + f.money, 0);
-  const feeHours = fees.reduce((s, f) => s + f.hours, 0);
+  const feesTotal = fees.reduce((s, f) => s + (f.paid ? 0 : f.money), 0);
+  const feeHours = fees.reduce((s, f) => s + (f.paid ? 0 : f.hours), 0);
   const feeBySection: Record<string, GoalFee> = {};
   for (const f of fees) feeBySection[f.section] = f;
 

@@ -51,6 +51,7 @@ interface MarketContextValue {
   removeGoal: (id: string) => void;
   setGoalItem: (id: string, item: GoalItem) => void;
   removeGoalItem: (id: string, name: string, section?: string) => void;
+  toggleGoalFee: (id: string, section: string) => void;
 }
 
 const MarketContext = createContext<MarketContextValue | null>(null);
@@ -163,6 +164,16 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const toggleGoalFee = useCallback((id: string, section: string) => {
+    setGoals((prev) =>
+      prev.map((g) =>
+        g.id === id
+          ? { ...g, fees: (g.fees ?? []).map((f) => (f.section === section ? { ...f, paid: !f.paid } : f)) }
+          : g,
+      ),
+    );
+  }, []);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -224,6 +235,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         removeGoal,
         setGoalItem,
         removeGoalItem,
+        toggleGoalFee,
       }}
     >
       {children}

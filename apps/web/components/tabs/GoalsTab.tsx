@@ -21,7 +21,7 @@ import { Badge, Card, StatCard } from '../ui';
  * где брать дешевле (рынок или крафт) и сколько осталось вложить.
  */
 export function GoalsTab() {
-  const { goals, rows, items, addGoal, addGoalWithItems, renameGoal, removeGoal, setGoalItem, removeGoalItem } =
+  const { goals, rows, items, addGoal, addGoalWithItems, renameGoal, removeGoal, setGoalItem, removeGoalItem, toggleGoalFee } =
     useStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
@@ -192,16 +192,25 @@ export function GoalsTab() {
                             </td>
                             <td className="px-3 py-2 text-xs text-muted" colSpan={2}>
                               {result.feeBySection[section] && (
-                                <>
-                                  взнос {money(result.feeBySection[section]!.money)} ·{' '}
-                                  {result.feeBySection[section]!.hours} ч
-                                </>
+                                <label className="flex cursor-pointer items-center gap-1.5 select-none">
+                                  <input
+                                    type="checkbox"
+                                    checked={!!result.feeBySection[section]!.paid}
+                                    onChange={() => toggleGoalFee(goal.id, section)}
+                                    className="accent-[var(--color-accent)]"
+                                  />
+                                  <span className={result.feeBySection[section]!.paid ? 'text-green line-through' : ''}>
+                                    взнос {money(result.feeBySection[section]!.money)} · {result.feeBySection[section]!.hours} ч
+                                  </span>
+                                </label>
                               )}
                             </td>
                             <td className="px-3 py-2 text-right text-xs font-semibold tabular-nums">
                               {money(
                                 rows.reduce((sum, r) => sum + (r.lineCost ?? 0), 0) +
-                                  (result.feeBySection[section]?.money ?? 0),
+                                  (result.feeBySection[section]?.paid
+                                    ? 0
+                                    : (result.feeBySection[section]?.money ?? 0)),
                               )}
                             </td>
                             <td colSpan={2} />

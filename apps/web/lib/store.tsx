@@ -93,6 +93,8 @@ interface StoreContextValue {
   /** Добавить/обновить позицию проекта (по имени материала). */
   setGoalItem: (id: string, item: GoalItem) => void;
   removeGoalItem: (id: string, name: string, section?: string) => void;
+  /** Отметить/снять «взнос оплачен» для раздела проекта. */
+  toggleGoalFee: (id: string, section: string) => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -269,6 +271,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const toggleGoalFee = useCallback((id: string, section: string) => {
+    setState((p) => ({
+      ...p,
+      goals: p.goals.map((g) =>
+        g.id === id
+          ? { ...g, fees: (g.fees ?? []).map((f) => (f.section === section ? { ...f, paid: !f.paid } : f)) }
+          : g,
+      ),
+    }));
+  }, []);
+
   const clear = useCallback(
     () =>
       setState((p) => ({
@@ -325,6 +338,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     removeGoal,
     setGoalItem,
     removeGoalItem,
+    toggleGoalFee,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
