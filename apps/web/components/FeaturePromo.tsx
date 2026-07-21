@@ -29,7 +29,8 @@ export function FeaturePromo({
   onLogin: () => void;
 }) {
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="flex min-h-full items-center justify-center py-6">
+      <div className="w-full max-w-5xl">
       <div className="grid items-center gap-8 lg:grid-cols-2">
         {/* Левая колонка — текст и шаги */}
         <div>
@@ -73,6 +74,7 @@ export function FeaturePromo({
 
       {/* Превью на мобильном — под текстом, по центру */}
       <div className="mt-8 flex justify-center lg:hidden">{mock}</div>
+      </div>
     </div>
   );
 }
