@@ -12,6 +12,50 @@ export function Card({ children, className = '' }: { children: ReactNode; classN
   );
 }
 
+/**
+ * Плавный загрузчик по центру области: логотип с мягкой пульсацией внутри
+ * вращающегося кольца (конический градиент — гладкая дуга без «зубцов»).
+ */
+export function Loading({ label = 'Загрузка' }: { label?: string }) {
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-5">
+      <div className="relative h-16 w-16">
+        {/* Вращающееся кольцо */}
+        <div
+          className="absolute inset-0 animate-spin rounded-full"
+          style={{
+            background: 'conic-gradient(from 90deg, transparent 0deg, var(--color-accent) 320deg)',
+            WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0)',
+            mask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0)',
+            animationDuration: '1.1s',
+          }}
+        />
+        {/* Пульсирующий логотип в центре */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="animate-pulse text-2xl">📊</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 text-sm text-muted">
+        <span>{label}</span>
+        <span className="inline-flex">
+          <Dot delay="0ms" />
+          <Dot delay="150ms" />
+          <Dot delay="300ms" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Dot({ delay }: { delay: string }) {
+  return (
+    <span
+      className="mx-px inline-block h-1 w-1 animate-bounce rounded-full bg-muted"
+      style={{ animationDelay: delay, animationDuration: '1s' }}
+    />
+  );
+}
+
 /** Единый каркас модалки: шапка с заголовком и крестиком, подвал, backdrop-blur. */
 export function Modal({
   title,

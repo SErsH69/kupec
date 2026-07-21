@@ -13,6 +13,7 @@ import { track } from '../lib/analytics';
 import { ImportDialog } from './ImportDialog';
 import { AuthDialog } from './AuthDialog';
 import { NotifyBell } from './NotifyBell';
+import { Loading } from './ui';
 import { CookieBanner } from './CookieBanner';
 import { LegalDialog, type LegalTab } from './LegalDialog';
 import { Logo } from './Logo';
@@ -213,7 +214,7 @@ export function AppShell() {
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {!ready ? (
-            <div className="p-8 text-center text-sm text-muted">Загрузка…</div>
+            <Loading />
           ) : showAuth ? (
             tab.Promo ? (
               <tab.Promo onLogin={() => setAuthOpen(true)} />
