@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { SERVERS } from '@kupec/core';
 import { useStore } from '../lib/store';
 import { useAuth } from '../lib/auth';
@@ -74,23 +74,36 @@ export function AppShell() {
           </span>
         </div>
         <nav className="flex flex-col gap-0.5">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => selectTab(t.key)}
-              className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition ${
-                t.key === active ? 'bg-accent/15 font-medium text-txt' : 'text-muted hover:bg-surface-2 hover:text-txt'
-              }`}
-            >
-              <span className="w-5 text-center">{t.icon}</span>
-              {t.label}
-              {t.key === 'fav' && alertCount > 0 && (
-                <span className="ml-auto rounded-full bg-green px-1.5 py-0.5 text-[10px] font-bold text-black">
-                  {alertCount}
-                </span>
-              )}
-            </button>
-          ))}
+          {TABS.map((t, i) => {
+            // Разделитель перед первой личной вкладкой.
+            const firstPersonal = t.group === 'personal' && TABS[i - 1]?.group !== 'personal';
+            return (
+              <Fragment key={t.key}>
+                {firstPersonal && (
+                  <div className="mt-3 mb-1 flex items-center gap-2 px-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted/70">
+                      Личное
+                    </span>
+                    <span className="h-px flex-1 bg-line" />
+                  </div>
+                )}
+                <button
+                  onClick={() => selectTab(t.key)}
+                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition ${
+                    t.key === active ? 'bg-accent/15 font-medium text-txt' : 'text-muted hover:bg-surface-2 hover:text-txt'
+                  }`}
+                >
+                  <span className="w-5 text-center">{t.icon}</span>
+                  {t.label}
+                  {t.key === 'fav' && alertCount > 0 && (
+                    <span className="ml-auto rounded-full bg-green px-1.5 py-0.5 text-[10px] font-bold text-black">
+                      {alertCount}
+                    </span>
+                  )}
+                </button>
+              </Fragment>
+            );
+          })}
         </nav>
         <div className="mt-auto flex flex-col gap-2 pt-4">
           {user ? (

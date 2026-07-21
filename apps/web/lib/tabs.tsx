@@ -22,6 +22,11 @@ export interface TabDef {
   needsData?: boolean;
   /** Требует входа в аккаунт (личные данные). */
   needsAuth?: boolean;
+  /**
+   * Группа в меню: 'market' — аналитика по публичным данным (всем),
+   * 'personal' — личные данные пользователя (накапливаются, будущий Pro).
+   */
+  group?: 'market' | 'personal';
 }
 
 export const TABS: TabDef[] = [
@@ -32,8 +37,9 @@ export const TABS: TabDef[] = [
   { key: 'kitchen', label: 'Кухня', icon: '🍳', Component: KitchenTab, needsData: true },
   { key: 'farm', label: 'Что фармить', icon: '🌾', Component: FarmTab, needsData: true },
   { key: 'movers', label: 'Движения', icon: '📈', Component: MoversTab, needsData: true },
-  { key: 'goals', label: 'Цели', icon: '🎯', Component: GoalsTab, needsData: true },
-  { key: 'journal', label: 'Журнал сделок', icon: '📒', Component: JournalTab, needsAuth: true },
   { key: 'rlcars', label: 'RL авто', icon: '🏎️', Component: RLTab, needsData: true },
   { key: 'gov', label: 'Гос-цены', icon: '🏛️', Component: GovTab },
+  // Личное — данные пользователя, отделены в меню.
+  { key: 'goals', label: 'Цели', icon: '🎯', Component: GoalsTab, needsData: true, group: 'personal' },
+  { key: 'journal', label: 'Журнал сделок', icon: '📒', Component: JournalTab, needsAuth: true, group: 'personal' },
 ];
