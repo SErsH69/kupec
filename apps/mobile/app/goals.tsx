@@ -13,6 +13,8 @@ import {
   type UpgradeKind,
 } from '@kupec/core';
 import { useMarket } from '../lib/market';
+import { useAuth } from '../lib/auth';
+import { FeaturePromo, GoalsMock } from '../components/FeaturePromo';
 import { theme } from '../lib/theme';
 
 /**
@@ -20,7 +22,24 @@ import { theme } from '../lib/theme';
  * (рынок или крафт) и сколько осталось вложить. Всё поверх core/computeGoal.
  */
 export default function Goals() {
+  const { user } = useAuth();
   const { goals, rows, addGoal, addGoalWithItems, removeGoal, setGoalItem, removeGoalItem, toggleGoalFee } = useMarket();
+
+  if (!user) {
+    return (
+      <FeaturePromo
+        icon="🎯"
+        title="Цели — проекты прокачки"
+        subtitle="Список материалов под задачу: посчитаем, чего не хватает, где брать дешевле и сколько ещё вложить."
+        steps={[
+          { n: 1, title: 'Выбери дом или задачу', text: 'Номер дома — подтянем требования по уровням.' },
+          { n: 2, title: 'Смотри, где дешевле', text: 'По каждому материалу: рынок или крафт.' },
+          { n: 3, title: 'Веди прогресс', text: 'Отмечай собранное — остаток считается сам.' },
+        ]}
+        mock={<GoalsMock />}
+      />
+    );
+  }
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [itemOpen, setItemOpen] = useState(false);

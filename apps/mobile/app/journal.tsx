@@ -2,10 +2,29 @@ import { useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { journalSummary, money, tradePnl, type Trade } from '@kupec/core';
 import { useJournal } from '../lib/journal';
+import { useAuth } from '../lib/auth';
+import { FeaturePromo, JournalMock } from '../components/FeaturePromo';
 import { theme } from '../lib/theme';
 
 export default function Journal() {
+  const { user } = useAuth();
   const { trades, synced, addTrade, closeTrade, deleteTrade, scope, setScope, group } = useJournal();
+
+  if (!user) {
+    return (
+      <FeaturePromo
+        icon="📒"
+        title="Журнал сделок с P&L"
+        subtitle="Записывай перекуп и крафт — P&L, ROI и «сейчас в продаже» считаются автоматически."
+        steps={[
+          { n: 1, title: 'Добавь сделку', text: 'Перекуп или крафт: материалы, скрафчено, выставлено.' },
+          { n: 2, title: 'Отмечай продажи', text: 'Частичные продажи — прибыль пересчитается.' },
+          { n: 3, title: 'Веди общий журнал', text: 'Группа: семья/банда ведёт журнал вместе.' },
+        ]}
+        mock={<JournalMock />}
+      />
+    );
+  }
   const [groupOpen, setGroupOpen] = useState(false);
   const [item, setItem] = useState('');
   const [qty, setQty] = useState('');
