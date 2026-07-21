@@ -20,6 +20,14 @@ function goTab(key: string) {
   window.dispatchEvent(new CustomEvent('kupec:navtab', { detail: key }));
 }
 
+/** Пресеты бюджета (0 = без ограничения). */
+const BUDGETS = [
+  { label: 'Любой', val: 0 },
+  { label: '$50k', val: 50_000 },
+  { label: '$500k', val: 500_000 },
+  { label: '$5M', val: 5_000_000 },
+] as const;
+
 /** Колонки рынка; star-колонка добавляется отдельно (нужен доступ к стору). */
 export const marketColumns: Column<MarketRow>[] = [
   {
@@ -134,21 +142,37 @@ export function OverviewTab() {
 
       {!searching && (flip || craft || dish || farm) && (
         <div>
-          <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="text-sm font-semibold">💡 С чего начать зарабатывать</span>
-            <label className="flex items-center gap-1.5 text-xs text-muted">
-              мой бюджет
-              <input
-                type="number"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                placeholder="любой"
-                className="w-28 rounded-md border border-line bg-surface px-2 py-1 text-right text-xs tabular-nums outline-none focus:border-accent"
-              />
-            </label>
-            {cap !== Infinity && (
-              <span className="text-xs text-muted">— советуем то, что по карману</span>
-            )}
+            <div className="ml-auto flex items-center gap-1.5">
+              <span className="text-xs text-muted">бюджет</span>
+              <div className="flex rounded-lg bg-bg p-0.5">
+                {BUDGETS.map((b) => {
+                  const active = (Number(budget) || 0) === b.val;
+                  return (
+                    <button
+                      key={b.label}
+                      onClick={() => setBudget(b.val ? String(b.val) : '')}
+                      className={`rounded-md px-2.5 py-1 text-xs transition ${
+                        active ? 'bg-surface-2 font-semibold text-txt shadow-sm' : 'text-muted hover:text-txt'
+                      }`}
+                    >
+                      {b.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="flex items-center rounded-lg border border-line bg-surface pl-2 focus-within:border-accent">
+                <span className="text-xs text-muted">$</span>
+                <input
+                  type="number"
+                  value={budget}
+                  onChange={(e) => setBudget(e.target.value)}
+                  placeholder="своё"
+                  className="w-20 bg-transparent px-1.5 py-1 text-right text-xs tabular-nums outline-none placeholder:text-muted/50"
+                />
+              </div>
+            </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {flip && (

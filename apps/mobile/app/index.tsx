@@ -6,6 +6,13 @@ import { rowKey, useMarket } from '../lib/market';
 import { MarketScreen } from '../components/MarketScreen';
 import { theme } from '../lib/theme';
 
+const BUDGETS = [
+  { label: 'Любой', val: 0 },
+  { label: '$50k', val: 50_000 },
+  { label: '$500k', val: 500_000 },
+  { label: '$5M', val: 5_000_000 },
+] as const;
+
 export default function Overview() {
   const router = useRouter();
   const { rows, items, isFav, toggleFav } = useMarket();
@@ -33,14 +40,29 @@ export default function Overview() {
   const header =
     rows.length === 0 ? null : (
       <View style={{ marginBottom: 8 }}>
-        <View style={styles.headRow}>
-          <Text style={styles.headTitle}>💡 С чего начать</Text>
-          <View style={styles.budget}>
-            <Text style={styles.budgetLabel}>бюджет</Text>
+        <Text style={styles.headTitle}>💡 С чего начать</Text>
+        <View style={styles.budgetRow}>
+          <Text style={styles.budgetLabel}>бюджет</Text>
+          <View style={styles.chips}>
+            {BUDGETS.map((b) => {
+              const active = (Number(budget) || 0) === b.val;
+              return (
+                <Pressable
+                  key={b.label}
+                  style={[styles.chip, active && styles.chipOn]}
+                  onPress={() => setBudget(b.val ? String(b.val) : '')}
+                >
+                  <Text style={[styles.chipText, active && styles.chipTextOn]}>{b.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <View style={styles.budgetInputWrap}>
+            <Text style={styles.dollar}>$</Text>
             <TextInput
               style={styles.budgetInput}
               keyboardType="numeric"
-              placeholder="любой"
+              placeholder="своё"
               placeholderTextColor={theme.muted}
               value={budget}
               onChangeText={setBudget}
@@ -154,21 +176,31 @@ const styles = StyleSheet.create({
   name: { color: theme.txt, fontSize: 15, flex: 1 },
   money: { color: theme.green, fontWeight: '700', fontSize: 15 },
   sub: { color: theme.muted, fontSize: 12, marginTop: 2 },
-  headRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, marginTop: 4 },
-  headTitle: { color: theme.txt, fontSize: 15, fontWeight: '700' },
-  budget: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  headTitle: { color: theme.txt, fontSize: 15, fontWeight: '700', marginTop: 4 },
+  budgetRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginTop: 8, marginBottom: 10 },
   budgetLabel: { color: theme.muted, fontSize: 12 },
-  budgetInput: {
+  chips: { flexDirection: 'row', backgroundColor: theme.bg, borderRadius: 8, padding: 2 },
+  chip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 6 },
+  chipOn: { backgroundColor: theme.surface2 },
+  chipText: { color: theme.muted, fontSize: 12 },
+  chipTextOn: { color: theme.txt, fontWeight: '700' },
+  budgetInputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: theme.surface,
     borderWidth: 1,
     borderColor: theme.line,
     borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    paddingLeft: 8,
+  },
+  dollar: { color: theme.muted, fontSize: 12 },
+  budgetInput: {
     color: theme.txt,
-    minWidth: 90,
+    minWidth: 64,
     textAlign: 'right',
     fontSize: 13,
+    paddingHorizontal: 6,
+    paddingVertical: 5,
   },
   card: { backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.line, borderRadius: 12, padding: 12, gap: 2 },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
