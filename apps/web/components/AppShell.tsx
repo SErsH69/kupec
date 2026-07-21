@@ -13,6 +13,8 @@ import { track } from '../lib/analytics';
 import { ImportDialog } from './ImportDialog';
 import { AuthDialog } from './AuthDialog';
 import { NotifyBell } from './NotifyBell';
+import { CookieBanner } from './CookieBanner';
+import { LegalDialog, type LegalTab } from './LegalDialog';
 import { Logo } from './Logo';
 
 export function AppShell() {
@@ -27,6 +29,7 @@ export function AppShell() {
     if (saved && TABS.some((t) => t.key === saved)) setActive(saved);
   }, []);
   const [authOpen, setAuthOpen] = useState(false);
+  const [legal, setLegal] = useState<LegalTab | null>(null);
   const [loadingSrv, setLoadingSrv] = useState(false);
 
   const loadFromServer = async () => {
@@ -132,6 +135,15 @@ export function AppShell() {
           <div className="px-1 text-[11px] leading-relaxed text-muted">
             Неофициальный инструмент. Данные — из публичного API игрового проекта.
           </div>
+          <div className="flex gap-2 px-1 text-[11px] text-muted">
+            <button onClick={() => setLegal('privacy')} className="hover:text-txt hover:underline">
+              Политика
+            </button>
+            <span>·</span>
+            <button onClick={() => setLegal('terms')} className="hover:text-txt hover:underline">
+              Соглашение
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -218,6 +230,8 @@ export function AppShell() {
 
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
       <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} />
+      <LegalDialog open={legal != null} tab={legal ?? 'privacy'} onClose={() => setLegal(null)} />
+      <CookieBanner />
     </div>
   );
 }

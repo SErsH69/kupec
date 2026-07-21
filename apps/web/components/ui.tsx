@@ -12,6 +12,54 @@ export function Card({ children, className = '' }: { children: ReactNode; classN
   );
 }
 
+/** Единый каркас модалки: шапка с заголовком и крестиком, подвал, backdrop-blur. */
+export function Modal({
+  title,
+  subtitle,
+  onClose,
+  children,
+  footer,
+  size = 'md',
+}: {
+  title: ReactNode;
+  subtitle?: ReactNode;
+  onClose: () => void;
+  children: ReactNode;
+  footer?: ReactNode;
+  size?: 'sm' | 'md' | 'lg';
+}) {
+  const max = size === 'lg' ? 'max-w-2xl' : size === 'sm' ? 'max-w-sm' : 'max-w-md';
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className={`w-full ${max} overflow-hidden rounded-[var(--radius-xl)] border border-line bg-surface shadow-2xl shadow-black/50`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-4">
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-bold">{title}</h2>
+            {subtitle != null && <div className="mt-0.5 text-sm text-muted">{subtitle}</div>}
+          </div>
+          <button
+            onClick={onClose}
+            title="Закрыть"
+            className="-mr-1 -mt-1 shrink-0 rounded-lg p-1.5 text-lg leading-none text-muted hover:bg-surface-2 hover:text-txt"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="px-6 py-5">{children}</div>
+        {footer != null && (
+          <div className="flex justify-end gap-2 border-t border-line bg-bg/40 px-6 py-4">{footer}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function StatCard({
   label,
   value,

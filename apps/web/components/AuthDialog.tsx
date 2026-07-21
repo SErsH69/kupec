@@ -2,20 +2,28 @@
 
 import { useState } from 'react';
 import { useAuth } from '../lib/auth';
+import { Modal } from './ui';
+import { LegalDialog, type LegalTab } from './LegalDialog';
 
 export function AuthDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { register, login } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [agree, setAgree] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [legal, setLegal] = useState<LegalTab | null>(null);
 
   if (!open) return null;
 
   const submit = async () => {
-    setBusy(true);
     setError(null);
+    if (mode === 'register' && !agree) {
+      setError('Нужно принять условия, чтобы зарегистрироваться');
+      return;
+    }
+    setBusy(true);
     const res = mode === 'register' ? await register(email, password) : await login(email, password);
     setBusy(false);
     if (res.ok) {
@@ -27,59 +35,101 @@ export function AuthDialog({ open, onClose }: { open: boolean; onClose: () => vo
     }
   };
 
+  const isReg = mode === 'register';
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div
-        className="w-full max-w-sm rounded-[var(--radius-xl)] border border-line bg-surface p-5"
-        onClick={(e) => e.stopPropagation()}
+    <>
+      <Modal
+        title={isReg ? 'Регистрация' : 'Вход в аккаунт'}
+        subtitle="Личные данные хранятся в аккаунте и синхронизируются между устройствами"
+        onClose={onClose}
+        footer={
+          <>
+            <button
+              onClick={onClose}
+              className="rounded-lg border border-line px-5 py-2.5 text-sm font-medium hover:bg-surface-2"
+            >
+              Отмена
+            </button>
+            <button
+              onClick={submit}
+              disabled={busy}
+              className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+            >
+              {busy ? '…' : isReg ? 'Создать аккаунт' : 'Войти'}
+            </button>
+          </>
+        }
       >
-        <div className="mb-4 flex gap-1 rounded-lg bg-bg p-1 text-sm">
+        <div className="mb-5 flex gap-1 rounded-xl bg-bg p-1 text-sm">
           <button
             onClick={() => setMode('login')}
-            className={`flex-1 rounded-md py-1.5 ${mode === 'login' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
+            className={`flex-1 rounded-lg py-2 ${!isReg ? 'bg-surface-2 font-semibold text-txt shadow-sm' : 'text-muted'}`}
           >
             Вход
           </button>
           <button
             onClick={() => setMode('register')}
-            className={`flex-1 rounded-md py-1.5 ${mode === 'register' ? 'bg-surface-2 font-medium text-txt' : 'text-muted'}`}
+            className={`flex-1 rounded-lg py-2 ${isReg ? 'bg-surface-2 font-semibold text-txt shadow-sm' : 'text-muted'}`}
           >
             Регистрация
           </button>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email"
-            autoFocus
-            className="rounded-lg border border-line bg-bg px-3 py-2 text-sm outline-none focus:border-accent"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && submit()}
-            placeholder="пароль (≥6 символов)"
-            className="rounded-lg border border-line bg-bg px-3 py-2 text-sm outline-none focus:border-accent"
-          />
+        <div className="flex flex-col gap-3">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted">Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoFocus
+              className={inputCls}
+            />
+          </label>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted">Пароль</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && submit()}
+              placeholder="минимум 6 символов"
+              className={inputCls}
+            />
+          </label>
         </div>
 
-        {error && <div className="mt-2 text-sm text-red">✗ {error}</div>}
+        {isReg && (
+          <label className="mt-4 flex cursor-pointer items-start gap-2 text-xs text-muted select-none">
+            <input
+              type="checkbox"
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+              className="mt-0.5 accent-[var(--color-accent)]"
+            />
+            <span>
+              Принимаю{' '}
+              <button type="button" onClick={() => setLegal('terms')} className="text-accent-2 underline">
+                пользовательское соглашение
+              </button>{' '}
+              и{' '}
+              <button type="button" onClick={() => setLegal('privacy')} className="text-accent-2 underline">
+                политику конфиденциальности
+              </button>
+              , даю согласие на обработку персональных данных.
+            </span>
+          </label>
+        )}
 
-        <button
-          onClick={submit}
-          disabled={busy}
-          className="mt-4 w-full rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
-        >
-          {busy ? '…' : mode === 'register' ? 'Создать аккаунт' : 'Войти'}
-        </button>
-        <p className="mt-3 text-center text-xs text-muted">
-          Аккаунт синхронизирует журнал сделок между устройствами.
-        </p>
-      </div>
-    </div>
+        {error && <div className="mt-3 text-sm text-red">✗ {error}</div>}
+      </Modal>
+
+      <LegalDialog open={legal != null} tab={legal ?? 'privacy'} onClose={() => setLegal(null)} />
+    </>
   );
 }
+
+const inputCls =
+  'w-full rounded-lg border border-line bg-bg px-3.5 py-2.5 text-[15px] outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20';
