@@ -203,7 +203,11 @@ export function AppShell() {
           {!ready ? (
             <div className="p-8 text-center text-sm text-muted">Загрузка…</div>
           ) : showAuth ? (
-            <AuthRequired onLogin={() => setAuthOpen(true)} />
+            tab.Promo ? (
+              <tab.Promo onLogin={() => setAuthOpen(true)} />
+            ) : (
+              <AuthRequired onLogin={() => setAuthOpen(true)} />
+            )
           ) : showEmpty ? (
             <EmptyState onImport={() => setImportOpen(true)} />
           ) : (
