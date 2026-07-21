@@ -25,6 +25,12 @@ export function CraftTab() {
     [data, useChance],
   );
 
+  // В таблице — остальное: топ уже вынесен карточками выше, дублировать не нужно.
+  const rest = useMemo(() => {
+    const top = new Set(picks.map((r) => r.out));
+    return data.filter((r) => !top.has(r.out));
+  }, [data, picks]);
+
   const columns: Column<CraftResult>[] = [
     {
       key: 'out',
@@ -101,9 +107,14 @@ export function CraftTab() {
       )}
 
       <Card>
+        {picks.length > 0 && (
+          <div className="border-b border-line px-3 py-2 text-xs text-muted">
+            Остальные рецепты — топ‑5 выше карточками.
+          </div>
+        )}
         <DataTable
           columns={columns}
-          data={data}
+          data={picks.length > 0 ? rest : data}
           defaultSort={{ key: 'perHour', dir: -1 }}
           rowKey={(r) => r.out}
           empty="Импортируй раздел «Предметы» — появятся расчёты крафта."

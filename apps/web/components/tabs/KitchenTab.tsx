@@ -66,6 +66,12 @@ export function KitchenTab() {
     [data],
   );
 
+  // В таблице — остальное: топ уже вынесен карточками выше.
+  const rest = useMemo(() => {
+    const top = new Set(picks.map((r) => r.id));
+    return data.filter((r) => !top.has(r.id));
+  }, [data, picks]);
+
   return (
     <div className="flex flex-col gap-4">
       {picks.length > 0 && (
@@ -82,9 +88,14 @@ export function KitchenTab() {
       )}
 
       <Card>
+        {picks.length > 0 && (
+          <div className="border-b border-line px-3 py-2 text-xs text-muted">
+            Остальные блюда — топ‑5 выше карточками.
+          </div>
+        )}
         <DataTable
           columns={columns}
-          data={data}
+          data={picks.length > 0 ? rest : data}
           defaultSort={{ key: 'perHour', dir: -1 }}
           rowKey={(r) => String(r.id)}
           empty="Импортируй раздел «Предметы» — появятся расчёты кухни."
