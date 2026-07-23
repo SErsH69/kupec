@@ -57,9 +57,16 @@ export default function RootLayout() {
                 options={{ title: 'Журнал сделок', tabBarLabel: 'Журнал', tabBarIcon: tabIcon('📒') }}
               />
               <Tabs.Screen
+                name="more"
+                options={{ title: 'Ещё', tabBarLabel: 'Ещё', tabBarIcon: tabIcon('🧰') }}
+              />
+              <Tabs.Screen
                 name="account"
                 options={{ title: 'Аккаунт', tabBarLabel: 'Аккаунт', tabBarIcon: tabIcon('👤') }}
               />
+              {/* Открываются из «Ещё», в таб-баре не показываются. */}
+              <Tabs.Screen name="gov" options={{ title: 'Гос-цены', href: null }} />
+              <Tabs.Screen name="rl" options={{ title: 'RL авто', href: null }} />
             </Tabs>
           </JournalProvider>
         </MarketProvider>
