@@ -15,6 +15,7 @@ export * from './kitchen';
 export * from './farm';
 export * from './vehicles';
 export * from './journal';
+export * from './gov';
 export * from './goals';
 export * from './upgrades';
 export * from './alerts';
