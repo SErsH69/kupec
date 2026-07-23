@@ -1,10 +1,27 @@
 import { useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { journalSummary, money, tradePnl, type Trade } from '@kupec/core';
+import {
+  craftMetrics,
+  journalSummary,
+  money,
+  tradePnl,
+  tradeStatus,
+  type Trade,
+  type TradeStatus,
+} from '@kupec/core';
 import { useJournal } from '../lib/journal';
 import { useAuth } from '../lib/auth';
 import { FeaturePromo, JournalMock } from '../components/FeaturePromo';
 import { theme } from '../lib/theme';
+
+/** Оформление статуса сделки (логика — `tradeStatus` в @kupec/core). */
+const STATUS_META: Record<TradeStatus, { color: string; label: string }> = {
+  attention: { color: theme.red, label: '⚠️ заполни данные' },
+  active: { color: theme.amber, label: '🟡 в продаже' },
+  done: { color: theme.green, label: '✅ продано' },
+};
+/** Порядок: сначала то, что требует действия. */
+const RANK: Record<TradeStatus, number> = { attention: 0, active: 1, done: 2 };
 
 export default function Journal() {
   const { user } = useAuth();
@@ -31,8 +48,26 @@ export default function Journal() {
   const [buy, setBuy] = useState('');
   const [closing, setClosing] = useState<Trade | null>(null);
   const [sell, setSell] = useState('');
+  const [q, setQ] = useState('');
+  const [filter, setFilter] = useState<TradeStatus | 'all'>('all');
 
   const summary = useMemo(() => journalSummary(trades), [trades]);
+
+  const withStatus = useMemo(() => trades.map((t) => ({ t, st: tradeStatus(t) })), [trades]);
+  const counts = useMemo(() => {
+    const c = { all: withStatus.length, attention: 0, active: 0, done: 0 };
+    for (const { st } of withStatus) c[st]++;
+    return c;
+  }, [withStatus]);
+  const visible = useMemo(() => {
+    const ql = q.trim().toLowerCase();
+    return withStatus
+      .filter(
+        ({ t, st }) =>
+          (filter === 'all' || st === filter) && (!ql || t.item.toLowerCase().includes(ql)),
+      )
+      .sort((a, b) => RANK[a.st] - RANK[b.st] || b.t.createdAt - a.t.createdAt);
+  }, [withStatus, q, filter]);
 
   const add = () => {
     const q = Number(qty) || 0;
@@ -119,47 +154,38 @@ export default function Journal() {
         </View>
       )}
 
+      {trades.length > 0 && (
+        <>
+          <TextInput
+            style={styles.search}
+            placeholder="🔍 Найти сделку по названию…"
+            placeholderTextColor={theme.muted}
+            value={q}
+            onChangeText={setQ}
+          />
+          <View style={styles.chips}>
+            <Chip label="Все" count={counts.all} active={filter === 'all'} onPress={() => setFilter('all')} />
+            <Chip label="🟡" count={counts.active} color={theme.amber} active={filter === 'active'} onPress={() => setFilter('active')} />
+            <Chip label="✅" count={counts.done} color={theme.green} active={filter === 'done'} onPress={() => setFilter('done')} />
+            {counts.attention > 0 && (
+              <Chip label="⚠️" count={counts.attention} color={theme.red} active={filter === 'attention'} onPress={() => setFilter('attention')} />
+            )}
+          </View>
+        </>
+      )}
+
       <FlatList
-        data={trades}
-        keyExtractor={(t) => t.id}
+        data={visible}
+        keyExtractor={({ t }) => t.id}
         contentContainerStyle={{ paddingBottom: 40 }}
-        renderItem={({ item: t }) => {
-          const p = tradePnl(t);
-          return (
-            <View style={styles.row}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.name} numberOfLines={1}>
-                  {t.item}
-                </Text>
-                <Text style={styles.sub}>
-                  {t.qty} шт · {money(t.buy)}
-                  {t.sell != null ? ` → ${money(t.sell)}` : ''}
-                </Text>
-                {t.author && <Text style={styles.author}>{t.author}</Text>}
-              </View>
-              <View style={{ alignItems: 'flex-end', gap: 4 }}>
-                {p.pnl == null ? (
-                  <Text style={styles.open}>в рынке</Text>
-                ) : (
-                  <Text style={[styles.pnl, { color: p.pnl >= 0 ? theme.green : theme.red }]}>
-                    {money(p.pnl)} · {p.roi!.toFixed(0)}%
-                  </Text>
-                )}
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  {p.open && (
-                    <Pressable onPress={() => setClosing(t)}>
-                      <Text style={styles.sell}>Продать</Text>
-                    </Pressable>
-                  )}
-                  <Pressable onPress={() => deleteTrade(t.id)}>
-                    <Text style={styles.del}>Удалить</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </View>
-          );
-        }}
-        ListEmptyComponent={<Text style={styles.empty}>Журнал пуст. Добавь сделку выше.</Text>}
+        renderItem={({ item: { t, st } }) => (
+          <TradeRow t={t} st={st} onSell={() => setClosing(t)} onDelete={() => deleteTrade(t.id)} />
+        )}
+        ListEmptyComponent={
+          <Text style={styles.empty}>
+            {trades.length === 0 ? 'Журнал пуст. Добавь сделку выше.' : 'Ничего не найдено.'}
+          </Text>
+        }
       />
 
       <GroupModal visible={groupOpen} onClose={() => setGroupOpen(false)} />
@@ -271,6 +297,138 @@ function GroupModal({ visible, onClose }: { visible: boolean; onClose: () => voi
   );
 }
 
+/** Карточка сделки: цвет статуса, крупные материалы/себест, P&L. */
+function TradeRow({
+  t,
+  st,
+  onSell,
+  onDelete,
+}: {
+  t: Trade & { author?: string };
+  st: TradeStatus;
+  onSell: () => void;
+  onDelete: () => void;
+}) {
+  const meta = STATUS_META[st];
+  const isCraft = t.kind === 'craft';
+  const m = isCraft ? craftMetrics(t) : null;
+  const p = !isCraft ? tradePnl(t) : null;
+  return (
+    <View style={[styles.card, { borderLeftColor: meta.color }]}>
+      <View style={styles.cardTop}>
+        <View style={{ flex: 1, paddingRight: 8 }}>
+          <Text style={styles.name} numberOfLines={1}>
+            {t.item}
+          </Text>
+          <Text style={[styles.status, { color: meta.color }]} numberOfLines={1}>
+            {isCraft ? '🔨 ' : '💱 '}
+            {meta.label}
+          </Text>
+          {t.author ? <Text style={styles.author}>{t.author}</Text> : null}
+        </View>
+        <View style={{ alignItems: 'flex-end' }}>
+          {isCraft ? (
+            <>
+              <Text style={[styles.pnl, { color: m!.realized >= 0 ? theme.green : theme.red }]} numberOfLines={1}>
+                {m!.realized > 0 ? '+' : ''}
+                {money(m!.realized)}
+              </Text>
+              <Text style={styles.roi}>{m!.roi != null ? `ROI ${m!.roi.toFixed(0)}%` : 'ещё не продано'}</Text>
+            </>
+          ) : p!.pnl == null ? (
+            <Text style={styles.open}>в рынке</Text>
+          ) : (
+            <>
+              <Text style={[styles.pnl, { color: p!.pnl >= 0 ? theme.green : theme.red }]} numberOfLines={1}>
+                {p!.pnl > 0 ? '+' : ''}
+                {money(p!.pnl)}
+              </Text>
+              <Text style={styles.roi}>ROI {p!.roi!.toFixed(0)}%</Text>
+            </>
+          )}
+        </View>
+      </View>
+
+      <View style={styles.strip}>
+        {isCraft ? (
+          <>
+            <Big label="Материалы" value={money(m!.materials)} />
+            <Big label="Себест/шт" value={money(m!.costPerUnit)} />
+            <Big
+              label="Выставл/шт"
+              value={m!.listPrice && m!.listPrice > 0 ? money(m!.listPrice) : 'нет'}
+              warn={!m!.listPrice || m!.listPrice <= 0}
+            />
+          </>
+        ) : (
+          <>
+            <Big label="Кол-во" value={`${t.qty} шт`} />
+            <Big label="Куплено/шт" value={money(t.buy)} />
+            <Big label="Продано/шт" value={t.sell != null ? money(t.sell) : '—'} />
+          </>
+        )}
+      </View>
+
+      {isCraft ? (
+        <Text style={styles.progress}>
+          Продано {m!.soldUnits}/{m!.crafted} шт · выручка {money(m!.soldRevenue)}
+        </Text>
+      ) : null}
+
+      <View style={styles.actions}>
+        {st !== 'done' && (
+          <Pressable onPress={onSell}>
+            <Text style={styles.sell}>Продать</Text>
+          </Pressable>
+        )}
+        <Pressable onPress={onDelete}>
+          <Text style={styles.del}>Удалить</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+/** Крупная цифра в карточке. */
+function Big({ label, value, warn }: { label: string; value: string; warn?: boolean }) {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text style={styles.bigLabel} numberOfLines={1}>
+        {label}
+      </Text>
+      <Text style={[styles.bigValue, warn ? { color: theme.red } : null]} numberOfLines={1} adjustsFontSizeToFit>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+/** Чип фильтра по статусу со счётчиком. */
+function Chip({
+  label,
+  count,
+  active,
+  onPress,
+  color,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onPress: () => void;
+  color?: string;
+}) {
+  return (
+    <Pressable
+      style={[styles.chip, active ? { backgroundColor: (color ?? theme.accent) + '26', borderColor: color ?? theme.accent } : null]}
+      onPress={onPress}
+    >
+      <Text style={[styles.chipText, active ? { color: color ?? theme.txt, fontWeight: '700' } : null]}>
+        {label} {count}
+      </Text>
+    </Pressable>
+  );
+}
+
 function Stat({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
   return (
     <View style={styles.stat}>
@@ -311,20 +469,49 @@ const styles = StyleSheet.create({
   author: { color: theme.muted, fontSize: 11, marginTop: 2 },
   code: { color: theme.txt, fontSize: 22, fontWeight: '700', letterSpacing: 4 },
   member: { color: theme.txt, fontSize: 13 },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.line,
-    gap: 12,
+  search: {
+    backgroundColor: theme.surface,
+    borderWidth: 1,
+    borderColor: theme.line,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    color: theme.txt,
+    fontSize: 13,
   },
-  name: { color: theme.txt, fontSize: 15 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  chip: {
+    borderWidth: 1,
+    borderColor: theme.line,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  chipText: { color: theme.muted, fontSize: 12 },
+  card: {
+    backgroundColor: theme.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: theme.line,
+    borderLeftWidth: 4,
+    padding: 12,
+    marginBottom: 10,
+    gap: 10,
+  },
+  cardTop: { flexDirection: 'row', justifyContent: 'space-between' },
+  status: { fontSize: 12, fontWeight: '600', marginTop: 3 },
+  strip: { flexDirection: 'row', gap: 8, backgroundColor: theme.bg, borderRadius: 10, padding: 10 },
+  bigLabel: { color: theme.muted, fontSize: 10, textTransform: 'uppercase' },
+  bigValue: { color: theme.txt, fontSize: 14, fontWeight: '700', marginTop: 2 },
+  progress: { color: theme.muted, fontSize: 12 },
+  actions: { flexDirection: 'row', gap: 16 },
+  roi: { color: theme.muted, fontSize: 11, marginTop: 2 },
+  name: { color: theme.txt, fontSize: 15, fontWeight: '600' },
   sub: { color: theme.muted, fontSize: 12, marginTop: 2 },
   open: { color: theme.muted, fontSize: 13 },
-  pnl: { fontWeight: '700', fontSize: 14 },
-  sell: { color: theme.green, fontSize: 12, fontWeight: '600' },
-  del: { color: theme.muted, fontSize: 12 },
+  pnl: { fontWeight: '800', fontSize: 16 },
+  sell: { color: theme.green, fontSize: 13, fontWeight: '600' },
+  del: { color: theme.muted, fontSize: 13 },
   empty: { color: theme.muted, textAlign: 'center', marginTop: 32 },
   modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', padding: 24 },
   modal: { backgroundColor: theme.surface, borderRadius: 14, borderWidth: 1, borderColor: theme.line, padding: 16 },

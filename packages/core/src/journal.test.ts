@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { craftMetrics, journalSummary, tradePnl, type Trade } from './journal';
+import { craftMetrics, journalSummary, tradePnl, tradeStatus, type Trade } from './journal';
 
 const trade = (o: Partial<Trade>): Trade => ({
   id: 'x',
@@ -61,6 +61,34 @@ describe('craftMetrics', () => {
     const m = craftMetrics(trade({ kind: 'craft', qty: 4, materials: 40000, soldUnits: 2, listPrice: 15000 }));
     expect(m.soldRevenue).toBe(30000);
     expect(m.realized).toBe(30000 - 10000 * 2); // 10000
+  });
+});
+
+describe('tradeStatus', () => {
+  it('flip: открыт → active, закрыт → done, без цены покупки → attention', () => {
+    expect(tradeStatus(trade({ qty: 5, buy: 100 }))).toBe('active');
+    expect(tradeStatus(trade({ qty: 5, buy: 100, sell: 150 }))).toBe('done');
+    expect(tradeStatus(trade({ qty: 5, buy: 0 }))).toBe('attention');
+  });
+  it('craft: всё продано → done', () => {
+    expect(
+      tradeStatus(trade({ kind: 'craft', qty: 4, materials: 40000, listPrice: 15000, soldUnits: 4 })),
+    ).toBe('done');
+  });
+  it('craft: выставлено с ценой, есть непроданное → active', () => {
+    expect(
+      tradeStatus(trade({ kind: 'craft', qty: 4, materials: 40000, listPrice: 15000, soldUnits: 1 })),
+    ).toBe('active');
+  });
+  it('craft: открыт без цены выставления → attention', () => {
+    expect(tradeStatus(trade({ kind: 'craft', qty: 4, materials: 40000, soldUnits: 0 }))).toBe(
+      'attention',
+    );
+  });
+  it('craft: нулевые материалы → attention', () => {
+    expect(
+      tradeStatus(trade({ kind: 'craft', qty: 4, materials: 0, listPrice: 15000, soldUnits: 0 })),
+    ).toBe('attention');
   });
 });
 

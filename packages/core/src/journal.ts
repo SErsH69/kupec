@@ -112,6 +112,27 @@ export function isOpen(t: Trade): boolean {
   return t.kind === 'craft' ? craftMetrics(t).open : t.sell == null;
 }
 
+/**
+ * Статус сделки для UI (цвет/фильтр):
+ * - `attention` — не хватает данных: у крафта нет цены выставления или нулевые
+ *   материалы; у flip — не задана цена покупки;
+ * - `active` — открыта и выставлена (есть цена), ждёт продажи;
+ * - `done` — всё продано / закрыто.
+ */
+export type TradeStatus = 'attention' | 'active' | 'done';
+
+export function tradeStatus(t: Trade): TradeStatus {
+  if (t.kind === 'craft') {
+    const m = craftMetrics(t);
+    if (m.materials <= 0) return 'attention';
+    if (!m.open) return 'done';
+    if (m.listPrice == null || m.listPrice <= 0) return 'attention';
+    return 'active';
+  }
+  if (!(t.buy > 0)) return 'attention';
+  return t.sell != null ? 'done' : 'active';
+}
+
 export interface JournalSummary {
   open: number;
   closed: number;

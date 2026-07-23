@@ -1,7 +1,15 @@
 'use client';
 
 import { useMemo, useState, type ReactNode } from 'react';
-import { craftMetrics, isOpen, journalSummary, money, tradePnl, type Trade } from '@kupec/core';
+import {
+  craftMetrics,
+  journalSummary,
+  money,
+  tradePnl,
+  tradeStatus,
+  type Trade,
+  type TradeStatus,
+} from '@kupec/core';
 import { useJournal } from '../../lib/journal';
 import { useStore } from '../../lib/store';
 import { Badge, Card, StatCard } from '../ui';
@@ -10,6 +18,19 @@ type Kind = 'flip' | 'craft';
 
 /** Сделка в журнале: в общем журнале приходит с автором. */
 type JTrade = Trade & { author?: string };
+
+/** Оформление статуса (логика — `tradeStatus` в @kupec/core). */
+const STATUS_META: Record<
+  TradeStatus,
+  { border: string; bar: string; label: string; tone: 'amber' | 'green' | 'red' }
+> = {
+  attention: { border: 'border-l-red', bar: 'bg-red', label: '⚠️ заполни данные', tone: 'red' },
+  active: { border: 'border-l-amber', bar: 'bg-amber', label: '🟡 в продаже', tone: 'amber' },
+  done: { border: 'border-l-green', bar: 'bg-green', label: '✅ продано', tone: 'green' },
+};
+
+/** Порядок вывода: сначала то, что требует действия. */
+const RANK: Record<TradeStatus, number> = { attention: 0, active: 1, done: 2 };
 
 export function JournalTab() {
   const { trades, addTrade, updateTrade, closeTrade, deleteTrade, scope, setScope, group } =
@@ -20,11 +41,30 @@ export function JournalTab() {
   const [editing, setEditing] = useState<JTrade | null>(null);
   const [addOpen, setAddOpen] = useState(false);
 
+  const [q, setQ] = useState('');
+  const [filter, setFilter] = useState<TradeStatus | 'all'>('all');
+
   const summary = useMemo(() => journalSummary(trades), [trades]);
-  const ordered = useMemo(
-    () => [...trades].sort((a, b) => Number(isOpen(a) ? 0 : 1) - Number(isOpen(b) ? 0 : 1) || b.createdAt - a.createdAt),
+
+  const withStatus = useMemo(
+    () => trades.map((t) => ({ t, st: tradeStatus(t) })),
     [trades],
   );
+  const counts = useMemo(() => {
+    const c = { all: withStatus.length, attention: 0, active: 0, done: 0 };
+    for (const { st } of withStatus) c[st]++;
+    return c;
+  }, [withStatus]);
+  const visible = useMemo(() => {
+    const ql = q.toLowerCase().trim();
+    return withStatus
+      .filter(
+        ({ t, st }) =>
+          (filter === 'all' || st === filter) && (!ql || t.item.toLowerCase().includes(ql)),
+      )
+      .sort((a, b) => RANK[a.st] - RANK[b.st] || b.t.createdAt - a.t.createdAt);
+  }, [withStatus, q, filter]);
+
   const itemNames = useMemo(
     () =>
       Array.from(new Set(items.map((i) => i.name).filter(Boolean))).sort((a, b) =>
@@ -96,14 +136,36 @@ export function JournalTab() {
         />
       )}
 
-      {ordered.length === 0 ? (
+      {trades.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="🔍 Найти сделку по названию…"
+            className="w-full max-w-xs rounded-lg border border-line bg-surface px-3.5 py-2 text-sm outline-none focus:border-accent"
+          />
+          <div className="flex flex-wrap gap-1.5">
+            <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label="Все" count={counts.all} />
+            <FilterChip active={filter === 'active'} onClick={() => setFilter('active')} label="🟡 В продаже" count={counts.active} tone="amber" />
+            <FilterChip active={filter === 'done'} onClick={() => setFilter('done')} label="✅ Продано" count={counts.done} tone="green" />
+            {counts.attention > 0 && (
+              <FilterChip active={filter === 'attention'} onClick={() => setFilter('attention')} label="⚠️ Заполни" count={counts.attention} tone="red" />
+            )}
+          </div>
+        </div>
+      )}
+
+      {trades.length === 0 ? (
         <Card className="p-8 text-center text-sm text-muted">Журнал пуст. Добавь сделку выше.</Card>
+      ) : visible.length === 0 ? (
+        <Card className="p-8 text-center text-sm text-muted">Ничего не найдено — сбрось поиск или фильтр.</Card>
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
-          {ordered.map((t) => (
+          {visible.map(({ t, st }) => (
             <TradeCard
               key={t.id}
               t={t}
+              st={st}
               onSell={() => setSelling(t)}
               onEdit={() => setEditing(t)}
               onDelete={() => deleteTrade(t.id)}
@@ -145,19 +207,21 @@ export function JournalTab() {
 
 function TradeCard({
   t,
+  st,
   onSell,
   onEdit,
   onDelete,
 }: {
   t: JTrade;
+  st: TradeStatus;
   onSell: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   return t.kind === 'craft' ? (
-    <CraftCard t={t} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
+    <CraftCard t={t} st={st} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
   ) : (
-    <FlipCard t={t} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
+    <FlipCard t={t} st={st} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
   );
 }
 
@@ -288,126 +352,200 @@ function GroupModal({ onClose }: { onClose: () => void }) {
 
 function CraftCard({
   t,
+  st,
   onSell,
   onEdit,
   onDelete,
 }: {
   t: JTrade;
+  st: TradeStatus;
   onSell: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   const m = craftMetrics(t);
+  const meta = STATUS_META[st];
   const date = new Date(t.createdAt).toLocaleDateString('ru-RU');
+  const pct = m.crafted > 0 ? Math.round((m.soldUnits / m.crafted) * 100) : 0;
+  const noPrice = m.listPrice == null || m.listPrice <= 0;
   return (
-    <Card className={`p-4 ${m.open ? '' : 'opacity-90'}`}>
+    <Card className={`border-l-4 p-4 ${meta.border}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="truncate font-semibold">{t.item}</span>
             <Badge tone="amber">🔨 крафт</Badge>
-            {m.open && <Badge tone="accent">открыта</Badge>}
             {t.author && <Badge>{t.author}</Badge>}
           </div>
-          <div className="mt-0.5 text-xs text-muted">{date}</div>
+          <div className="mt-1 flex items-center gap-2">
+            <Badge tone={meta.tone}>{meta.label}</Badge>
+            <span className="text-xs text-muted">{date}</span>
+          </div>
         </div>
-        <div className="text-right">
+        <div className="shrink-0 text-right">
           <div className={`text-lg font-bold tabular-nums ${m.realized >= 0 ? 'text-green' : 'text-red'}`}>
+            {m.realized > 0 ? '+' : ''}
             {money(m.realized)}
           </div>
-          {m.roi != null && <div className="text-xs text-muted">+{m.roi.toFixed(0)}%</div>}
+          <div className="text-xs text-muted">
+            {m.roi != null ? `ROI ${m.roi.toFixed(0)}%` : 'ещё не продано'}
+          </div>
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-        <Row label="материалы" value={money(m.materials)} />
-        <Row label="скрафчено" value={`${m.crafted} шт`} />
-        <Row label="себест/шт" value={money(m.costPerUnit)} />
-        <Row label="продано" value={`${m.soldUnits}/${m.crafted} шт`} />
-        <Row label="выставл/шт" value={m.listPrice != null ? money(m.listPrice) : '—'} />
-        <Row label="выручка" value={money(m.soldRevenue)} />
+      {/* Ключевые цифры крупно */}
+      <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-bg/50 p-3">
+        <BigStat label="Материалы" value={money(m.materials)} />
+        <BigStat label="Себест/шт" value={money(m.costPerUnit)} />
+        <BigStat label="Выставл/шт" value={noPrice ? 'нет' : money(m.listPrice!)} warn={noPrice} />
       </div>
 
-      <div className="mt-3 flex gap-2 border-t border-line/50 pt-3">
-        {m.open && (
-          <button onClick={onSell} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
-            Продать
-          </button>
-        )}
-        <button onClick={onEdit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt">
-          ✏️ Правка
-        </button>
-        <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
-          Удалить
-        </button>
+      {/* Прогресс продажи */}
+      <div className="mt-3">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-muted">
+            Продано {m.soldUnits}/{m.crafted} шт
+          </span>
+          <span className="tabular-nums text-muted">выручка {money(m.soldRevenue)}</span>
+        </div>
+        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-bg">
+          <div className={`h-full rounded-full ${meta.bar}`} style={{ width: `${pct}%` }} />
+        </div>
       </div>
+
+      <CardActions open={m.open} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
     </Card>
   );
 }
 
 function FlipCard({
   t,
+  st,
   onSell,
   onEdit,
   onDelete,
 }: {
   t: JTrade;
+  st: TradeStatus;
   onSell: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   const p = tradePnl(t);
+  const meta = STATUS_META[st];
+  const date = new Date(t.createdAt).toLocaleDateString('ru-RU');
   return (
-    <Card className="p-4">
+    <Card className={`border-l-4 p-4 ${meta.border}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="truncate font-semibold">{t.item}</span>
             <Badge>💱 перекуп</Badge>
-            {p.open && <Badge tone="accent">открыта</Badge>}
             {t.author && <Badge>{t.author}</Badge>}
           </div>
-          <div className="mt-1 text-xs text-muted">
-            {t.qty} шт · купил {money(t.buy)}
-            {t.sell != null && <> → продал {money(t.sell)}</>}
+          <div className="mt-1 flex items-center gap-2">
+            <Badge tone={meta.tone}>{meta.label}</Badge>
+            <span className="text-xs text-muted">{date}</span>
           </div>
         </div>
-        <div className="text-right">
+        <div className="shrink-0 text-right">
           {p.pnl == null ? (
             <div className="text-sm text-muted">в рынке</div>
           ) : (
             <>
               <div className={`text-lg font-bold tabular-nums ${p.pnl >= 0 ? 'text-green' : 'text-red'}`}>
+                {p.pnl > 0 ? '+' : ''}
                 {money(p.pnl)}
               </div>
-              <div className="text-xs text-muted">{p.roi!.toFixed(0)}%</div>
+              <div className="text-xs text-muted">ROI {p.roi!.toFixed(0)}%</div>
             </>
           )}
         </div>
       </div>
-      <div className="mt-3 flex gap-2 border-t border-line/50 pt-3">
-        {p.open && (
-          <button onClick={onSell} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
-            Продать
-          </button>
-        )}
-        <button onClick={onEdit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt">
-          ✏️ Правка
-        </button>
-        <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
-          Удалить
-        </button>
+
+      <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-bg/50 p-3">
+        <BigStat label="Кол-во" value={`${t.qty} шт`} />
+        <BigStat label="Куплено/шт" value={money(t.buy)} />
+        <BigStat label="Продано/шт" value={t.sell != null ? money(t.sell) : '—'} />
       </div>
+
+      <CardActions open={p.open} onSell={onSell} onEdit={onEdit} onDelete={onDelete} />
     </Card>
   );
 }
 
-function Row({ label, value }: { label: string; value: ReactNode }) {
+/** Крупная цифра в карточке (материалы/себестоимость и т.п.). */
+function BigStat({ label, value, warn }: { label: string; value: ReactNode; warn?: boolean }) {
   return (
-    <div className="flex justify-between gap-2">
-      <span className="text-muted">{label}</span>
-      <span className="tabular-nums">{value}</span>
+    <div className="min-w-0">
+      <div className="text-[10px] uppercase tracking-wide text-muted">{label}</div>
+      <div className={`truncate text-sm font-bold tabular-nums ${warn ? 'text-red' : 'text-txt'}`} title={String(value)}>
+        {value}
+      </div>
     </div>
+  );
+}
+
+/** Кнопки под карточкой сделки. */
+function CardActions({
+  open,
+  onSell,
+  onEdit,
+  onDelete,
+}: {
+  open: boolean;
+  onSell: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="mt-3 flex gap-2 border-t border-line/50 pt-3">
+      {open && (
+        <button onClick={onSell} className="rounded-md bg-green/15 px-2.5 py-1 text-xs font-medium text-green hover:bg-green/25">
+          Продать
+        </button>
+      )}
+      <button onClick={onEdit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-txt">
+        ✏️ Правка
+      </button>
+      <button onClick={onDelete} className="rounded-md px-2.5 py-1 text-xs text-muted hover:bg-red/15 hover:text-red">
+        Удалить
+      </button>
+    </div>
+  );
+}
+
+/** Чип фильтра по статусу с числом сделок. */
+function FilterChip({
+  active,
+  onClick,
+  label,
+  count,
+  tone,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  tone?: 'amber' | 'green' | 'red';
+}) {
+  const activeCls =
+    tone === 'green'
+      ? 'bg-green/15 text-green'
+      : tone === 'red'
+        ? 'bg-red/15 text-red'
+        : tone === 'amber'
+          ? 'bg-amber/15 text-amber'
+          : 'bg-accent/15 text-txt';
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-lg px-3 py-1.5 text-sm transition ${
+        active ? `${activeCls} font-semibold` : 'border border-line text-muted hover:bg-surface-2 hover:text-txt'
+      }`}
+    >
+      {label} <span className="opacity-60">{count}</span>
+    </button>
   );
 }
 
@@ -551,21 +689,19 @@ function SellModal({
   const m = isCraft ? craftMetrics(trade) : null;
   const [sell, setSell] = useState('');
   const [sold, setSold] = useState(m ? String(m.soldUnits) : '');
-  const [revenue, setRevenue] = useState(m && m.soldRevenue ? String(m.soldRevenue) : '');
   const [listPrice, setListPrice] = useState(m && m.listPrice != null ? String(m.listPrice) : '');
 
   const confirm = () => {
     if (isCraft) {
       const su = Math.min(Number(sold) || 0, trade.qty);
       const lp = Number(listPrice) || 0;
-      const rev = Number(revenue) || (lp ? lp * su : 0);
       onCraft({
         item: trade.item,
         qty: trade.qty,
         buy: trade.buy,
         kind: 'craft',
         soldUnits: su,
-        soldRevenue: rev || null,
+        soldRevenue: lp && su ? lp * su : null,
         listPrice: lp || null,
       });
     } else {
@@ -591,9 +727,9 @@ function SellModal({
               <input type="number" value={listPrice} onChange={(e) => setListPrice(e.target.value)} className={inputCls} />
             </Field>
           </div>
-          <Field label="Выручка" hint="необязательно — иначе выставл × продано">
-            <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="0" className={inputCls} />
-          </Field>
+          <div className="rounded-lg bg-bg/50 px-3.5 py-2.5 text-xs text-muted">
+            Выручка посчитается сама: цена выставления × продано.
+          </div>
         </div>
       ) : (
         <Field label="Цена продажи" hint={`за штуку, ${trade.qty} шт`}>
@@ -624,7 +760,6 @@ function FullEditModal({
   const [listPrice, setListPrice] = useState(m && m.listPrice != null ? String(m.listPrice) : '');
   const [sold, setSold] = useState(m ? String(m.soldUnits) : '');
   const [sell, setSell] = useState(trade.sell != null ? String(trade.sell) : '');
-  const [revenue, setRevenue] = useState(m && m.soldRevenue ? String(m.soldRevenue) : '');
 
   const save = () => {
     const q = Number(qty) || 0;
@@ -633,7 +768,6 @@ function FullEditModal({
       const mat = Number(materials) || 0;
       const lp = Number(listPrice) || 0;
       const su = Math.min(Number(sold) || 0, q);
-      const rev = Number(revenue) || (lp ? lp * su : 0);
       onSave({
         item: item.trim(),
         qty: q,
@@ -642,7 +776,7 @@ function FullEditModal({
         materials: mat,
         listPrice: lp || null,
         soldUnits: su,
-        soldRevenue: rev || null,
+        soldRevenue: lp && su ? lp * su : null,
       });
     } else {
       onSave({
@@ -681,9 +815,9 @@ function FullEditModal({
                 <input type="number" value={sold} onChange={(e) => setSold(e.target.value)} className={inputCls} />
               </Field>
             </div>
-            <Field label="Выручка" hint="необязательно — иначе выставл × продано">
-              <input type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} placeholder="0" className={inputCls} />
-            </Field>
+            <div className="rounded-lg bg-bg/50 px-3.5 py-2.5 text-xs text-muted">
+              Выручка и P&L считаются автоматически: выставл/шт × продано − себестоимость.
+            </div>
           </>
         ) : (
           <div className="grid grid-cols-3 gap-4">
