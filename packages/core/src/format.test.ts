@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { groupInt, money, nf, pct } from './format';
+import { groupInt, money, moneyShort, nf, pct } from './format';
 
 describe('nf', () => {
   it('округляет и группирует тысячи', () => {
@@ -20,6 +20,23 @@ describe('money', () => {
   });
   it('возвращает «—» без данных', () => {
     expect(money(null)).toBe('—');
+  });
+});
+
+describe('moneyShort', () => {
+  it('миллионы и тысячи компактно', () => {
+    expect(moneyShort(3915000)).toBe('$3.9M');
+    expect(moneyShort(6200000)).toBe('$6.2M');
+    expect(moneyShort(850000)).toBe('$850k');
+    expect(moneyShort(12000)).toBe('$12k');
+  });
+  it('мелкие суммы — как money, «.0» без хвоста', () => {
+    expect(moneyShort(1500)).toBe(money(1500)); // < 10k → полный формат
+    expect(moneyShort(2000000)).toBe('$2M');
+  });
+  it('знак и пустое', () => {
+    expect(moneyShort(-4500000)).toBe('-$4.5M');
+    expect(moneyShort(null)).toBe('—');
   });
 });
 

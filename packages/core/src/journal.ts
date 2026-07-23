@@ -140,6 +140,8 @@ export interface JournalSummary {
   invested: number;
   /** Реализованная прибыль. */
   realized: number;
+  /** Валовая выручка от проданного («на сколько продал всего»). */
+  soldRevenue: number;
   /** ROI по реализованному, %. */
   roi: number;
   /** Стоимость непроданных товаров по цене выставления («сейчас в продаже»). */
@@ -155,6 +157,7 @@ export function journalSummary(trades: Trade[]): JournalSummary {
   let invested = 0;
   let realized = 0;
   let realizedCost = 0;
+  let soldRevenue = 0;
   let listedValue = 0;
   let listedUnits = 0;
 
@@ -166,6 +169,7 @@ export function journalSummary(trades: Trade[]): JournalSummary {
       invested += m.invested;
       realized += m.realized;
       realizedCost += m.costPerUnit * m.soldUnits;
+      soldRevenue += m.soldRevenue;
       if (m.unsold > 0 && m.listPrice != null) {
         listedValue += m.unsold * m.listPrice;
         listedUnits += m.unsold;
@@ -179,10 +183,11 @@ export function journalSummary(trades: Trade[]): JournalSummary {
         closed++;
         realized += p.pnl ?? 0;
         realizedCost += p.cost;
+        soldRevenue += p.revenue ?? 0;
       }
     }
   }
 
   const roi = realizedCost > 0 ? (realized / realizedCost) * 100 : 0;
-  return { open, closed, invested, realized, roi, listedValue, listedUnits };
+  return { open, closed, invested, realized, soldRevenue, roi, listedValue, listedUnits };
 }

@@ -146,8 +146,8 @@ export function JournalTab() {
           />
           <div className="flex flex-wrap gap-1.5">
             <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label="Все" count={counts.all} />
-            <FilterChip active={filter === 'active'} onClick={() => setFilter('active')} label="🟡 В продаже" count={counts.active} tone="amber" />
-            <FilterChip active={filter === 'done'} onClick={() => setFilter('done')} label="✅ Продано" count={counts.done} tone="green" />
+            <FilterChip active={filter === 'active'} onClick={() => setFilter('active')} label="🟡 В продаже" count={counts.active} sum={money(summary.listedValue)} tone="amber" />
+            <FilterChip active={filter === 'done'} onClick={() => setFilter('done')} label="✅ Продано" count={counts.done} sum={money(summary.soldRevenue)} tone="green" />
             {counts.attention > 0 && (
               <FilterChip active={filter === 'attention'} onClick={() => setFilter('attention')} label="⚠️ Заполни" count={counts.attention} tone="red" />
             )}
@@ -515,18 +515,21 @@ function CardActions({
   );
 }
 
-/** Чип фильтра по статусу с числом сделок. */
+/** Чип фильтра по статусу: число сделок + (опц.) денежная сумма. */
 function FilterChip({
   active,
   onClick,
   label,
   count,
+  sum,
   tone,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   count: number;
+  /** Денежный итог для этого статуса (в продаже — выставлено, продано — выручка). */
+  sum?: string;
   tone?: 'amber' | 'green' | 'red';
 }) {
   const activeCls =
@@ -545,6 +548,7 @@ function FilterChip({
       }`}
     >
       {label} <span className="opacity-60">{count}</span>
+      {sum && <span className="ml-1.5 tabular-nums font-semibold">{sum}</span>}
     </button>
   );
 }

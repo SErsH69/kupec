@@ -4,6 +4,7 @@ import {
   craftMetrics,
   journalSummary,
   money,
+  moneyShort,
   tradePnl,
   tradeStatus,
   type Trade,
@@ -165,8 +166,8 @@ export default function Journal() {
           />
           <View style={styles.chips}>
             <Chip label="Все" count={counts.all} active={filter === 'all'} onPress={() => setFilter('all')} />
-            <Chip label="🟡" count={counts.active} color={theme.amber} active={filter === 'active'} onPress={() => setFilter('active')} />
-            <Chip label="✅" count={counts.done} color={theme.green} active={filter === 'done'} onPress={() => setFilter('done')} />
+            <Chip label="🟡" count={counts.active} sum={moneyShort(summary.listedValue)} color={theme.amber} active={filter === 'active'} onPress={() => setFilter('active')} />
+            <Chip label="✅" count={counts.done} sum={moneyShort(summary.soldRevenue)} color={theme.green} active={filter === 'done'} onPress={() => setFilter('done')} />
             {counts.attention > 0 && (
               <Chip label="⚠️" count={counts.attention} color={theme.red} active={filter === 'attention'} onPress={() => setFilter('attention')} />
             )}
@@ -403,16 +404,18 @@ function Big({ label, value, warn }: { label: string; value: string; warn?: bool
   );
 }
 
-/** Чип фильтра по статусу со счётчиком. */
+/** Чип фильтра по статусу: счётчик + (опц.) денежный итог. */
 function Chip({
   label,
   count,
+  sum,
   active,
   onPress,
   color,
 }: {
   label: string;
   count: number;
+  sum?: string;
   active: boolean;
   onPress: () => void;
   color?: string;
@@ -424,6 +427,7 @@ function Chip({
     >
       <Text style={[styles.chipText, active ? { color: color ?? theme.txt, fontWeight: '700' } : null]}>
         {label} {count}
+        {sum ? <Text style={{ fontWeight: '700', color: color ?? theme.txt }}> · {sum}</Text> : null}
       </Text>
     </Pressable>
   );

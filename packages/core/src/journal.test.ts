@@ -104,6 +104,7 @@ describe('journalSummary (flip + craft)', () => {
     expect(s.closed).toBe(2); // b + c
     expect(s.invested).toBe(1400); // 1000 (a) + 400 (d unsold)
     expect(s.realized).toBe(1400); // 500 (b) + 700 (c) + 200 (d)
+    expect(s.soldRevenue).toBe(3000); // 1000 (b) + 1400 (c) + 600 (d)
     // realizedCost = 500 (b) + 700 (c) + 400 (d sold) = 1600
     expect(s.roi).toBeCloseTo((1400 / 1600) * 100, 5);
     // d: непродано 4 шт, listPrice не задан → в продаже не учитывается
@@ -124,6 +125,7 @@ describe('journalSummary (flip + craft)', () => {
       closed: 0,
       invested: 0,
       realized: 0,
+      soldRevenue: 0,
       roi: 0,
       listedValue: 0,
       listedUnits: 0,
